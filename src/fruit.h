@@ -8,9 +8,9 @@
 #include "config.h"
 
 enum class FruitType {
-    APPLE = 3,
-    BANANA = 4,
-    STARFRUIT = 5
+    APPLE = 5,
+    BANANA = 6,
+    STARFRUIT = 7
 };
 
 class Fruit {

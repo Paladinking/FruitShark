@@ -1,13 +1,18 @@
 #include "shark.h"
-#include "engine/engine.h"
 
 constexpr double SHARK_ACCELERATION = 900.0;
 
-Shark::Shark(const double x, const double y) : Entity(x, y, 20, 20) {
-    texture.load_from_file("Shark.png", 20, 20);
+Shark::Shark(const double x, const double y) :
+Entity(x, y, 20, 20),
+texture1(&textureHandler.getTexture(TextureID::SHARK1)),
+texture2(&textureHandler.getTexture(TextureID::SHARK2)),
+texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
+    animationStage = engine::random(0, 80);
 }
 
 void Shark::tick(const double delta, const std::vector<std::vector<Vector2D>>& trails) {
+    ++animationStage;
+    if (animationStage > 80) animationStage = 0;
     if (trail != nullptr) {
         Vector2D target = trail->at(trail_index);
         if (target.distance_squared(position) < 100.0) {
@@ -28,7 +33,28 @@ void Shark::tick(const double delta, const std::vector<std::vector<Vector2D>>& t
 }
 
 void Shark::render() const {
-    texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    switch (animationStage) {
+        case 0 ... 10:
+        case 41 ... 50:
+            texture1->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+            break;
+        case 11 ... 20:
+        case 31 ... 40:
+            texture2->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+            break;
+        case 21 ... 30:
+            texture3->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+            break;
+        case 51 ... 60:
+        case 71 ... 80:
+            texture2->render(static_cast<int>(position.x), static_cast<int>(position.y),
+                             angle + 3.1415, SDL_FLIP_HORIZONTAL);
+            break;
+        case 61 ... 70:
+            texture3->render(static_cast<int>(position.x), static_cast<int>(position.y),
+                             angle + 3.1415, SDL_FLIP_HORIZONTAL);
+            break;
+    }
 }
 
 void Shark::set_trail(const std::vector<Vector2D> *new_trail) {
