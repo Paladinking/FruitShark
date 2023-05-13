@@ -9,6 +9,8 @@ void Entity::move(const double delta) {
 
     velocity.x += delta * acceleration.x;
     velocity.y += delta * acceleration.y;
+    if (velocity.length_squared() == 0) return;
+    angle = velocity.get_angle();
     Vector2D to_move = {velocity.x * delta, velocity.y * delta};
     position.add(to_move);
     acceleration.x = 0.0;

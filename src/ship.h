@@ -38,7 +38,6 @@ public:
 private:
     int width = 25;
     int length = 50;
-    double angle = 0.0;
 
     Texture texture;
 

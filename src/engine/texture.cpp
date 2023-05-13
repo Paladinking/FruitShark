@@ -63,7 +63,7 @@ void Texture::render(const int x, const int y, const double angle) const {
 			texture,
 			nullptr,
 			&rect,
-			angle,
+			angle * 180 / 3.14159265,
 			nullptr,
 			SDL_FLIP_NONE);
 }

@@ -8,6 +8,8 @@ public:
 protected:
     Vector2D position, velocity {}, acceleration {};
 
+    double angle = 0.0;
+
     void move(double delta);
 };
 

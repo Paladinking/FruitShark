@@ -21,13 +21,14 @@ void Shark::tick(const double delta, const std::vector<std::vector<Vector2D>>& t
         }
         target.subtract(position);
         target.normalize();
+        angle = target.get_angle();
         acceleration.add_scaled(target, SHARK_ACCELERATION / 5.0);
     }
     Entity::move(delta);
 }
 
 void Shark::render() const {
-    texture.render(static_cast<int>(position.x), static_cast<int>(position.y));
+    texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
 void Shark::set_trail(const std::vector<Vector2D> *new_trail) {

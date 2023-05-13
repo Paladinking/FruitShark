@@ -124,6 +124,10 @@ public:
         y = len * sin(a + angle);
     }
 
+    [[nodiscard]] double get_angle() const {
+        return std::atan2(y, x);
+    }
+
     double x, y;
 };
 #endif //FRUITSHARK_VECTOR2D_H

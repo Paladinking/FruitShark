@@ -4,6 +4,7 @@
 #include "engine/game.h"
 #include "engine/input.h"
 #include "ship.h"
+#include "config.h"
 #include "shark.h"
 #include "fruit.h"
 
@@ -29,5 +30,8 @@ private:
     std::vector<std::vector<Vector2D>> shark_trails;
 
     void create_shark_trails();
+
+    SDL_Rect game_viewport = {UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT};
+    SDL_Rect ui_viewport = {0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT};
 };
 #endif //FRUITSHARK_SHARKGAME_H

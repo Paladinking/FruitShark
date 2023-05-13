@@ -19,17 +19,17 @@ rightCannon(width) {
 }
 
 void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
-    Vector2D vel_delta = { cos(angle * PI / 180.0), sin(angle * PI / 180.0)};
+    Vector2D vel_delta = { cos(angle), sin(angle)};
     if (forward->is_pressed(keyboard, mouse_mask)) {
         acceleration.add_scaled(vel_delta,  ACCELERATION);
     }
 
     if (left->is_pressed(keyboard, mouse_mask)) {
-        angle -= 120.0 * delta;
+        angle -= 120.0 * delta * PI / 180.0; // Remove to stop rotate while still
         velocity.rotate(-120.0 * delta * PI / 180.0);
     }
     if (right->is_pressed(keyboard, mouse_mask)) {
-        angle += 120.0 * delta;
+        angle += 120.0 * delta * PI / 180.0; // Remove to stop rotate while still
         velocity.rotate(120.0 * delta * PI / 180.0);
     }
     Entity::move(delta);
@@ -45,21 +45,21 @@ void Ship::render() const {
 }
 
 Vector2D Ship::leftCannonPosition() const {
-    return {position.x - (width * cos((angle + 90.0) * PI / 180.0)) / 1.5,
-                    position.y - (width * sin((angle + 90.0) * PI / 180.0)) / 1.5};
+    return {position.x - (width * cos(angle + PI / 2.0)) / 1.5,
+                    position.y - (width * sin(angle + PI / 2.0)) / 1.5};
 }
 
 Vector2D Ship::rightCannonPosition() const {
-    return {position.x + (width * cos((angle + 90.0) * PI / 180.0)) / 1.5,
-            position.y + (width * sin((angle + 90.0) * PI / 180.0)) / 1.5};
+    return {position.x + (width * cos(angle + PI / 2.0)) / 1.5,
+            position.y + (width * sin(angle + PI / 2.0)) / 1.5};
 }
 
 void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
     if (fire_left->is_targeted(key, mouse) and isChargingLeft) {
         Vector2D fruitPosition = leftCannonPosition();
         Vector2D fruitVelocity = velocity;
-        fruitVelocity.x += cos(angle - 90.0) * leftCannon.power;
-        fruitVelocity.y += sin(angle - 90.0) * leftCannon.power;
+        fruitVelocity.x += cos(angle - PI / 2) * leftCannon.power;
+        fruitVelocity.y += sin(angle - PI / 2) * leftCannon.power;
 
         fruits.emplace_back(fruitPosition, fruitVelocity, Apple);
     }
@@ -83,7 +83,7 @@ Cannon::Cannon(const int shipWidth) {
 }
 
 void Cannon::render(const int x, const int y, const double angle) const {
-    texture.render(x, y, angle + 90.0);
+    texture.render(x, y, angle + PI / 2);
 }
 
 

@@ -41,10 +41,16 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 void SharkGame::render() {
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(gRenderer);
+
+    SDL_RenderSetViewport(gRenderer, &game_viewport);
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0xB2, 0xFF, 0xFF);
     SDL_RenderFillRect(gRenderer, nullptr);
     for (const auto& ship : ships) ship.render();
     for (const auto& shark : sharks) shark.render();
+
+    SDL_RenderSetViewport(gRenderer, &ui_viewport);
+
+
     SDL_RenderPresent(gRenderer);
 }
 
@@ -63,16 +69,16 @@ void SharkGame::create_shark_trails() {
     });
 
     shark_trails.push_back({
-        {100.0, 540.0}, {430.0, 540.0}, {430.0, 970.0}, {100.0, 970.0}
+        {100.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {100.0, 900.0}
     });
     shark_trails.push_back({
-        {530.0, 540.0}, {530.0, 970.0}, {860.0, 970.0}, {860.0, 540.0}
+        {530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}
     });
     shark_trails.push_back({
-        {960.0, 540.0}, {960.0, 970.0}, {1290.0, 970.0}, {1290.0, 540.0}
+        {960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}
     });
     shark_trails.push_back({
-        {1390.0, 540.0}, {1720.0, 540.0}, {1720.0, 970.0}, {1390.0, 970.0}
+        {1390.0, 500.0}, {1720.0, 500.0}, {1720.0, 900.0}, {1390.0, 900.0}
     });
 }
 
