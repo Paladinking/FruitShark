@@ -42,6 +42,11 @@ void Ship::render() const {
     rightCannon.render(static_cast<int>(cannonPosition.x), static_cast<int>(cannonPosition.y), angle);
 
     texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    if (has_intersect) {
+        SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+        SDL_Rect r = {0, 0, 50, 50};
+        SDL_RenderFillRect(gRenderer, &r);
+    }
 }
 
 Vector2D Ship::leftCannonPosition() const {
@@ -74,6 +79,19 @@ void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
     }
 }
 
+void Ship::handle_collision(Ship &other) {
+    if (Entity::intersects(other)) {
+        this->has_intersect = true;
+        /*Vector2D vec = other.position;
+        vec.subtract(position);
+
+        double power = velocity.length() + other.velocity.length();
+        acceleration.add_scaled(vec, -power * 0.5);
+        other.acceleration.add_scaled(vec, power * 0.5);*/
+    } else {
+        this->has_intersect = false;
+    }
+}
 
 
 Cannon::Cannon(const int shipWidth) {

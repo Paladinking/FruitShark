@@ -7,7 +7,7 @@
 #include "engine/input.h"
 #include "fruit.h"
 
-constexpr double PI = 3.14159265;
+
 
 class Cannon {
 public:
@@ -16,14 +16,13 @@ public:
     void render(int x, int y, double angle) const;
 
     double power = 0.0;
-
 private:
     Texture texture;
 };
 
 
 
-class Ship : Entity {
+class Ship : public Entity {
 public:
     Ship(double x, double y, const char *const *bindings);
 
@@ -35,11 +34,15 @@ public:
 
     void handle_down(SDL_Keycode key, Uint8 mouse);
 
+    void handle_collision(Ship &other);
+
 private:
     Texture texture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;
     std::unique_ptr<PressInput> fire_left, fire_right;
+
+    bool has_intersect = false;
 
     bool isChargingLeft = false;
     bool isChargingRight = false;

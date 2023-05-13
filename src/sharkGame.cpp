@@ -1,5 +1,6 @@
 #include "sharkGame.h"
 #include "config.h"
+#include <iostream>
 
 void SharkGame::init(WindowState* window_state) {
     SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -30,6 +31,11 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     }
     for (auto& shark : sharks) {
         shark.tick(dDelta, shark_trails);
+    }
+    for (int i = 0; i < ships.size(); ++i) {
+        for (int j = i + 1; j < ships.size(); ++j) {
+            ships[i].handle_collision(ships[j]);
+        }
     }
 
     if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
