@@ -1,7 +1,10 @@
 #include "sharkGame.h"
 #include "config.h"
 
+TextureHandler textureHandler = TextureHandler();
+
 void SharkGame::init(WindowState* window_state) {
+    textureHandler.loadTextures();
     SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
     SDL_RenderSetLogicalSize(gRenderer, LOGICAL_WIDTH, LOGICAL_HEIGHT);
     SDL_ShowWindow(gWindow);
@@ -26,10 +29,19 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     if (delta == 0) return;
     double dDelta = static_cast<double>(delta) / 1000.0;
     for (auto& ship : ships) {
-        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask);
+        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruits);
     }
     for (auto& shark : sharks) {
         shark.tick(dDelta, shark_trails);
+    }
+    for (int i = 0; i < fruits.size(); ++i) {
+        auto& fruit = fruits[i];
+        fruit.tick(dDelta);
+        if (fruit.dead) {
+            fruits[i] = fruits[fruits.size() - 1];
+            fruits.pop_back();
+            --i;
+        }
     }
 
     if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
@@ -46,6 +58,7 @@ void SharkGame::render() {
     SDL_RenderFillRect(gRenderer, &game_viewport);
     for (const auto& ship : ships) ship.render();
     for (const auto& shark : sharks) shark.render();
+    for (const auto& fruit : fruits) fruit.render();
 
     SDL_RenderPresent(gRenderer);
 }
@@ -79,11 +92,15 @@ void SharkGame::create_shark_trails() {
 }
 
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
-
+    for (auto& ship : ships) {
+        ship.handle_up(key, mouse, fruits);
+    }
 }
 
 void SharkGame::handle_down(SDL_Keycode key, Uint8 mouse) {
-
+    for (auto& ship : ships) {
+        ship.handle_down(key, mouse);
+    }
 }
 
 
