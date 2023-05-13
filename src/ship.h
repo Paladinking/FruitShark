@@ -8,7 +8,7 @@
 
 class Cannon {
 public:
-    Cannon(int shipWidth, int shipLength, bool isRightCannon);
+    Cannon(int shipWidth);
 
     void render(int x, int y, double angle) const;
 
@@ -16,7 +16,6 @@ public:
 
 private:
     Texture texture;
-    bool isRightCannon;
 };
 
 class Ship {
@@ -39,6 +38,9 @@ private:
     Texture texture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;
+
+    Vector2D leftCannonPosition() const;
+    Vector2D rightCannonPosition() const;
 
     Cannon leftCannon;
     Cannon rightCannon;

@@ -7,8 +7,8 @@ constexpr double ABSOLUTE_FRICTION_THRESHOLD = 5.0;
 
 Ship::Ship(double x, double y, const char *const *bindings) :
 position(x, y),
-leftCannon(width, length, false),
-rightCannon(width, length, true) {
+leftCannon(width),
+rightCannon(width) {
     texture.load_from_file("Ship.png", length, width);
 
     forward = get_hold_input(bindings[0]);
@@ -43,25 +43,33 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
     acceleration.y = 0.0;
 }
 
-
-
 void Ship::render() const {
-    texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
-    int cannonX = static_cast<int>(position.x - (width * cos((angle + 90.0) * PI / 180.0)) / 1.5);
-    int cannonY = static_cast<int>(position.y - (width * sin((angle + 90.0) * PI / 180.0)) / 1.5);
-    leftCannon.render(cannonX, cannonY, angle);
+    Vector2D cannonPosition = leftCannonPosition();
+    leftCannon.render(static_cast<int>(cannonPosition.x), static_cast<int>(cannonPosition.y), angle);
+    cannonPosition = rightCannonPosition();
+    rightCannon.render(static_cast<int>(cannonPosition.x), static_cast<int>(cannonPosition.y), angle);
 
-    cannonX = static_cast<int>(position.x + (width * cos((angle + 90.0) * PI / 180.0)) / 1.5);
-    cannonY = static_cast<int>(position.y + (width * sin((angle + 90.0) * PI / 180.0)) / 1.5);
-    rightCannon.render(cannonX, cannonY, angle);
+    texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
-Cannon::Cannon(const int shipWidth, const int shipLength, const bool isRightCannon) : isRightCannon(isRightCannon) {
-    int cannonWidth = static_cast<int>(shipWidth / 4);
-    int cannonLength = static_cast<int>(shipLength / 4);
-    texture.load_from_file("Cannon.png", cannonWidth, cannonLength);
+Vector2D Ship::leftCannonPosition() const {
+    return {position.x - (width * cos((angle + 90.0) * PI / 180.0)) / 1.5,
+                    position.y - (width * sin((angle + 90.0) * PI / 180.0)) / 1.5};
+}
+
+Vector2D Ship::rightCannonPosition() const {
+    return {position.x + (width * cos((angle + 90.0) * PI / 180.0)) / 1.5,
+            position.y + (width * sin((angle + 90.0) * PI / 180.0)) / 1.5};
+}
+
+
+
+Cannon::Cannon(const int shipWidth) {
+    int width = static_cast<int>(shipWidth / 1.5);
+    int length = static_cast<int>(shipWidth / 2);
+    texture.load_from_file("Cannon.png", width, length);
 }
 
 void Cannon::render(const int x, const int y, const double angle) const {
-    texture.render(x, y, angle);
+    texture.render(x, y, angle + 90.0);
 }
