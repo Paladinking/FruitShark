@@ -1,5 +1,6 @@
 #include "sharkGame.h"
 #include "config.h"
+#include <iostream>
 
 TextureHandler textureHandler = TextureHandler();
 
@@ -34,6 +35,13 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (auto& shark : sharks) {
         shark.tick(dDelta, shark_trails);
     }
+
+    for (int i = 0; i < ships.size(); ++i) {
+        for (int j = i + 1; j < ships.size(); ++j) {
+            ships[i].handle_collision(ships[j]);
+        }
+    }
+
     for (int i = 0; i < fruits.size(); ++i) {
         auto& fruit = fruits[i];
         fruit.tick(dDelta);

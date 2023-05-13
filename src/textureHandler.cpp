@@ -1,4 +1,5 @@
 #include "textureHandler.h"
+#include "engine/exceptions.h"
 
 void TextureHandler::loadTextures() {
     shipTexture.load_from_file("Ship.png", 50, 25);
@@ -28,6 +29,8 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return sharkTexture3;
         case TextureID::APPLE:
             return appleTexture;
+        default:
+            throw image_load_exception("Invalid texture id");
     }
 }
 

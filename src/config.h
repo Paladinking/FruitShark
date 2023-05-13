@@ -1,5 +1,6 @@
 #ifndef FRUITSHARK_CONFIG_H
 #define FRUITSHARK_CONFIG_H
+#include "textureHandler.h"
 
 constexpr int UI_SIZE = 80;
 constexpr int LOGICAL_WIDTH = 1920, LOGICAL_HEIGHT = 1080;
