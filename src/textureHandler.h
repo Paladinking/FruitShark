@@ -6,8 +6,10 @@
 enum class TextureID {
     SHIP = 0,
     CANNON = 1,
-    SHARK = 2,
-    APPLE = 3
+    SHARK1 = 2,
+    SHARK2 = 3,
+    SHARK3 = 4,
+    APPLE = 5
 };
 
 class TextureHandler {
@@ -20,7 +22,9 @@ public:
 private:
     Texture shipTexture;
     Texture cannonTexture;
-    Texture sharkTexture;
+    Texture sharkTexture1;
+    Texture sharkTexture2;
+    Texture sharkTexture3;
     Texture appleTexture;
     Texture bananaTexture;
     Texture starfruitTexture;

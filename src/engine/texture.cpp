@@ -68,6 +68,18 @@ void Texture::render(const int x, const int y, const double angle) const {
 			SDL_FLIP_NONE);
 }
 
+void Texture::render(const int x, const int y, const double angle, const SDL_RendererFlip flip) const {
+    SDL_Rect rect = {x - width / 2, y - height / 2, width, height};
+    SDL_RenderCopyEx(
+            gRenderer,
+            texture,
+            nullptr,
+            &rect,
+            angle * 180 / 3.14159265,
+            nullptr,
+            flip);
+}
+
 void Texture::render(const int dest_x, const int dest_y, const int x, const int y, const int w, const int h) const {
 	SDL_Rect target = {dest_x, dest_y, width, height};
 	SDL_Rect source = {x, y, w, h};

@@ -4,7 +4,15 @@
 void TextureHandler::loadTextures() {
     shipTexture.load_from_file("Ship.png", 50, 25);
     cannonTexture.load_from_file("Cannon.png", 17, 12);
-    appleTexture.load_from_file("APPLE.png", 25, 25);
+
+    int sharkWidth = 100;
+    int sharkHeight = 50;
+    sharkTexture1.load_from_file("Shark1.png", sharkWidth, sharkHeight);
+    sharkTexture2.load_from_file("Shark2.png", sharkWidth, sharkHeight);
+    sharkTexture3.load_from_file("Shark3.png", sharkWidth, sharkHeight);
+
+    int fruitSize = 15;
+    appleTexture.load_from_file("Apple.png", fruitSize, fruitSize);
 }
 
 const Texture& TextureHandler::getTexture(TextureID texture) const {
@@ -13,8 +21,12 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return shipTexture;
         case TextureID::CANNON:
             return cannonTexture;
-        case TextureID::SHARK:
-            return sharkTexture;
+        case TextureID::SHARK1:
+            return sharkTexture1;
+        case TextureID::SHARK2:
+            return sharkTexture2;
+        case TextureID::SHARK3:
+            return sharkTexture3;
         case TextureID::APPLE:
             return appleTexture;
         default:

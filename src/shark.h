@@ -1,8 +1,12 @@
 #ifndef FRUITSHARK_SHARK_H
 #define FRUITSHARK_SHARK_H
+
 #include "engine/texture.h"
+#include "engine/engine.h"
 #include "entity.h"
 #include <vector>
+#include "textureHandler.h"
+#include "config.h"
 
 class Shark : Entity {
 public:
@@ -14,7 +18,10 @@ public:
 
     void set_trail(const std::vector<Vector2D>* new_trail);
 private:
-    Texture texture;
+    const Texture* texture1;
+    const Texture* texture2;
+    const Texture* texture3;
+    int animationStage;
 
     const std::vector<Vector2D>* trail = nullptr;
     unsigned trail_index = 0;

@@ -57,6 +57,11 @@ class Texture {
          * Render this texture at position (x, y) rotated by angle using the global gRenderer.
          */
         void render(int x, int y, double angle) const;
+
+        /**
+         * Render this texture at position (x, y) rotated by angle and flipped according to flip.
+         */
+        void render(int x, int y, double angle, SDL_RendererFlip flip) const;
 		
 		/**
 		 * Returns the width of this texture.

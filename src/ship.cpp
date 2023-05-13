@@ -8,9 +8,9 @@ constexpr double POWER_PER_SECOND = 400.0;
 
 Ship::Ship(double x, double y, const char *const *bindings) :
 Entity(x, y, 25, 50),
+texture(&textureHandler.getTexture(TextureID::SHIP)),
 leftCannon(width),
-rightCannon(width),
-texture(&textureHandler.getTexture(TextureID::SHIP)) {
+rightCannon(width) {
     forward = get_hold_input(bindings[0]);
     left = get_hold_input(bindings[1]);
     back = get_hold_input(bindings[2]);
