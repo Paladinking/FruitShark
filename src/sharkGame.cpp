@@ -15,6 +15,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 
 void SharkGame::init(WindowState* window_state) {
     SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_RenderSetLogicalSize(gRenderer, LOGICAL_WIDTH, LOGICAL_HEIGHT);
     SDL_ShowWindow(gWindow);
     State::init(window_state);
     SDL_GetRendererOutputSize(gRenderer, &window_state->screen_width, &window_state->screen_height);
@@ -26,8 +27,10 @@ void SharkGame::init(WindowState* window_state) {
 }
 
 void SharkGame::render() {
-    SDL_SetRenderDrawColor(gRenderer, 0x00, 0xB2, 0xFF, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(gRenderer);
+    SDL_SetRenderDrawColor(gRenderer, 0x00, 0xB2, 0xFF, 0xFF);
+    SDL_RenderFillRect(gRenderer, nullptr);
     for (const auto& ship : ships) ship.render();
     SDL_RenderPresent(gRenderer);
 }

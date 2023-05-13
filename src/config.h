@@ -1,6 +1,7 @@
 #ifndef FRUITSHARK_CONFIG_H
 #define FRUITSHARK_CONFIG_H
-#include <string>
+
+constexpr int LOGICAL_WIDTH = 1920, LOGICAL_HEIGHT = 1080;
 
 constexpr unsigned PLAYER_COUNT = 2;
 
