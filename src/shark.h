@@ -8,13 +8,15 @@ class Shark : Entity {
 public:
     Shark(double x, double y);
 
-    void tick(double delta);
+    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails);
 
     void render() const;
+
+    void set_trail(const std::vector<Vector2D>* new_trail);
 private:
     Texture texture;
 
-    std::vector<Vector2D>* trail = nullptr;
+    const std::vector<Vector2D>* trail = nullptr;
     unsigned trail_index = 0;
 };
 

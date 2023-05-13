@@ -4,7 +4,7 @@
 #include "engine/texture.h"
 #include "engine/input.h"
 
- constexpr double PI = 3.14159265;
+constexpr double PI = 3.14159265;
 
 class Cannon {
 public:

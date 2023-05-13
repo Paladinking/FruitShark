@@ -16,7 +16,9 @@ void SharkGame::init(WindowState* window_state) {
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {
         int x = engine::random(200, LOGICAL_WIDTH - 200);
         int y = engine::random(200, LOGICAL_HEIGHT - 200);
+        int path = engine::random(0, static_cast<Sint32>(shark_trails.size()));
         sharks.emplace_back(x, y);
+        sharks[i].set_trail(&shark_trails[path]);
     }
 }
 
@@ -27,7 +29,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta);
+        shark.tick(dDelta, shark_trails);
     }
 
     if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
@@ -48,7 +50,29 @@ void SharkGame::render() {
 
 void SharkGame::create_shark_trails() {
     shark_trails.push_back({
-        {10.0, 10.0}, {20.0, 20.0}, {30.0, 30.0}
+        {100.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {100.0, 430.0}
+    });
+    shark_trails.push_back({
+        {530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}
+    });
+    shark_trails.push_back({
+        {960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}
+    });
+    shark_trails.push_back({
+        {1390.0, 100.0}, {1720.0, 100.0}, {1720.0, 430.0}, {1390.0, 430.0}
+    });
+
+    shark_trails.push_back({
+        {100.0, 540.0}, {430.0, 540.0}, {430.0, 970.0}, {100.0, 970.0}
+    });
+    shark_trails.push_back({
+        {530.0, 540.0}, {530.0, 970.0}, {860.0, 970.0}, {860.0, 540.0}
+    });
+    shark_trails.push_back({
+        {960.0, 540.0}, {960.0, 970.0}, {1290.0, 970.0}, {1290.0, 540.0}
+    });
+    shark_trails.push_back({
+        {1390.0, 540.0}, {1720.0, 540.0}, {1720.0, 970.0}, {1390.0, 970.0}
     });
 }
 
