@@ -17,7 +17,7 @@ public:
 
     double power = 0.0;
 private:
-    Texture texture;
+    const Texture* texture;
 };
 
 
@@ -28,7 +28,7 @@ public:
 
     void render() const;
 
-    void tick(double delta, const Uint8* keyboard, Uint32 mouse_mask);
+    void tick(double delta, const Uint8* keyboard, Uint32 mouse_mask, std::vector<Fruit>& fruits);
 
     void handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits);
 
@@ -37,7 +37,7 @@ public:
     void handle_collision(Ship &other);
 
 private:
-    Texture texture;
+    const Texture* texture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;
     std::unique_ptr<PressInput> fire_left, fire_right;
@@ -47,8 +47,11 @@ private:
     bool isChargingLeft = false;
     bool isChargingRight = false;
 
-    Vector2D leftCannonPosition() const;
-    Vector2D rightCannonPosition() const;
+    [[nodiscard]] Vector2D leftCannonPosition() const;
+    [[nodiscard]] Vector2D rightCannonPosition() const;
+
+    void fireLeftCannon(std::vector<Fruit>& fruits);
+    void fireRightCannon(std::vector<Fruit>& fruits);
 
     Cannon leftCannon;
     Cannon rightCannon;

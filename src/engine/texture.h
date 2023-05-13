@@ -18,7 +18,7 @@ class Texture {
 		 * Copying a texture is not supported, since it would be very rarely desired.
 		 * If so, copy the underlying SDL_Texture and create a new Texture instead.
 		 */
-		Texture(const Texture& o) = delete;
+		Texture(const Texture& o) = default;
 		Texture& operator=(const Texture&) = delete;
 
 		Texture(Texture&& o) noexcept;
