@@ -5,15 +5,16 @@ constexpr double ACCELERATION = 800.0;
 constexpr double FRICTION = 0.02;
 constexpr double ABSOLUTE_FRICTION_THRESHOLD = 5.0;
 
-Ship::Ship(double x, double y, const char *const *bindings) : position(x, y) {
-    texture.load_from_file("Ship.png", 25, 50);
+Ship::Ship(double x, double y, const char *const *bindings) :
+position(x, y),
+leftCannon(width, length, false),
+rightCannon(width, length, true) {
+    texture.load_from_file("Ship.png", length, width);
+
     forward = get_hold_input(bindings[0]);
     left = get_hold_input(bindings[1]);
     back = get_hold_input(bindings[2]);
     right = get_hold_input(bindings[3]);
-
-    width = 25;
-    length = 50;
 }
 
 void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
@@ -46,18 +47,21 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
 
 void Ship::render() const {
     texture.render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    int cannonX = static_cast<int>(position.x - (width * cos((angle + 90.0) * PI / 180.0)) / 1.5);
+    int cannonY = static_cast<int>(position.y - (width * sin((angle + 90.0) * PI / 180.0)) / 1.5);
+    leftCannon.render(cannonX, cannonY, angle);
+
+    cannonX = static_cast<int>(position.x + (width * cos((angle + 90.0) * PI / 180.0)) / 1.5);
+    cannonY = static_cast<int>(position.y + (width * sin((angle + 90.0) * PI / 180.0)) / 1.5);
+    rightCannon.render(cannonX, cannonY, angle);
 }
 
+Cannon::Cannon(const int shipWidth, const int shipLength, const bool isRightCannon) : isRightCannon(isRightCannon) {
+    int cannonWidth = static_cast<int>(shipWidth / 4);
+    int cannonLength = static_cast<int>(shipLength / 4);
+    texture.load_from_file("Cannon.png", cannonWidth, cannonLength);
+}
 
-
-Cannon::Cannon() {}
-
-
-
-void Cannon::render(const int shipX, const int shipY,
-                    const int shipWidth, const int shipLength,
-                    const double shipAngle, const bool isRightCannon) const {
-    texture.render(shipX + shipWidth * cos(shipAngle * PI / 180.0),
-                   shipY + shipLength * sin(shipAngle * PI / 180.0),
-                   shipAngle + 90.0 * isRightCannon - 90 * (isRightCannon - 1));
+void Cannon::render(const int x, const int y, const double angle) const {
+    texture.render(x, y, angle);
 }

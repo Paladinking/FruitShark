@@ -8,14 +8,15 @@
 
 class Cannon {
 public:
-    Cannon();
+    Cannon(int shipWidth, int shipLength, bool isRightCannon);
 
-    void render(int shipX, int shipY, int shipWidth, int shipLength, double shipAngle, bool isRightCannon) const;
+    void render(int x, int y, double angle) const;
 
     //void fire();
 
 private:
     Texture texture;
+    bool isRightCannon;
 };
 
 class Ship {
@@ -31,8 +32,8 @@ private:
     Vector2D velocity {};
     Vector2D acceleration {};
 
-    int width;
-    int length;
+    int width = 25;
+    int length = 50;
     double angle = 0.0;
 
     Texture texture;
