@@ -1,12 +1,10 @@
 #include "Ship.h"
-#include "engine/engine.h"
 
 constexpr double ACCELERATION = 800.0;
-constexpr double FRICTION = 0.02;
-constexpr double ABSOLUTE_FRICTION_THRESHOLD = 5.0;
+
 
 Ship::Ship(double x, double y, const char *const *bindings) :
-position(x, y),
+Entity(x, y),
 leftCannon(width),
 rightCannon(width) {
     texture.load_from_file("Ship.png", length, width);
@@ -31,16 +29,7 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
         angle += 120.0 * delta;
         velocity.rotate(120.0 * delta * PI / 180.0);
     }
-
-    acceleration.x -= velocity.x * std::abs(velocity.x) * FRICTION;
-    acceleration.y -= velocity.y * std::abs(velocity.y) * FRICTION;
-
-    velocity.x += delta * acceleration.x;
-    velocity.y += delta * acceleration.y;
-    Vector2D to_move = {velocity.x * delta, velocity.y * delta};
-    position.add(to_move);
-    acceleration.x = 0.0;
-    acceleration.y = 0.0;
+    Entity::move(delta);
 }
 
 void Ship::render() const {

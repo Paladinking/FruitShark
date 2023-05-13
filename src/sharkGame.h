@@ -4,6 +4,7 @@
 #include "engine/game.h"
 #include "engine/input.h"
 #include "ship.h"
+#include "shark.h"
 
 class SharkGame : public State {
 public:
@@ -21,6 +22,10 @@ public:
 private:
     std::unique_ptr<HoldInput> exit_input;
     std::vector<Ship> ships;
+    std::vector<Shark> sharks;
 
+    std::vector<std::vector<Vector2D>> shark_trails;
+
+    void create_shark_trails();
 };
 #endif //FRUITSHARK_SHARKGAME_H

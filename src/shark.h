@@ -1,18 +1,21 @@
 #ifndef FRUITSHARK_SHARK_H
 #define FRUITSHARK_SHARK_H
 #include "engine/texture.h"
-#include "vector2D.h"
+#include "entity.h"
+#include <vector>
 
-class Shark {
+class Shark : Entity {
 public:
     Shark(double x, double y);
 
     void tick(double delta);
 
-    void render();
+    void render() const;
 private:
-    Vector2D position;
     Texture texture;
+
+    std::vector<Vector2D>* trail = nullptr;
+    unsigned trail_index = 0;
 };
 
 

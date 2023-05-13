@@ -1,6 +1,6 @@
 #ifndef FRUITSHARK_SHIP_H
 #define FRUITSHARK_SHIP_H
-#include "vector2D.h"
+#include "entity.h"
 #include "engine/texture.h"
 #include "engine/input.h"
 
@@ -18,7 +18,7 @@ private:
     Texture texture;
 };
 
-class Ship {
+class Ship : Entity {
 public:
     Ship(double x, double y, const char *const *bindings);
 
@@ -27,9 +27,6 @@ public:
     void tick(double delta, const Uint8* keyboard, Uint32 mouse_mask);
 
 private:
-    Vector2D position;
-    Vector2D velocity {};
-    Vector2D acceleration {};
 
     int width = 25;
     int length = 50;

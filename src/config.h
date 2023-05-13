@@ -5,6 +5,8 @@ constexpr int LOGICAL_WIDTH = 1920, LOGICAL_HEIGHT = 1080;
 
 constexpr unsigned PLAYER_COUNT = 2;
 
+constexpr unsigned INITIAL_SHARK_COUNT = 10;
+
 constexpr const char*  BINDINGS[2][6] = {
         {"W", "A", "S", "D", "Q", "E"},
         {"I", "J", "K", "L", "U", "O"}
