@@ -13,6 +13,9 @@ rightCannon(width) {
     left = get_hold_input(bindings[1]);
     back = get_hold_input(bindings[2]);
     right = get_hold_input(bindings[3]);
+
+    fire_left = get_press_input(bindings[4]);
+    fire_right = get_press_input(bindings[5]);
 }
 
 void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask) {
@@ -51,6 +54,26 @@ Vector2D Ship::rightCannonPosition() const {
             position.y + (width * sin((angle + 90.0) * PI / 180.0)) / 1.5};
 }
 
+void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
+    if (fire_left->is_targeted(key, mouse) and isChargingLeft) {
+        Vector2D fruitPosition = leftCannonPosition();
+        Vector2D fruitVelocity = velocity;
+        fruitVelocity.x += cos(angle - 90.0) * leftCannon.power;
+        fruitVelocity.y += sin(angle - 90.0) * leftCannon.power;
+
+        fruits.emplace_back(fruitPosition, fruitVelocity, Apple);
+    }
+}
+
+void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
+    if (fire_left->is_targeted(key, mouse)) {
+        isChargingLeft = true;
+    }
+    if (fire_right->is_targeted(key, mouse)) {
+        isChargingRight = true;
+    }
+}
+
 
 
 Cannon::Cannon(const int shipWidth) {
@@ -62,3 +85,5 @@ Cannon::Cannon(const int shipWidth) {
 void Cannon::render(const int x, const int y, const double angle) const {
     texture.render(x, y, angle + 90.0);
 }
+
+
