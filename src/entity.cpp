@@ -1,7 +1,7 @@
 #include "entity.h"
 constexpr double FRICTION = 0.02;
 
-Entity::Entity(double x, double y) : position(x, y) {}
+Entity::Entity(double x, double y, int width, int length) : position(x, y), width(width), length(length) {}
 
 void Entity::move(const double delta) {
     acceleration.x -= velocity.x * std::abs(velocity.x) * FRICTION;
@@ -10,7 +10,6 @@ void Entity::move(const double delta) {
     velocity.x += delta * acceleration.x;
     velocity.y += delta * acceleration.y;
     if (velocity.length_squared() == 0) return;
-    angle = velocity.get_angle();
     Vector2D to_move = {velocity.x * delta, velocity.y * delta};
     position.add(to_move);
     acceleration.x = 0.0;

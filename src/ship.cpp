@@ -4,7 +4,7 @@ constexpr double ACCELERATION = 800.0;
 
 
 Ship::Ship(double x, double y, const char *const *bindings) :
-Entity(x, y),
+Entity(x, y, 25, 50),
 leftCannon(width),
 rightCannon(width) {
     texture.load_from_file("Ship.png", length, width);

@@ -36,9 +36,6 @@ public:
     void handle_down(SDL_Keycode key, Uint8 mouse);
 
 private:
-    int width = 25;
-    int length = 50;
-
     Texture texture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;

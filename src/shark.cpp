@@ -3,7 +3,7 @@
 
 constexpr double SHARK_ACCELERATION = 900.0;
 
-Shark::Shark(const double x, const double y) : Entity(x, y) {
+Shark::Shark(const double x, const double y) : Entity(x, y, 20, 20) {
     texture.load_from_file("Shark.png", 20, 20);
 }
 

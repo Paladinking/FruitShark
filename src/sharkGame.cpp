@@ -42,14 +42,10 @@ void SharkGame::render() {
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(gRenderer);
 
-    SDL_RenderSetViewport(gRenderer, &game_viewport);
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0xB2, 0xFF, 0xFF);
-    SDL_RenderFillRect(gRenderer, nullptr);
+    SDL_RenderFillRect(gRenderer, &game_viewport);
     for (const auto& ship : ships) ship.render();
     for (const auto& shark : sharks) shark.render();
-
-    SDL_RenderSetViewport(gRenderer, &ui_viewport);
-
 
     SDL_RenderPresent(gRenderer);
 }

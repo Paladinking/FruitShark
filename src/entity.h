@@ -4,11 +4,14 @@
 
 class Entity {
 public:
-    Entity(double x, double y);
+    Entity(double x, double y, int width, int length);
 protected:
     Vector2D position, velocity {}, acceleration {};
 
     double angle = 0.0;
+
+    int width;
+    int length;
 
     void move(double delta);
 };
