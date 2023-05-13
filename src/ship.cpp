@@ -3,7 +3,7 @@
 constexpr double ACCELERATION = 800.0;
 constexpr double MIN_POWER = 200.0;
 constexpr double MAX_POWER = 1000.0;
-constexpr double POWER_PER_SECOND = 400.0;
+constexpr double POWER_PER_SECOND = 1000.0;
 
 
 Ship::Ship(double x, double y, const char *const *bindings) :
