@@ -1,7 +1,6 @@
 #include "entity.h"
 #include "config.h"
 
-
 constexpr double FRICTION = 0.02;
 
 Entity::Entity(double x, double y, int width, int length) : position(x, y), width(width), length(length) {}
@@ -13,9 +12,9 @@ SDL_FPoint rotated(Vector2D v, const Vector2D& center, double angle) {
 
 void Entity::update_bounds() {
     corners[0] = rotated({- length / 2.0,-width / 2.0}, position, angle);
-    corners[1] = rotated({length / 2.0,-width / 2.0},position, angle);
-    corners[2] = rotated({length / 2.0,width / 2.0},position, angle);
-    corners[3] = rotated( {-length / 2.0,width / 2.0},position, angle);
+    corners[1] = rotated({length / 2.0 - 1.0,-width / 2.0},position, angle);
+    corners[2] = rotated({length / 2.0 - 1.0,width / 2.0 - 1.0},position, angle);
+    corners[3] = rotated( {-length / 2.0,width / 2.0 - 1.0},position, angle);
     SDL_EncloseFPoints(corners, 4, nullptr, &bounds);
 }
 
@@ -67,10 +66,10 @@ bool Entity::intersects(const Entity &other) const {
                           static_cast<float>(length),
                           static_cast<float>(width)};
         for (unsigned i = 0; i < 4; i++) {
-            auto ca = static_cast<float>(cos(angle));
-            auto sa = static_cast<float>(sin(angle));
+            auto ca = static_cast<float>(cos(-angle));
+            auto sa = static_cast<float>(sin(-angle));
             float x1 = other.corners[i].x - static_cast<float>(position.x);
-            float y1 = other.corners[i].y; - static_cast<float>(position.y);
+            float y1 = other.corners[i].y - static_cast<float>(position.y);
             float x2 = other.corners[(i + 1) % 4].x - static_cast<float>(position.x);
             float y2 = other.corners[(i + 1) % 4].y - static_cast<float>(position.y);
             float x1r = static_cast<float>(position.x) + x1 * ca - y1 * sa;

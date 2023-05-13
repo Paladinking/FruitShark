@@ -20,7 +20,7 @@ protected:
 
     void move(double delta);
 
-protected:
+private:
     void update_bounds();
 
     void adjust_bounds(float dx, float dy);

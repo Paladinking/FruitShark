@@ -42,8 +42,6 @@ private:
     std::unique_ptr<HoldInput> forward, back, left, right;
     std::unique_ptr<PressInput> fire_left, fire_right;
 
-    bool has_intersect = false;
-
     bool isChargingLeft = false;
     bool isChargingRight = false;
 
