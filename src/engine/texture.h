@@ -52,6 +52,11 @@ class Texture {
 		 * using the global gRenderer.
 		 */
 		void render(int dest_x, int dest_y, int x, int y, int w, int h) const;
+
+        /**
+         * Render this texture at position (x, y) rotated by angle using the global gRenderer.
+         */
+        void render(int x, int y, double angle) const;
 		
 		/**
 		 * Returns the width of this texture.

@@ -1,7 +1,10 @@
 #ifndef FRUITSHARK_SHARKGAME_H
 #define FRUITSHARK_SHARKGAME_H
+#include <vector>
 #include "engine/game.h"
 #include "engine/input.h"
+#include "ship.h"
+
 class SharkGame : public State {
 public:
     SharkGame() : State() {}
@@ -17,5 +20,7 @@ public:
     void handle_down(SDL_Keycode key, Uint8 mouse) override;
 private:
     std::unique_ptr<HoldInput> exit_input;
+    std::vector<Ship> ships;
+
 };
 #endif //FRUITSHARK_SHARKGAME_H

@@ -52,8 +52,20 @@ void Texture::free() {
 }
 
 void Texture::render(const int x, const int y) const {
-	SDL_Rect rect = {x, y, width, height};
+	SDL_Rect rect = {x - width / 2, y - height / 2, width, height};
 	SDL_RenderCopy(gRenderer, texture, nullptr, &rect);
+}
+
+void Texture::render(const int x, const int y, const double angle) const {
+	SDL_Rect rect = {x - width / 2, y - height / 2, width, height};
+	SDL_RenderCopyEx(
+			gRenderer,
+			texture,
+			nullptr,
+			&rect,
+			angle,
+			nullptr,
+			SDL_FLIP_NONE);
 }
 
 void Texture::render(const int dest_x, const int dest_y, const int x, const int y, const int w, const int h) const {
