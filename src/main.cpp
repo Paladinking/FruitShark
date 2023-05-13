@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "engine/game.h"
+#include "sharkGame.h"
 /**
  * Frees still used global resources and quits SDL and SDL_image.
  * Called by atexit().
@@ -53,12 +54,18 @@ int main(int argc, char* args[])
 
     init();
 
-    Game game(500, 500, "FruitShark");
-    game.create();
-    SDL_ShowWindow(gWindow);
-    game.run();
-
+    StateGame game(new SharkGame(), 100, 100, "SharkGame");
     int exit_status = 0;
+    try {
+        game.create();
+        game.run();
+    } catch (const base_exception &e) {
+        std::cout << e.msg << std::endl;
+        exit_status = -1;
+    } catch (const std::logic_error &e) {
+        std::cout << e.what() << std::endl;
+        exit_status = -2;
+    }
 
     return exit_status;
 }
