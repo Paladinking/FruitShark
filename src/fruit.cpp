@@ -31,7 +31,7 @@ texture(getFruitTexture(type))
             break;
         case FruitType::POMEGRANATE_SEED:
             maxTimeInAir = 0.2;
-            break;
+            break;  
         default:
             maxTimeInAir = 0.0;
     }
