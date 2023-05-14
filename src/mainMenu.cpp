@@ -8,6 +8,7 @@ const int MainMenu::BUTTON_WIDTH = 220;
 const int MainMenu::BUTTON_HEIGHT = 110;
 
 void MainMenu::init(WindowState *window_state) {
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
     SDL_RenderSetLogicalSize(gRenderer, LOGICAL_WIDTH, LOGICAL_HEIGHT);
     SDL_ShowWindow(gWindow);
@@ -76,6 +77,7 @@ void MainMenu::init(WindowState *window_state) {
 }
 
 void MainMenu::resume() {
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     State::resume();
     SDL_RenderSetViewport(gRenderer, nullptr);
 }

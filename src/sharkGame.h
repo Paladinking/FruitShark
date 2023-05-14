@@ -11,7 +11,7 @@
 #include "fruit.h"
 #include "pickup.h"
 
-constexpr double PICKUP_SPAWN_TIME = 5.0;
+constexpr double PICKUP_SPAWN_TIME = 10.0;
 
 class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;

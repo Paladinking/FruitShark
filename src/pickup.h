@@ -16,9 +16,9 @@ public:
 
     FruitType getType();
 
-    const Vector2D& get_position() const;
+    [[nodiscard]] const Vector2D& get_position() const;
 
-    double get_radius() const;
+    [[nodiscard]] double get_radius() const;
 
     double timeAlive;
 

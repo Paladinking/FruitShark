@@ -11,6 +11,7 @@ void Restarter::tick(Uint64 delt, StateStatus &res) {
 TextureHandler textureHandler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     sound::play(sound::WATER);
     State::init(window_state);
     exit_input = get_hold_input("Escape");
@@ -53,7 +54,7 @@ void SharkGame::init(WindowState* window_state) {
     game_over[0] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Game Over", 64);
     game_over[1] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Press space to restart", 64);
 
-    pickup_delay = 0.0;//2.0 * PICKUP_SPAWN_TIME;
+    pickup_delay = PICKUP_SPAWN_TIME;
 }
 
 void SharkGame::tick(Uint64 delta, StateStatus& res) {
@@ -147,13 +148,10 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 
         if (fruit.inWater) {
             sound::play(sound::Id::WATER);
-            fruits_in_water.emplace_back(fruits_in_air[i]);
-            fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
-            fruits_in_air.pop_back();
-            --i;
-        } else if (fruit.get_position().x < UI_SIZE || fruit.get_position().y >= LOGICAL_WIDTH - UI_SIZE
-                   || fruit.get_position().y < 0 || fruit.get_position().y >= LOGICAL_HEIGHT
-                ) {
+            if (fruit.get_position().x >= UI_SIZE && fruit.get_position().x < LOGICAL_WIDTH - UI_SIZE
+                && fruit.get_position().y >= 0 && fruit.get_position().y < LOGICAL_HEIGHT) {
+                fruits_in_water.emplace_back(fruits_in_air[i]);
+            }
             fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
             fruits_in_air.pop_back();
             --i;
