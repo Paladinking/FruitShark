@@ -28,6 +28,8 @@ public:
     bool inWater = false;
     bool eaten = false;
 
+    [[nodiscard]] double getRadius() const;
+
 private:
     const Texture* texture1;
     const Texture* texture2;

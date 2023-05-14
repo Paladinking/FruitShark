@@ -7,7 +7,7 @@
 #include "engine/input.h"
 #include "fruit.h"
 
-constexpr int MAX_HP = 100;
+constexpr int MAX_HP = 50;
 
 class Cannon {
 public:

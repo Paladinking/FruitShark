@@ -48,7 +48,7 @@ public:
     /**
      * Adds this vector to other.
      */
-    void add(Vector2D &other)
+    void add(const Vector2D &other)
     {
         x += other.x;
         y += other.y;
@@ -111,7 +111,7 @@ public:
     /**
      * Subtracts other vector from this.
      */
-    void subtract(Vector2D &other) {
+    void subtract(const Vector2D &other) {
         x -= other.x;
         y -= other.y;
     }

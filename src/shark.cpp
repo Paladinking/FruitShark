@@ -20,7 +20,7 @@ void Shark::tick(const double delta,
     if (animationStage > 80) animationStage = 0;
     Vector2D target;
     bool noTarget = true;
-    if (not fruitsInWater.empty()) {
+    if (!fruitsInWater.empty()) {
         Vector2D closestFruitPosition = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
         for (auto& fruit : fruitsInWater) {
             Vector2D fruitPosition = fruit.getPosition();
@@ -28,7 +28,7 @@ void Shark::tick(const double delta,
                 closestFruitPosition = fruitPosition;
             }
         }
-        if (not (closestFruitPosition.x == position.x + FRUIT_DETECTION_RANGE and closestFruitPosition.y == position.y)) {
+        if (!(closestFruitPosition.x == position.x + FRUIT_DETECTION_RANGE && closestFruitPosition.y == position.y)) {
             target = closestFruitPosition;
             noTarget = false;
             trail = nullptr;

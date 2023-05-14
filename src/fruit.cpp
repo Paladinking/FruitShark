@@ -51,3 +51,11 @@ void Fruit::land() {
 const Vector2D &Fruit::getPosition() const {
     return position;
 }
+ double Fruit::getRadius() const {
+     switch (type) {
+         case FruitType::APPLE:
+             return 7.5;
+         default:
+             return 10;
+     }
+}

@@ -49,6 +49,18 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (int i = 0; i < fruitsInAir.size(); ++i) {
         auto& fruit = fruitsInAir[i];
         fruit.tick(dDelta);
+        bool collision = false;
+        for (auto& ship : ships) {
+            if (ship.intersects(fruit.getPosition(), fruit.getRadius())) {
+                sound::play(sound::Id::WATER);
+                fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
+                fruitsInAir.pop_back();
+                --i;
+                collision = true;
+                break;
+            }
+        }
+        if (collision) continue;
         if (fruit.inWater) {
             fruitsInWater.emplace_back(fruitsInAir[i]);
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
