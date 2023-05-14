@@ -22,3 +22,11 @@ void Pickup::render() const {
 FruitType Pickup::getType() {
     return type;
 }
+
+const Vector2D &Pickup::get_position() const {
+    return position;
+}
+
+double Pickup::get_radius() const {
+    return 15.0;
+}

@@ -90,3 +90,19 @@ const Vector2D &Fruit::get_position() const {
              return 10;
      }
 }
+
+double Fruit::get_duration() {
+    switch (type) {
+        case FruitType::APPLE:
+            return 3.0;
+        case FruitType::BANANA:
+            return 6.0;
+            break;
+        case FruitType::POMEGRANATE:
+            return 5.0;
+        case FruitType::POMEGRANATE_SEED:
+            return 1.5;
+        default:
+            return 0.0;
+    }
+}

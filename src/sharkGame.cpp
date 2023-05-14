@@ -97,6 +97,13 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
                 ships[i].handle_Collision(ships[j]);
             }
         }
+        for (int j = 0; j < pickups.size(); ++j) {
+            if (ships[i].intersects(pickups[j].get_position(), pickups[j].get_radius())) {
+                ships[i].add_fruits(pickups[j].getType(), 4);
+                pickups.erase(pickups.begin() + j);
+                --j;
+            }
+        }
     }
 
     for (auto &shark : sharks) {
@@ -128,7 +135,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
-                ship.add_fruit_smell(3.0);
+                ship.add_fruit_smell(fruit.get_duration());
                 fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
                 fruits_in_air.pop_back();
                 --i;
@@ -213,8 +220,8 @@ void SharkGame::render() {
 void SharkGame::create_pickup() {
     int x = engine::random(UI_SIZE * 2, GAME_WIDTH - UI_SIZE * 2);
     int y = engine::random(UI_SIZE, GAME_HEIGHT - UI_SIZE);
-    FruitType possible_fruits[1] = {FruitType::BANANA};
-    FruitType fruit_pickup = possible_fruits[engine::random(0, 1 - 1)];
+    FruitType possible_fruits[] = {FruitType::BANANA, FruitType::POMEGRANATE};
+    FruitType fruit_pickup = possible_fruits[engine::random(0, 2)];
     pickups.emplace_back(x, y, fruit_pickup);
 }
 
