@@ -25,11 +25,15 @@ void TextureHandler::loadTextures() {
     bananaTexture[0].load_from_file("Banana1.png", fruitSize, fruitSize);
     bananaTexture[1].load_from_file("Banana2.png", fruitSize, fruitSize);
 
-    teethTexture[0].load_from_file("Teeth1.png", 75, 75);
-    teethTexture[1].load_from_file("Teeth2.png", 75, 75);
-    teethTexture[2].load_from_file("Teeth3.png", 75, 75);
-    teethTexture[3].load_from_file("Teeth4.png", 75, 75);
-    teethTexture[4].load_from_file("Teeth5.png", 75, 75);
+    int boxSize = fruitSize + 10;
+    boxTexture.load_from_file("PickupBox.png", boxSize, boxSize);
+
+    int teethSize = 75;
+    teethTexture[0].load_from_file("Teeth1.png", teethSize, teethSize);
+    teethTexture[1].load_from_file("Teeth2.png", teethSize, teethSize);
+    teethTexture[2].load_from_file("Teeth3.png", teethSize, teethSize);
+    teethTexture[3].load_from_file("Teeth4.png", teethSize, teethSize);
+    teethTexture[4].load_from_file("Teeth5.png", teethSize, teethSize);
 }
 
 const Texture& TextureHandler::getTexture(TextureID texture) const {
@@ -48,6 +52,12 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return sailsRedTexture;
         case TextureID::CANNON:
             return cannonTexture;
+        case TextureID::BOX:
+            return boxTexture;
+        case TextureID::APPLE:
+            return appleTexture[0];
+        case TextureID::BANANA:
+            return bananaTexture[0];
         default:
             throw image_load_exception("Invalid texture id");
     }

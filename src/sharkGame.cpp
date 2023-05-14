@@ -49,6 +49,7 @@ void SharkGame::init(WindowState* window_state) {
     game_over[0] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Game Over", 64);
     game_over[1] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Press space to restart", 64);
 
+    pickup_delay = 0.0;//2.0 * PICKUP_SPAWN_TIME;
 }
 
 void SharkGame::tick(Uint64 delta, StateStatus& res) {
@@ -71,10 +72,10 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         return;
     }
     for (auto& ship : ships) {
-        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruitsInAir);
+        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruits_in_air);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta, shark_trails, fruitsInWater, ships);
+        shark.tick(dDelta, shark_trails, fruits_in_water, ships);
     }
 
     for (int i = 0; i < bites.size(); ++i) {
@@ -112,20 +113,19 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
                     }
                 }
                 ships[i].handle_Collision(shark);
-
             }
         }
     }
 
-    for (int i = 0; i < fruitsInAir.size(); ++i) {
-        auto& fruit = fruitsInAir[i];
+    for (int i = 0; i < fruits_in_air.size(); ++i) {
+        auto& fruit = fruits_in_air[i];
         fruit.tick(dDelta);
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
                 ship.add_fruit_smell(3.0);
-                fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
-                fruitsInAir.pop_back();
+                fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
+                fruits_in_air.pop_back();
                 --i;
                 collision = true;
                 break;
@@ -135,21 +135,21 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 
         if (fruit.inWater) {
             sound::play(sound::Id::WATER);
-            fruitsInWater.emplace_back(fruitsInAir[i]);
-            fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
-            fruitsInAir.pop_back();
+            fruits_in_water.emplace_back(fruits_in_air[i]);
+            fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
+            fruits_in_air.pop_back();
             --i;
         } else if (fruit.get_position().x < UI_SIZE || fruit.get_position().y >= LOGICAL_WIDTH - UI_SIZE
                    || fruit.get_position().y < 0 || fruit.get_position().y >= LOGICAL_HEIGHT
                 ) {
-            fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
-            fruitsInAir.pop_back();
+            fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
+            fruits_in_air.pop_back();
             --i;
         }
     }
 
-    for (int i = 0; i < fruitsInWater.size(); ++i) {
-        auto& fruit = fruitsInWater[i];
+    for (int i = 0; i < fruits_in_water.size(); ++i) {
+        auto& fruit = fruits_in_water[i];
         fruit.tick(dDelta);
         for (auto& shark : sharks) {
             if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
@@ -158,10 +158,20 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
             }
         }
         if (fruit.eaten) {
-            fruitsInWater[i] = fruitsInWater[fruitsInWater.size() - 1];
-            fruitsInWater.pop_back();
+            fruits_in_water[i] = fruits_in_water[fruits_in_water.size() - 1];
+            fruits_in_water.pop_back();
             --i;
         }
+    }
+
+    for (auto& pickup : pickups) {
+        pickup.tick(dDelta);
+    }
+
+    pickup_delay -= dDelta;
+    if(pickup_delay < 0.0) {
+        pickup_delay = PICKUP_SPAWN_TIME;
+        create_pickup();
     }
 }
 
@@ -174,8 +184,9 @@ void SharkGame::render() {
     SDL_RenderFillRect(gRenderer, &game_viewport);
     for (const auto& ship : ships) ship.render();
     for (const auto& shark : sharks) shark.render();
-    for (const auto& fruit : fruitsInAir) fruit.render();
-    for (const auto& fruit : fruitsInWater) fruit.render();
+    for (const auto& fruit : fruits_in_air) fruit.render();
+    for (const auto& fruit : fruits_in_water) fruit.render();
+    for (const auto& pickup : pickups) pickup.render();
     for (const auto& bite : bites) bite.render();
 
     if (startup_delay >= 0.0) {
@@ -188,6 +199,14 @@ void SharkGame::render() {
     }
 
     SDL_RenderPresent(gRenderer);
+}
+
+void SharkGame::create_pickup() {
+    int x = engine::random(UI_SIZE * 2, GAME_WIDTH - UI_SIZE * 2);
+    int y = engine::random(UI_SIZE, GAME_HEIGHT - UI_SIZE);
+    FruitType possible_fruits[1] = {FruitType::BANANA};
+    FruitType fruit_pickup = possible_fruits[engine::random(0, 1 - 1)];
+    pickups.emplace_back(x, y, fruit_pickup);
 }
 
 void SharkGame::create_shark_trails() {
@@ -221,7 +240,7 @@ void SharkGame::create_shark_trails() {
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
     if (state != PLAYING) return;
     for (auto& ship : ships) {
-        ship.handle_up(key, mouse, fruitsInAir);
+        ship.handle_up(key, mouse, fruits_in_air);
     }
 }
 

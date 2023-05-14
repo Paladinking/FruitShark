@@ -8,6 +8,11 @@
 #include "fruit.h"
 
 constexpr int MAX_HP = 50;
+constexpr double ACCELERATION = 800.0;
+constexpr double MIN_POWER = 750.0;
+constexpr double MAX_POWER = 1250.0;
+constexpr double POWER_PER_SECOND = 1000.0;
+constexpr double COOLDOWN_TIME = 0.5;
 
 class Cannon {
 public:

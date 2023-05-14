@@ -13,6 +13,8 @@ enum class FruitType {
     STARFRUIT = 3
 };
 
+const Texture* getFruitTexture(FruitType type);
+
 class Fruit {
 public:
     Fruit(Vector2D position, Vector2D velocity, FruitType type);

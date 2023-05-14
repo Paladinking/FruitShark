@@ -39,7 +39,8 @@ add_executable(main src/main.cpp
         src/textureHandler.cpp
         src/mainMenu.cpp
         src/sound.cpp
-        src/bite.cpp)
+        src/bite.cpp
+        src/pickup.cpp)
 target_link_libraries(main Engine)
 target_link_libraries(main ${SDL2_LIBRARIES})
 target_link_libraries(main SDL2_image::SDL2_image)

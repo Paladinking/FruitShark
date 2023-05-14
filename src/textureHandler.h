@@ -11,6 +11,7 @@ enum class TextureID {
     SAILS_GREEN,
     SAILS_RED,
     CANNON,
+    BOX,
     SHARK,
     APPLE,
     BANANA,
@@ -34,6 +35,7 @@ private:
     Texture sailsGreenTexture;
     Texture sailsRedTexture;
     Texture cannonTexture;
+    Texture boxTexture;
     Texture sharkTexture[3];
     Texture appleTexture[2];
     Texture bananaTexture[2];

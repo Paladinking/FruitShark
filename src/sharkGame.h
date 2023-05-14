@@ -7,8 +7,11 @@
 #include "ship.h"
 #include "config.h"
 #include "shark.h"
-#include "fruit.h"
 #include "bite.h"
+#include "fruit.h"
+#include "pickup.h"
+
+constexpr double PICKUP_SPAWN_TIME = 5.0;
 
 class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;
@@ -31,13 +34,16 @@ private:
     std::unique_ptr<HoldInput> exit_input, restart_input;
     std::vector<Ship> ships;
     std::vector<Shark> sharks;
-    std::vector<Fruit> fruitsInAir;
-    std::vector<Fruit> fruitsInWater;
     std::vector<Bite> bites;
+    std::vector<Fruit> fruits_in_air;
+    std::vector<Fruit> fruits_in_water;
+    std::vector<Pickup> pickups;
 
     std::vector<std::vector<Vector2D>> shark_trails;
 
     void create_shark_trails();
+
+    void create_pickup();
 
     SDL_Rect game_viewport = {UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT};
 
@@ -46,6 +52,7 @@ private:
     } state = STARTUP;
 
     double startup_delay = 3.999;
+    double pickup_delay;
 
     TextBox startup_textures[4];
 

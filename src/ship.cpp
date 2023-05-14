@@ -2,12 +2,6 @@
 #include "sound.h"
 #include "shark.h"
 
-constexpr double ACCELERATION = 800.0;
-constexpr double MIN_POWER = 750.0;
-constexpr double MAX_POWER = 1250.0;
-constexpr double POWER_PER_SECOND = 1000.0;
-constexpr double COOLDOWN_TIME = 0.5;
-
 
 Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color, int id, double angle) :
 Entity(x, y, 25, 50, angle),

@@ -5,7 +5,6 @@
 #include "engine/engine.h"
 #include "entity.h"
 #include <vector>
-#include "textureHandler.h"
 #include "config.h"
 #include "fruit.h"
 #include "ship.h"
