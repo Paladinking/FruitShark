@@ -2,7 +2,7 @@
 #include "engine/exceptions.h"
 
 void TextureHandler::loadTextures() {
-    shipTexture.load_from_file("Ship.png", 50, 25);
+    shipTexture.load_from_file("Ship.png", 75, 37);
     cannonTexture.load_from_file("Cannon.png", 17, 12);
 
     int sharkWidth = 100;
