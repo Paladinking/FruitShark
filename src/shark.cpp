@@ -22,7 +22,7 @@ void Shark::tick(const double delta,
         Vector2D closestFruitPosition = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
         for (auto& fruit : fruitsInWater) {
             Vector2D fruitPosition = fruit.getPosition();
-            if (position.distance(fruitPosition) < FRUIT_DETECTION_RANGE) {
+            if (position.distance(fruitPosition) < position.distance(closestFruitPosition)) {
                 closestFruitPosition = fruitPosition;
             }
         }
