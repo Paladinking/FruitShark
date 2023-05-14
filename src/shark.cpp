@@ -4,7 +4,7 @@
 
 constexpr double SHARK_ACCELERATION = 900.0;
 constexpr double FRUIT_DETECTION_RANGE = 400.0;
-constexpr double BITE_DELAY = 1.5;
+constexpr double BITE_DELAY = 1.0;
 
 Shark::Shark(const double x, const double y) :
 Entity(x, y, 40, 90),
@@ -78,8 +78,6 @@ void Shark::render() const {
     textures[static_cast<int>((animationStage - 0.665) * 6)]->
     render(static_cast<int>(position.x), static_cast<int>(position.y),
              angle + 3.1415, SDL_FLIP_HORIZONTAL);
-    SDL_SetRenderDrawColor(gRenderer, 0xff, 0xff, 0xff ,0xff);
-    SDL_RenderDrawRectF(gRenderer, &bounds);
 }
 
 void Shark::set_trail(const std::vector<Vector2D> *new_trail) {

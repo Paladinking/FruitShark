@@ -34,7 +34,9 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 
     for (int i = 0; i < ships.size(); ++i) {
         for (int j = i + 1; j < ships.size(); ++j) {
-            ships[i].handle_collision(ships[j]);
+            if (ships[i].intersects(ships[j])) {
+                ships[i].handle_Collision(ships[j]);
+            }
         }
     }
 
@@ -42,6 +44,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         for (auto &ship : ships) {
             if (ship.intersects(shark)) {
                 shark.bite(ship);
+                ship.handle_Collision(shark);
             }
         }
     }

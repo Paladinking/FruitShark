@@ -101,6 +101,15 @@ bool Entity::intersects(Vector2D pos, double radius) const {
     return test.distance_squared(pos) < radius * radius;
 }
 
+void Entity::handle_Collision(Entity &other) {
+    Vector2D vec = other.position;
+    vec.subtract(position);
+
+    double power = velocity.length() + other.velocity.length();
+    acceleration.add_scaled(vec, -power * 0.5);
+    other.acceleration.add_scaled(vec, power * 0.5);
+}
+
 const Vector2D &Entity::get_position() const {
     return position;
 }

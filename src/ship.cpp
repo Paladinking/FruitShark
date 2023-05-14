@@ -135,17 +135,6 @@ void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
     }
 }
 
-void Ship::handle_collision(Ship &other) {
-    if (Entity::intersects(other)) {
-        Vector2D vec = other.position;
-        vec.subtract(position);
-
-        double power = velocity.length() + other.velocity.length();
-        acceleration.add_scaled(vec, -power * 0.5);
-        other.acceleration.add_scaled(vec, power * 0.5);
-    }
-}
-
 void Ship::get_bitten(int damage) {
     hp -= damage;
 }

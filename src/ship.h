@@ -34,8 +34,6 @@ public:
 
     void handle_down(SDL_Keycode key, Uint8 mouse);
 
-    void handle_collision(Ship &other);
-
     void get_bitten(int damage);
 
     [[nodiscard]]bool has_fruit_smell() const;
