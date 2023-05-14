@@ -25,7 +25,7 @@ private:
     const Texture* texture1;
     const Texture* texture2;
     const Texture* texture3;
-    int animationStage;
+    double animationStage;
 
     const std::vector<Vector2D>* trail = nullptr;
     unsigned trail_index = 0;

@@ -11,9 +11,9 @@ texture2(&textureHandler.getTexture(static_cast<TextureID>(TextureID::APPLE2))) 
 
 void Fruit::tick(double delta) {
     timeAlive += delta;
-    if (timeAlive > 2 and not inWater) {
+    if (timeAlive > 1 and not inWater) {
         land();
-    } else if(timeAlive > 10) {
+    } else if(timeAlive > 5) {
         eaten = true;
     }
     angle += velocity.length() * delta / 128;
