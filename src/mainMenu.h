@@ -9,6 +9,8 @@ public:
      */
     MainMenu() : Menu() {};
 
+    ~MainMenu();
+
     /**
      * Initializes the MainMenu, creating all buttons.
      */

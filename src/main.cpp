@@ -2,8 +2,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include "engine/game.h"
-#include "sharkGame.h"
 #include "mainMenu.h"
 /**
  * Frees still used global resources and quits SDL and SDL_image.
@@ -24,6 +24,8 @@ void cleanup()
     std::cout << "Shutting down..." << std::endl;
     IMG_Quit();
     TTF_Quit();
+    Mix_CloseAudio();
+    Mix_Quit();
     SDL_Quit();
 }
 
@@ -31,7 +33,7 @@ void cleanup()
  * Initialize SDL, engine and config.
  */
 void init() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         std::cout << "Could not initialize SDL, "  << SDL_GetError() << std::endl;
         exit(-1);
     }
@@ -41,11 +43,17 @@ void init() {
         exit(-2);
     }
 
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+    {
+        std::cout << "Could not initialize SDL_mixer, " << Mix_GetError() << std::endl;
+        exit(-3);
+    }
+
     try {
         engine::init();
     } catch (const base_exception &e) {
         std::cout << e.msg << std::endl;
-        exit(-3);
+        exit(-4);
     }
 }
 
