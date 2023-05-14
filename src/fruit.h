@@ -8,9 +8,9 @@
 #include "config.h"
 
 enum class FruitType {
-    APPLE = 5,
-    BANANA = 6,
-    STARFRUIT = 7
+    APPLE = 1,
+    BANANA = 2,
+    STARFRUIT = 3
 };
 
 class Fruit {
@@ -21,12 +21,16 @@ public:
 
     void tick(double delta);
 
-    void kill();
+    void land();
 
-    bool dead = false;
+    [[nodiscard]] const Vector2D &getPosition() const;
+
+    bool inWater = false;
+    bool eaten = false;
 
 private:
-    const Texture* texture;
+    const Texture* texture1;
+    const Texture* texture2;
 
     FruitType type;
 

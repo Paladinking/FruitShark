@@ -12,7 +12,8 @@ void TextureHandler::loadTextures() {
     sharkTexture3.load_from_file("Shark3.png", sharkWidth, sharkHeight);
 
     int fruitSize = 15;
-    appleTexture.load_from_file("Apple.png", fruitSize, fruitSize);
+    appleTexture1.load_from_file("Apple.png", fruitSize, fruitSize);
+    appleTexture2.load_from_file("Apple2.png", fruitSize, fruitSize);
 }
 
 const Texture& TextureHandler::getTexture(TextureID texture) const {
@@ -27,8 +28,10 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return sharkTexture2;
         case TextureID::SHARK3:
             return sharkTexture3;
-        case TextureID::APPLE:
-            return appleTexture;
+        case TextureID::APPLE1:
+            return appleTexture1;
+        case TextureID::APPLE2:
+            return appleTexture2;
         default:
             throw image_load_exception("Invalid texture id");
     }

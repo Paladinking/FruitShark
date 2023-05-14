@@ -7,12 +7,13 @@
 #include <vector>
 #include "textureHandler.h"
 #include "config.h"
+#include "fruit.h"
 
 class Shark : Entity {
 public:
     Shark(double x, double y);
 
-    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails);
+    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails, const std::vector<Fruit>& fruitsInWater);
 
     void render() const;
 

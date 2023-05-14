@@ -1,6 +1,7 @@
 #include "shark.h"
 
 constexpr double SHARK_ACCELERATION = 900.0;
+constexpr double FRUIT_DETECTION_RANGE = 200.0;
 
 Shark::Shark(const double x, const double y) :
 Entity(x, y, 20, 20),
@@ -10,11 +11,32 @@ texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
     animationStage = engine::random(0, 80);
 }
 
-void Shark::tick(const double delta, const std::vector<std::vector<Vector2D>>& trails) {
+void Shark::tick(const double delta,
+                 const std::vector<std::vector<Vector2D>>& trails,
+                 const std::vector<Fruit>& fruitsInWater) {
     ++animationStage;
     if (animationStage > 80) animationStage = 0;
-    if (trail != nullptr) {
-        Vector2D target = trail->at(trail_index);
+    Vector2D target;
+    bool noTarget = true;
+    if (not fruitsInWater.empty()) {
+        Vector2D closestFruitPosition = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
+        for (auto& fruit : fruitsInWater) {
+            Vector2D fruitPosition = fruit.getPosition();
+            if (position.distance(fruitPosition) < position.distance(closestFruitPosition)) {
+                closestFruitPosition = fruitPosition;
+            }
+        }
+        if (not (closestFruitPosition.x == position.x + FRUIT_DETECTION_RANGE and closestFruitPosition.y == position.y)) {
+            target = closestFruitPosition;
+            noTarget = false;
+            trail = nullptr;
+        }
+    }
+    if (noTarget) {
+        if (trail == nullptr) {
+            trail = &trails[engine::random(0, static_cast<int>(trails.size()))];
+        }
+        target = trail->at(trail_index);
         if (target.distance_squared(position) < 100.0) {
             if (engine::random(0, 100) > 80) {
                 trail = &trails[engine::random(0, static_cast<int>(trails.size()))];
@@ -24,11 +46,11 @@ void Shark::tick(const double delta, const std::vector<std::vector<Vector2D>>& t
                 target = trail->at(trail_index);
             }
         }
-        target.subtract(position);
-        target.normalize();
-        angle = target.get_angle();
-        acceleration.add_scaled(target, SHARK_ACCELERATION / 5.0);
     }
+    target.subtract(position);
+    target.normalize();
+    angle = target.get_angle();
+    acceleration.add_scaled(target, SHARK_ACCELERATION / 5.0);
     Entity::move(delta);
 }
 
