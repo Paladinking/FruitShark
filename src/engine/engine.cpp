@@ -10,6 +10,8 @@
 extern const int DEFAULT_FONT_LENGTH;
 extern const Uint8 DEFAULT_FONT[];
 
+TTF_Font* gFont;
+
 std::minstd_rand generator(static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count()));
 
 void engine::init() {
@@ -20,8 +22,11 @@ void engine::init() {
 		throw game_exception("Could not load default font");
 	}
 	SDL_RWops* ptr = SDL_RWFromConstMem(buffer, static_cast<int>(buffer_size));
-
-	TextBox::init(ptr);
+    gFont = TTF_OpenFontRW(ptr, 1, 20);
+    if (gFont == nullptr) {
+        throw game_exception(std::string(TTF_GetError()));
+    }
+	TextBox::init(gFont);
 }
 
 int engine::random(const int min, const int max) {

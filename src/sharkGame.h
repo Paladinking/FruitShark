@@ -3,10 +3,15 @@
 #include <vector>
 #include "engine/game.h"
 #include "engine/input.h"
+#include "engine/ui.h"
 #include "ship.h"
 #include "config.h"
 #include "shark.h"
 #include "fruit.h"
+
+class Restarter : public State {
+    void tick(Uint64 delt , StateStatus& res) override;
+};
 
 class SharkGame : public State {
 public:
@@ -22,7 +27,7 @@ public:
 
     void handle_down(SDL_Keycode key, Uint8 mouse) override;
 private:
-    std::unique_ptr<HoldInput> exit_input;
+    std::unique_ptr<HoldInput> exit_input, restart_input;
     std::vector<Ship> ships;
     std::vector<Shark> sharks;
     std::vector<Fruit> fruitsInAir;
@@ -33,6 +38,15 @@ private:
     void create_shark_trails();
 
     SDL_Rect game_viewport = {UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT};
-    SDL_Rect ui_viewport = {0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT};
+
+    enum {
+        STARTUP, PLAYING, GAME_OVER
+    } state = STARTUP;
+
+    double startup_delay = 3.999;
+
+    TextBox startup_textures[4];
+
+    TextBox game_over[3];
 };
 #endif //FRUITSHARK_SHARKGAME_H

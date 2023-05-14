@@ -4,16 +4,17 @@
 
 constexpr double ACCELERATION = 800.0;
 constexpr double MIN_POWER = 750.0;
-constexpr double MAX_POWER = 1000.0;
+constexpr double MAX_POWER = 1250.0;
 constexpr double POWER_PER_SECOND = 1000.0;
 constexpr double COOLDOWN_TIME = 0.5;
 
 
-Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color) :
-Entity(x, y, 25, 50),
+Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color, int id, double angle) :
+Entity(x, y, 25, 50, angle),
 shipTexture(&textureHandler.getTexture(TextureID::SHIP)),
 mastsTexture(&textureHandler.getTexture(TextureID::MASTS)),
 sailsTexture(&textureHandler.getTexture(sail_color)),
+id(id),
 leftCannon(),
 rightCannon() {
     forward = get_hold_input(bindings[0]);
@@ -121,13 +122,21 @@ void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
 }
 
 void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
-    if (fire_left->is_targeted(key, mouse) && isChargingLeft && leftCannon.cooldown == 0.0) {
-        fireLeftCannon(fruits);
-        leftCannon.power = 0.0;
+    if (fire_left->is_targeted(key, mouse)) {
+        if (isChargingLeft && leftCannon.cooldown == 0.0) {
+            fireLeftCannon(fruits);
+            leftCannon.power = 0.0;
+        } else {
+            isChargingLeft = false;
+        }
     }
-    if (fire_right->is_targeted(key, mouse) && isChargingRight && rightCannon.cooldown == 0.0) {
-        fireRightCannon(fruits);
-        rightCannon.power = 0.0;
+    if (fire_right->is_targeted(key, mouse)) {
+        if (isChargingRight && rightCannon.cooldown == 0.0) {
+            fireRightCannon(fruits);
+            rightCannon.power = 0.0;
+        } else {
+            isChargingRight = false;
+        }
     }
 }
 
@@ -152,6 +161,10 @@ bool Ship::has_fruit_smell() const {
 
 void Ship::add_fruit_smell(double duration) {
     smell_duration += duration;
+}
+
+bool Ship::is_dead() const {
+    return hp <= 0;
 }
 
 

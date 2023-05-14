@@ -4,8 +4,8 @@
 
 TTF_Font* TextBox::font;
 
-void TextBox::init(SDL_RWops* font_data) {
-	TextBox::font = TTF_OpenFontRW(font_data, 1, 20);
+void TextBox::init(TTF_Font* font_data) {
+	TextBox::font = font_data;
 	if (TextBox::font == nullptr) {
 		throw game_exception(std::string(TTF_GetError()));
 	}
