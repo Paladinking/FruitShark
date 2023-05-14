@@ -1,6 +1,7 @@
 #ifndef FRUITSHARK_MAINMENU_H
 #define FRUITSHARK_MAINMENU_H
 #include "engine/ui.h"
+#include "shark.h"
 
 class MainMenu : public Menu {
 public:
@@ -21,6 +22,10 @@ public:
      */
     void resume() override;
 
+    void render() override;
+
+    void tick(Uint64 delta, StateStatus& res) override;
+
 protected:
 
     void button_press(int btn) override;
@@ -31,6 +36,9 @@ private:
     enum ButtonId {
         START_GAME, EXIT, TOTAL
     };
+
+    std::vector<Shark> sharks;
+    std::vector<std::vector<Vector2D>> shark_trails;
 
     static const std::string BUTTON_NAMES[ButtonId::TOTAL];
 };
