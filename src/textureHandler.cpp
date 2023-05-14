@@ -29,6 +29,12 @@ void TextureHandler::loadTextures() {
     bananaTexture[0].load_from_file("assets/images/Banana1.png", fruitSize, fruitSize);
     bananaTexture[1].load_from_file("assets/images/Banana2.png", fruitSize, fruitSize);
 
+    pomegranateTexture[0].load_from_file("assets/images/Pomegranate1.png", fruitSize, fruitSize);
+    pomegranateTexture[1].load_from_file("assets/images/Pomegranate1.png", fruitSize, fruitSize);
+
+    pomegranateSeedTexture[0].load_from_file("assets/images/Seed1.png", fruitSize / 2, fruitSize / 2);
+    pomegranateSeedTexture[1].load_from_file("assets/images/Seed2.png", fruitSize / 2, fruitSize / 2);
+
     int boxSize = fruitSize + 10;
     boxTexture.load_from_file("assets/images/PickupBox.png", boxSize, boxSize);
 
@@ -62,6 +68,8 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return appleTexture[0];
         case TextureID::BANANA:
             return bananaTexture[0];
+        case TextureID::POMEGRANATE:
+            return pomegranateTexture[0];
         default:
             throw image_load_exception("Invalid texture id");
     }
@@ -77,6 +85,10 @@ const Texture *TextureHandler::getTextures(TextureID texture) const {
             return bananaTexture;
         case TextureID::APPLE:
             return appleTexture;
+        case TextureID::POMEGRANATE:
+            return pomegranateTexture;
+        case TextureID::POMEGRANATE_SEED:
+            return pomegranateSeedTexture;
         case TextureID::WHITE_SHARK:
             return whiteSharkTexture;
         default:

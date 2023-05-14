@@ -6,6 +6,10 @@ const Texture* getFruitTexture(FruitType type) {
             return textureHandler.getTextures(TextureID::APPLE);
         case FruitType::BANANA:
             return textureHandler.getTextures(TextureID::BANANA);
+        case FruitType::POMEGRANATE:
+            return textureHandler.getTextures(TextureID::POMEGRANATE);
+        case FruitType::POMEGRANATE_SEED:
+            return textureHandler.getTextures(TextureID::POMEGRANATE_SEED);
         default:
             return textureHandler.getTextures(TextureID::APPLE);
     }

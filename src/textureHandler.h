@@ -16,6 +16,8 @@ enum class TextureID {
     WHITE_SHARK,
     APPLE,
     BANANA,
+    POMEGRANATE,
+    POMEGRANATE_SEED,
     TEETH
 };
 
@@ -38,9 +40,11 @@ private:
     Texture cannonTexture;
     Texture boxTexture;
     Texture sharkTexture[3];
+    Texture whiteSharkTexture[3];
     Texture appleTexture[2];
     Texture bananaTexture[2];
-    Texture whiteSharkTexture[3];
+    Texture pomegranateTexture[2];
+    Texture pomegranateSeedTexture[2];
     Texture starfruitTexture[2];
     Texture teethTexture[5];
 };
