@@ -3,7 +3,7 @@
 #include "shark.h"
 
 constexpr double ACCELERATION = 800.0;
-constexpr double MIN_POWER = 200.0;
+constexpr double MIN_POWER = 500.0;
 constexpr double MAX_POWER = 1000.0;
 constexpr double POWER_PER_SECOND = 1000.0;
 
@@ -107,16 +107,14 @@ void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
 
 void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
     if (fire_left->is_targeted(key, mouse) and isChargingLeft) {
-        if (leftCannon.power > MIN_POWER) {
-            fireLeftCannon(fruits);
-        }
+        if (leftCannon.power < MIN_POWER) leftCannon.power = MIN_POWER;
+        fireLeftCannon(fruits);
         isChargingLeft = false;
         leftCannon.power = 0.0;
     }
     if (fire_right->is_targeted(key, mouse) and isChargingRight) {
-        if (rightCannon.power > MIN_POWER) {
-            fireRightCannon(fruits);
-        }
+        if (rightCannon.power > MIN_POWER) rightCannon.power = MIN_POWER;
+        fireRightCannon(fruits);
         isChargingRight = false;
         rightCannon.power = 0.0;
     }
@@ -124,9 +122,11 @@ void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
 
 void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
     if (fire_left->is_targeted(key, mouse) and not isChargingLeft) {
+        leftCannon.power = MIN_POWER;
         isChargingLeft = true;
     }
     if (fire_right->is_targeted(key, mouse) and not isChargingRight) {
+        rightCannon.power = MIN_POWER;
         isChargingRight = true;
     }
 }

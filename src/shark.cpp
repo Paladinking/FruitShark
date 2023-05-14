@@ -10,14 +10,14 @@ Entity(x, y, 40, 90),
 texture1(&textureHandler.getTexture(TextureID::SHARK1)),
 texture2(&textureHandler.getTexture(TextureID::SHARK2)),
 texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
-    animationStage = engine::random(0, 80);
+    animationStage = (engine::random(0, 4) / 6.0);
 }
 
 void Shark::tick(const double delta,
                  const std::vector<std::vector<Vector2D>>& trails,
                  const std::vector<Fruit>& fruitsInWater) {
-    ++animationStage;
-    if (animationStage > 80) animationStage = 0;
+    animationStage += delta;
+    if (animationStage >= 1.3) animationStage = 0.0;
     Vector2D target;
     bool noTarget = true;
     if (not fruitsInWater.empty()) {
@@ -60,28 +60,13 @@ void Shark::tick(const double delta,
 }
 
 void Shark::render() const {
-    switch (animationStage) {
-        case 0 ... 10:
-        case 41 ... 50:
-            texture1->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
-            break;
-        case 11 ... 20:
-        case 31 ... 40:
-            texture2->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
-            break;
-        case 21 ... 30:
-            texture3->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
-            break;
-        case 51 ... 60:
-        case 71 ... 80:
-            texture2->render(static_cast<int>(position.x), static_cast<int>(position.y),
-                             angle + 3.1415, SDL_FLIP_HORIZONTAL);
-            break;
-        case 61 ... 70:
-            texture3->render(static_cast<int>(position.x), static_cast<int>(position.y),
-                             angle + 3.1415, SDL_FLIP_HORIZONTAL);
-            break;
-    }
+    const Texture* textures[] = {texture1, texture2, texture3, texture2};
+    (animationStage < 0.665) ?
+    textures[static_cast<int>(animationStage * 6)]->
+    render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
+    textures[static_cast<int>((animationStage - 0.665) * 6)]->
+    render(static_cast<int>(position.x), static_cast<int>(position.y),
+             angle + 3.1415, SDL_FLIP_HORIZONTAL);
     SDL_SetRenderDrawColor(gRenderer, 0xff, 0xff, 0xff ,0xff);
     SDL_RenderDrawRectF(gRenderer, &bounds);
 }
