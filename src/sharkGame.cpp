@@ -10,7 +10,7 @@ void SharkGame::init(WindowState* window_state) {
     State::init(window_state);
     exit_input = get_hold_input("Escape");
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
-        ships.emplace_back(200.0 * (i + 1), 500.0, BINDINGS[i]);
+        ships.emplace_back(200.0 * (i + 1), 500.0, BINDINGS[i], COLORS[i]);
     }
     create_shark_trails();
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {

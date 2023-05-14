@@ -24,7 +24,7 @@ private:
 
 class Ship : public Entity {
 public:
-    Ship(double x, double y, const char *const *bindings);
+    Ship(double x, double y, const char *const *bindings, const TextureID sail_color);
 
     void render() const;
 
@@ -39,7 +39,9 @@ public:
     void get_bitten(int damage);
 
 private:
-    const Texture* texture;
+    const Texture* shipTexture;
+    const Texture* mastsTexture;
+    const Texture* sailsTexture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;
     std::unique_ptr<PressInput> fire_left, fire_right;

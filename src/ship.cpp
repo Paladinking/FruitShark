@@ -8,9 +8,11 @@ constexpr double MAX_POWER = 1000.0;
 constexpr double POWER_PER_SECOND = 1000.0;
 
 
-Ship::Ship(double x, double y, const char *const *bindings) :
+Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color) :
 Entity(x, y, 25, 50),
-texture(&textureHandler.getTexture(TextureID::SHIP)),
+shipTexture(&textureHandler.getTexture(TextureID::SHIP)),
+mastsTexture(&textureHandler.getTexture(TextureID::MASTS)),
+sailsTexture(&textureHandler.getTexture(sail_color)),
 leftCannon(width),
 rightCannon(width) {
     forward = get_hold_input(bindings[0]);
@@ -63,7 +65,9 @@ void Ship::render() const {
     cannonPosition = rightCannonPosition();
     rightCannon.render(static_cast<int>(cannonPosition.x), static_cast<int>(cannonPosition.y), angle);
 
-    texture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    shipTexture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    sailsTexture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    mastsTexture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
     SDL_Rect bar = {static_cast<int>(position.x - length / 2.0),

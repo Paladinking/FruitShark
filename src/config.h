@@ -15,6 +15,9 @@ constexpr const char*  BINDINGS[2][6] = {
         {"I", "J", "K", "L", "T", "Y"}
 };
 
+constexpr TextureID COLORS[4] = {TextureID::SAILS_WHITE, TextureID::SAILS_BLUE,
+                                 TextureID::SAILS_GREEN, TextureID::SAILS_RED};
+
 extern TextureHandler textureHandler;
 
 

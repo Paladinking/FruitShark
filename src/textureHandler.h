@@ -5,6 +5,11 @@
 
 enum class TextureID {
     SHIP = 0,
+    MASTS = 7,
+    SAILS_WHITE = 8,
+    SAILS_BLUE = 9,
+    SAILS_GREEN = 10,
+    SAILS_RED = 11,
     CANNON = 1,
     SHARK1 = 2,
     SHARK2 = 3,
@@ -22,6 +27,11 @@ public:
     [[nodiscard]] const Texture& getTexture(TextureID texture) const;
 private:
     Texture shipTexture;
+    Texture mastsTexture;
+    Texture sailsWhiteTexture;
+    Texture sailsBlueTexture;
+    Texture sailsGreenTexture;
+    Texture sailsRedTexture;
     Texture cannonTexture;
     Texture sharkTexture1;
     Texture sharkTexture2;
