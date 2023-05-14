@@ -31,7 +31,7 @@ texture(getFruitTexture(type))
             break;
         case FruitType::POMEGRANATE_SEED:
             maxTimeInAir = 0.2;
-            break;  
+            break;
         default:
             maxTimeInAir = 0.0;
     }
@@ -84,6 +84,8 @@ const Vector2D &Fruit::get_position() const {
      switch (type) {
          case FruitType::APPLE:
              return 7.5;
+         case FruitType::POMEGRANATE_SEED:
+             return 5.0;
          default:
              return 10;
      }
