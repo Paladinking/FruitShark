@@ -1,11 +1,12 @@
 #include "sharkGame.h"
 #include "config.h"
-#include <iostream>
+#include "sound.h"
 
 TextureHandler textureHandler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
     textureHandler.loadTextures();
+    sound::play(sound::WATER);
     State::init(window_state);
     exit_input = get_hold_input("Escape");
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
