@@ -1,4 +1,5 @@
 #include "Ship.h"
+#include "sound.h"
 
 constexpr double ACCELERATION = 800.0;
 constexpr double MIN_POWER = 200.0;
@@ -73,6 +74,7 @@ Vector2D Ship::rightCannonPosition() const {
 }
 
 void Ship::fireLeftCannon(std::vector<Fruit> &fruits) {
+    sound::play(sound::Id::CANNON);
     Vector2D fruitPosition = leftCannonPosition();
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle - PI / 2) * leftCannon.power;
@@ -82,6 +84,7 @@ void Ship::fireLeftCannon(std::vector<Fruit> &fruits) {
 }
 
 void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
+    sound::play(sound::Id::CANNON);
     Vector2D fruitPosition = rightCannonPosition();
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle + PI / 2) * rightCannon.power;

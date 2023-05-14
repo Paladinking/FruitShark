@@ -12,11 +12,8 @@ public:
 
 namespace sound {
     enum Id {
-        WATER, BITE
+        WATER, BITE, CANNON
     };
-    constexpr int WATER_COUNT = 4;
-
-    constexpr int BITE_COUNT = 1;
 
     void play(Id id);
 
