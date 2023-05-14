@@ -31,16 +31,19 @@ public:
     [[nodiscard]] double get_radius() const;
 
 private:
-     const Texture* texture1;
+    const Texture* texture1;
     const Texture* texture2;
 
     FruitType type;
 
     Vector2D position;
     Vector2D velocity;
+    Vector2D acceleration;
 
     double angle = 0.0;
-    double timeAlive = 0.0;
+    double timeInAir = 0.0;
+    double maxTimeInAir;
+    double maxVelocity;
 };
 
 #endif //FRUITSHARK_FRUIT_H

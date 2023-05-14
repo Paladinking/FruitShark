@@ -11,11 +11,12 @@ constexpr int MAX_HP = 50;
 
 class Cannon {
 public:
-    explicit Cannon(int shipWidth);
+    explicit Cannon();
 
     void render(int x, int y, double angle) const;
 
     double power = 0.0;
+    double cooldown = 0.0;
 private:
     const Texture* texture;
 };

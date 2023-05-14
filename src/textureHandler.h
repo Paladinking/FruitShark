@@ -4,18 +4,20 @@
 #include "engine/texture.h"
 
 enum class TextureID {
-    SHIP = 0,
-    MASTS = 7,
-    SAILS_WHITE = 8,
-    SAILS_BLUE = 9,
-    SAILS_GREEN = 10,
-    SAILS_RED = 11,
-    CANNON = 1,
-    SHARK1 = 2,
-    SHARK2 = 3,
-    SHARK3 = 4,
-    APPLE1 = 5,
-    APPLE2 = 6
+    SHIP,
+    MASTS,
+    SAILS_WHITE,
+    SAILS_BLUE,
+    SAILS_GREEN,
+    SAILS_RED,
+    CANNON,
+    SHARK1,
+    SHARK2,
+    SHARK3,
+    APPLE1,
+    APPLE2,
+    BANANA1,
+    BANANA2
 };
 
 class TextureHandler {

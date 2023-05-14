@@ -3,9 +3,10 @@
 #include "shark.h"
 
 constexpr double ACCELERATION = 800.0;
-constexpr double MIN_POWER = 500.0;
+constexpr double MIN_POWER = 750.0;
 constexpr double MAX_POWER = 1000.0;
 constexpr double POWER_PER_SECOND = 1000.0;
+constexpr double COOLDOWN_TIME = 0.5;
 
 
 Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color) :
@@ -13,8 +14,8 @@ Entity(x, y, 25, 50),
 shipTexture(&textureHandler.getTexture(TextureID::SHIP)),
 mastsTexture(&textureHandler.getTexture(TextureID::MASTS)),
 sailsTexture(&textureHandler.getTexture(sail_color)),
-leftCannon(width),
-rightCannon(width) {
+leftCannon(),
+rightCannon() {
     forward = get_hold_input(bindings[0]);
     left = get_hold_input(bindings[1]);
     back = get_hold_input(bindings[2]);
@@ -39,20 +40,22 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vec
         velocity.rotate(120.0 * delta * PI / 180.0);
     }
 
-    if (isChargingLeft) {
+    if (leftCannon.cooldown > 0.0) leftCannon.cooldown -= delta;
+    if (leftCannon.cooldown < 0.0) leftCannon.cooldown = 0.0;
+    if (leftCannon.cooldown == 0.0 && isChargingLeft) {
         leftCannon.power += POWER_PER_SECOND * delta;
         if (leftCannon.power > MAX_POWER) {
             leftCannon.power = MAX_POWER;
             fireLeftCannon(fruits);
-            isChargingLeft = false;
         }
     }
-    if (isChargingRight) {
+    if (rightCannon.cooldown > 0.0) rightCannon.cooldown -= delta;
+    if (rightCannon.cooldown < 0.0) rightCannon.cooldown = 0.0;
+    if (rightCannon.cooldown == 0.0 && isChargingRight) {
         rightCannon.power += POWER_PER_SECOND * delta;
         if (rightCannon.power > MAX_POWER) {
             rightCannon.power = MAX_POWER;
             fireRightCannon(fruits);
-            isChargingRight = false;
         }
     }
     if (smell_duration > 0.0) {
@@ -101,6 +104,8 @@ void Ship::fireLeftCannon(std::vector<Fruit> &fruits) {
     fruitVelocity.y += sin(angle - PI / 2) * leftCannon.power;
     fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::APPLE);
     leftCannon.power = 0.0;
+    leftCannon.cooldown = COOLDOWN_TIME;
+    isChargingLeft = false;
 }
 
 void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
@@ -109,31 +114,29 @@ void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle + PI / 2) * rightCannon.power;
     fruitVelocity.y += sin(angle + PI / 2) * rightCannon.power;
-    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::APPLE);
+    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::BANANA);
     rightCannon.power = 0.0;
+    rightCannon.cooldown = COOLDOWN_TIME;
+    isChargingRight = false;
 }
 
 void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
-    if (fire_left->is_targeted(key, mouse) and isChargingLeft) {
-        if (leftCannon.power < MIN_POWER) leftCannon.power = MIN_POWER;
+    if (fire_left->is_targeted(key, mouse) && isChargingLeft && leftCannon.cooldown == 0.0) {
         fireLeftCannon(fruits);
-        isChargingLeft = false;
         leftCannon.power = 0.0;
     }
-    if (fire_right->is_targeted(key, mouse) and isChargingRight) {
-        if (rightCannon.power > MIN_POWER) rightCannon.power = MIN_POWER;
+    if (fire_right->is_targeted(key, mouse) && isChargingRight && rightCannon.cooldown == 0.0) {
         fireRightCannon(fruits);
-        isChargingRight = false;
         rightCannon.power = 0.0;
     }
 }
 
 void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
-    if (fire_left->is_targeted(key, mouse) and not isChargingLeft) {
+    if (fire_left->is_targeted(key, mouse) && !isChargingLeft) {
         leftCannon.power = MIN_POWER;
         isChargingLeft = true;
     }
-    if (fire_right->is_targeted(key, mouse) and not isChargingRight) {
+    if (fire_right->is_targeted(key, mouse) && !isChargingRight) {
         rightCannon.power = MIN_POWER;
         isChargingRight = true;
     }
@@ -152,7 +155,7 @@ void Ship::add_fruit_smell(double duration) {
 }
 
 
-Cannon::Cannon(const int shipWidth) : texture(&textureHandler.getTexture(TextureID::CANNON)) {}
+Cannon::Cannon() : texture(&textureHandler.getTexture(TextureID::CANNON)) {}
 
 void Cannon::render(const int x, const int y, const double angle) const {
     texture->render(x, y, angle + PI / 2);
