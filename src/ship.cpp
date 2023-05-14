@@ -42,6 +42,7 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vec
         if (leftCannon.power > MAX_POWER) {
             leftCannon.power = MAX_POWER;
             fireLeftCannon(fruits);
+            isChargingLeft = false;
         }
     }
     if (isChargingRight) {
@@ -49,6 +50,7 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vec
         if (rightCannon.power > MAX_POWER) {
             rightCannon.power = MAX_POWER;
             fireRightCannon(fruits);
+            isChargingRight = false;
         }
     }
 
