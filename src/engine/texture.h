@@ -41,6 +41,8 @@ class Texture {
 		 * Frees all resources associated with this texture.
 		 */
 		void free();
+
+        void render_corner(int x, int y) const;
 		
 		/**
 		 * Renders this texture at position (x, y) using the global gRenderer.

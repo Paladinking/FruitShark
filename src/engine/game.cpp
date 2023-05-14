@@ -89,7 +89,8 @@ void Game::run() {
 			}
 		}
 		window_state.mouse_mask = SDL_GetMouseState(&window_state.mouseX, &window_state.mouseY);
-
+        window_state.mouseX = (window_state.mouseX * window_state.screen_width) / window_state.window_width;
+        window_state.mouseY = (window_state.mouseY * window_state.screen_height) / window_state.window_height;
 		Uint64 cur_time = SDL_GetTicks64();
 		this->tick(cur_time - last_time);
 		if (!running) break;

@@ -77,7 +77,7 @@ void TextBox::set_dimensions(const int new_w, const int new_h) {
 }
 
 void TextBox::render(const int x_offset, const int y_offset) {
-	texture.render(x_offset + x + text_offset_x, y_offset + y + text_offset_y);
+	texture.render_corner(x_offset + x + text_offset_x, y_offset + y + text_offset_y);
 }
 
 bool Button::is_pressed(const int mouseX, const int mouseY) const {
@@ -97,7 +97,7 @@ void Button::render(const int x_offset, const int y_offset) {
 			background->set_color_mod(255, 255, 255);
 		}
 		background->set_dimensions(r.w, r.h);
-		background->render(r.x, r.y);
+		background->render_corner(r.x, r.y);
 	} else {
 		if (hover) {
 			SDL_SetRenderDrawColor(gRenderer, 200, 200, 240, 0xFF);

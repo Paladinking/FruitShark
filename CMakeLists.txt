@@ -29,7 +29,12 @@ add_library(
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(main src/main.cpp src/sharkGame.cpp src/ship.cpp src/shark.cpp src/entity.cpp src/fruit.cpp src/textureHandler.cpp src/textureHandler.h)
+add_executable(main src/main.cpp
+        src/sharkGame.cpp
+        src/ship.cpp src/shark.cpp
+        src/entity.cpp src/fruit.cpp
+        src/textureHandler.cpp
+        src/mainMenu.cpp)
 target_link_libraries(main Engine)
 target_link_libraries(main ${SDL2_LIBRARIES})
 target_link_libraries(main SDL2_image::SDL2_image)

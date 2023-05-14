@@ -6,12 +6,7 @@ TextureHandler textureHandler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
     textureHandler.loadTextures();
-    SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    SDL_RenderSetLogicalSize(gRenderer, LOGICAL_WIDTH, LOGICAL_HEIGHT);
-    SDL_ShowWindow(gWindow);
     State::init(window_state);
-    SDL_GetRendererOutputSize(gRenderer, &window_state->screen_width, &window_state->screen_height);
-    SDL_GetWindowSize(gWindow, &window_state->window_width, &window_state->window_height);
     exit_input = get_hold_input("Escape");
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
         ships.emplace_back(200.0 * (i + 1), 500.0, BINDINGS[i]);
@@ -53,7 +48,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     }
 
     if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
-        res.action = StateStatus::EXIT;
+        res.action = StateStatus::POP;
     }
 }
 

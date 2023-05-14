@@ -4,6 +4,7 @@
 #include <SDL_ttf.h>
 #include "engine/game.h"
 #include "sharkGame.h"
+#include "mainMenu.h"
 /**
  * Frees still used global resources and quits SDL and SDL_image.
  * Called by atexit().
@@ -54,7 +55,7 @@ int main(int argc, char* args[])
 
     init();
 
-    StateGame game(new SharkGame(), 100, 100, "SharkGame");
+    StateGame game(new MainMenu(), 100, 100, "SharkGame");
     int exit_status = 0;
     try {
         game.create();
