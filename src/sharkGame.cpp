@@ -38,6 +38,14 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
     }
 
+    for (auto &shark : sharks) {
+        for (auto &ship : ships) {
+            if (ship.intersects(shark)) {
+                shark.bite(ship);
+            }
+        }
+    }
+
     for (int i = 0; i < fruitsInAir.size(); ++i) {
         auto& fruit = fruitsInAir[i];
         fruit.tick(dDelta);

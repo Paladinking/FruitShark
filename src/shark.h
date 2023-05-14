@@ -8,8 +8,9 @@
 #include "textureHandler.h"
 #include "config.h"
 #include "fruit.h"
+#include "ship.h"
 
-class Shark : Entity {
+class Shark : public Entity {
 public:
     Shark(double x, double y);
 
@@ -18,6 +19,8 @@ public:
     void render() const;
 
     void set_trail(const std::vector<Vector2D>* new_trail);
+
+    void bite(Ship& ship);
 private:
     const Texture* texture1;
     const Texture* texture2;
@@ -26,6 +29,8 @@ private:
 
     const std::vector<Vector2D>* trail = nullptr;
     unsigned trail_index = 0;
+
+    double bite_delay = 0.0;
 };
 
 

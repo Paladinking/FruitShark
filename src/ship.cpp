@@ -1,5 +1,6 @@
 #include "Ship.h"
 #include "sound.h"
+#include "shark.h"
 
 constexpr double ACCELERATION = 800.0;
 constexpr double MIN_POWER = 200.0;
@@ -61,6 +62,17 @@ void Ship::render() const {
     rightCannon.render(static_cast<int>(cannonPosition.x), static_cast<int>(cannonPosition.y), angle);
 
     texture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+    SDL_Rect bar = {static_cast<int>(position.x - length / 2.0),
+                    static_cast<int>(position.y + width / 2.0 + 15.0),
+                    length, width / 4
+                };
+    SDL_RenderFillRect(gRenderer, &bar);
+    bar.w = (length * std::max(hp, 0)) / MAX_HP;
+    SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
+    SDL_RenderFillRect(gRenderer, &bar);
+
 }
 
 Vector2D Ship::leftCannonPosition() const {
@@ -128,6 +140,10 @@ void Ship::handle_collision(Ship &other) {
         acceleration.add_scaled(vec, -power * 0.5);
         other.acceleration.add_scaled(vec, power * 0.5);
     }
+}
+
+void Ship::get_bitten(int damage) {
+    hp -= damage;
 }
 
 

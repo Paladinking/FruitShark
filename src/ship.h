@@ -7,7 +7,7 @@
 #include "engine/input.h"
 #include "fruit.h"
 
-
+constexpr int MAX_HP = 100;
 
 class Cannon {
 public:
@@ -36,6 +36,8 @@ public:
 
     void handle_collision(Ship &other);
 
+    void get_bitten(int damage);
+
 private:
     const Texture* texture;
 
@@ -44,6 +46,8 @@ private:
 
     bool isChargingLeft = false;
     bool isChargingRight = false;
+
+    int hp = MAX_HP;
 
     [[nodiscard]] Vector2D leftCannonPosition() const;
     [[nodiscard]] Vector2D rightCannonPosition() const;

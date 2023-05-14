@@ -1,10 +1,12 @@
 #include "shark.h"
+#include "sound.h"
 
 constexpr double SHARK_ACCELERATION = 900.0;
 constexpr double FRUIT_DETECTION_RANGE = 200.0;
+constexpr double BITE_DELAY = 1.5;
 
 Shark::Shark(const double x, const double y) :
-Entity(x, y, 20, 20),
+Entity(x, y, 40, 90),
 texture1(&textureHandler.getTexture(TextureID::SHARK1)),
 texture2(&textureHandler.getTexture(TextureID::SHARK2)),
 texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
@@ -51,6 +53,9 @@ void Shark::tick(const double delta,
     target.normalize();
     angle = target.get_angle();
     acceleration.add_scaled(target, SHARK_ACCELERATION / 5.0);
+    if (bite_delay > 0) {
+        bite_delay -= delta;
+    }
     Entity::move(delta);
 }
 
@@ -77,8 +82,18 @@ void Shark::render() const {
                              angle + 3.1415, SDL_FLIP_HORIZONTAL);
             break;
     }
+    SDL_SetRenderDrawColor(gRenderer, 0xff, 0xff, 0xff ,0xff);
+    SDL_RenderDrawRectF(gRenderer, &bounds);
 }
 
 void Shark::set_trail(const std::vector<Vector2D> *new_trail) {
     trail = new_trail;
+}
+
+void Shark::bite(Ship &ship) {
+    if (bite_delay <= 0) {
+        sound::play(sound::Id::BITE);
+        ship.get_bitten(10);
+        bite_delay = BITE_DELAY;
+    }
 }
