@@ -21,13 +21,13 @@ public:
 
     void render() const;
 
+    [[nodiscard]] Vector2D get_mouth() const;
+
     void set_trail(const std::vector<Vector2D>* new_trail);
 
-    void bite(Ship& ship);
+    bool bite(Ship& ship);
 private:
-    const Texture* texture1;
-    const Texture* texture2;
-    const Texture* texture3;
+    const Texture* texture;
     double animationStage;
 
     const std::vector<Vector2D>* trail = nullptr;

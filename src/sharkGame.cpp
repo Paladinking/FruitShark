@@ -21,8 +21,22 @@ void SharkGame::init(WindowState* window_state) {
     }
     create_shark_trails();
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {
-        int x = engine::random(200, LOGICAL_WIDTH - 200);
-        int y = engine::random(200, LOGICAL_HEIGHT - 200);
+        int x, y;
+        bool good;
+        do {
+            good = true;
+            x = engine::random(200, LOGICAL_WIDTH - 200);
+            y = engine::random(200, LOGICAL_HEIGHT - 200);
+            for(auto& ship : ships) {
+                if (ship.get_position().distance_squared({
+                    static_cast<double>(x), static_cast<double>(y)
+                }) < 40000.0) {
+                    good = false;
+                    break;
+                }
+            }
+        } while(!good);
+
         int path = engine::random(0, static_cast<Sint32>(shark_trails.size()));
         sharks.emplace_back(x, y);
         sharks[i].set_trail(&shark_trails[path]);
@@ -63,6 +77,15 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         shark.tick(dDelta, shark_trails, fruitsInWater, ships);
     }
 
+    for (int i = 0; i < bites.size(); ++i) {
+        bites[i].tick(dDelta);
+        if (bites[i].is_dead()) {
+            bites[i] = bites[bites.size() - 1];
+            bites.pop_back();
+            --i;
+        }
+    }
+
     for (int i = 0; i < ships.size(); ++i) {
         for (int j = i + 1; j < ships.size(); ++j) {
             if (ships[i].intersects(ships[j])) {
@@ -74,18 +97,22 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (auto &shark : sharks) {
         for (int i = 0; i < ships.size(); ++i) {
             if (ships[i].intersects(shark)) {
-                shark.bite(ships[i]);
-                ships[i].handle_Collision(shark);
-                if (ships[i].is_dead()) {
-                    ships.erase(ships.begin() + i);
-                    --i;
-                    if (ships.size() == 1) {
-                        state = GAME_OVER;
-                        std::string msg = "Player " + std::to_string(ships[0].id + 1) + " Won!";
-                        game_over[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, msg, 64);
-                        break;
+                if (shark.bite(ships[i])) {
+                    Vector2D pos = shark.get_mouth();
+                    bites.emplace_back(pos.x, pos.y);
+                    if (ships[i].is_dead()) {
+                        ships.erase(ships.begin() + i);
+                        --i;
+                        if (ships.size() == 1) {
+                            state = GAME_OVER;
+                            std::string msg = "Player " + std::to_string(ships[0].id + 1) + " Won!";
+                            game_over[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, msg, 64);
+                            break;
+                        }
                     }
                 }
+                ships[i].handle_Collision(shark);
+
             }
         }
     }
@@ -149,6 +176,7 @@ void SharkGame::render() {
     for (const auto& shark : sharks) shark.render();
     for (const auto& fruit : fruitsInAir) fruit.render();
     for (const auto& fruit : fruitsInWater) fruit.render();
+    for (const auto& bite : bites) bite.render();
 
     if (startup_delay >= 0.0) {
         startup_textures[static_cast<int>(startup_delay)].render(0, 0);
@@ -191,12 +219,14 @@ void SharkGame::create_shark_trails() {
 }
 
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
+    if (state != PLAYING) return;
     for (auto& ship : ships) {
         ship.handle_up(key, mouse, fruitsInAir);
     }
 }
 
 void SharkGame::handle_down(SDL_Keycode key, Uint8 mouse) {
+    if (state != PLAYING) return;
     for (auto& ship : ships) {
         ship.handle_down(key, mouse);
     }
