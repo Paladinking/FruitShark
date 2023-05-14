@@ -25,7 +25,8 @@ private:
     std::unique_ptr<HoldInput> exit_input;
     std::vector<Ship> ships;
     std::vector<Shark> sharks;
-    std::vector<Fruit> fruits;
+    std::vector<Fruit> fruitsInAir;
+    std::vector<Fruit> fruitsInWater;
 
     std::vector<std::vector<Vector2D>> shark_trails;
 

@@ -25,10 +25,10 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     if (delta == 0) return;
     double dDelta = static_cast<double>(delta) / 1000.0;
     for (auto& ship : ships) {
-        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruits);
+        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruitsInAir);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta, shark_trails);
+        shark.tick(dDelta, shark_trails, fruitsInWater);
     }
 
     for (int i = 0; i < ships.size(); ++i) {
@@ -37,12 +37,23 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
     }
 
-    for (int i = 0; i < fruits.size(); ++i) {
-        auto& fruit = fruits[i];
+    for (int i = 0; i < fruitsInAir.size(); ++i) {
+        auto& fruit = fruitsInAir[i];
         fruit.tick(dDelta);
-        if (fruit.dead) {
-            fruits[i] = fruits[fruits.size() - 1];
-            fruits.pop_back();
+        if (fruit.inWater) {
+            fruitsInWater.emplace_back(fruitsInAir[i]);
+            fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
+            fruitsInAir.pop_back();
+            --i;
+        }
+    }
+
+    for (int i = 0; i < fruitsInWater.size(); ++i) {
+        auto& fruit = fruitsInWater[i];
+        fruit.tick(dDelta);
+        if (fruit.eaten) {
+            fruitsInWater[i] = fruitsInWater[fruitsInWater.size() - 1];
+            fruitsInWater.pop_back();
             --i;
         }
     }
@@ -61,7 +72,8 @@ void SharkGame::render() {
     SDL_RenderFillRect(gRenderer, &game_viewport);
     for (const auto& ship : ships) ship.render();
     for (const auto& shark : sharks) shark.render();
-    for (const auto& fruit : fruits) fruit.render();
+    for (const auto& fruit : fruitsInAir) fruit.render();
+    for (const auto& fruit : fruitsInWater) fruit.render();
 
     SDL_RenderPresent(gRenderer);
 }
@@ -96,7 +108,7 @@ void SharkGame::create_shark_trails() {
 
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
     for (auto& ship : ships) {
-        ship.handle_up(key, mouse, fruits);
+        ship.handle_up(key, mouse, fruitsInAir);
     }
 }
 

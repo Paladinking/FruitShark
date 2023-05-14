@@ -9,7 +9,8 @@ enum class TextureID {
     SHARK1 = 2,
     SHARK2 = 3,
     SHARK3 = 4,
-    APPLE = 5
+    APPLE1 = 5,
+    APPLE2 = 6
 };
 
 class TextureHandler {
@@ -25,9 +26,12 @@ private:
     Texture sharkTexture1;
     Texture sharkTexture2;
     Texture sharkTexture3;
-    Texture appleTexture;
-    Texture bananaTexture;
-    Texture starfruitTexture;
+    Texture appleTexture1;
+    Texture appleTexture2;
+    Texture bananaTexture1;
+    Texture bananaTexture2;
+    Texture starfruitTexture1;
+    Texture starfruitTexture2;
 };
 
 
