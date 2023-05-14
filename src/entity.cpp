@@ -84,3 +84,32 @@ bool Entity::intersects(const Entity &other) const {
     return false;
 }
 
+bool Entity::intersects(Vector2D pos, double radius) const {
+    pos.subtract(position);
+    pos.rotate(-angle);
+    pos.add(position);
+    Vector2D test = {pos.x, pos.y};
+    SDL_FRect rect = {static_cast<float>(position.x - length / 2.0),
+                      static_cast<float>(position.y - width / 2.0),
+                      static_cast<float>(length),
+                      static_cast<float>(width)};
+
+    if (pos.x < rect.x) test.x = rect.x;
+    else if (pos.x > rect.x + rect.w) test.x = rect.x + rect.w;
+    if (pos.y < rect.y) test.y = rect.y;
+    else if (pos.y > rect.y + rect.h) test.y = rect.y + rect.h;
+    return test.distance_squared(pos) < radius * radius;
+}
+
+void Entity::handle_Collision(Entity &other) {
+    Vector2D vec = other.position;
+    vec.subtract(position);
+
+    double power = velocity.length() + other.velocity.length();
+    acceleration.add_scaled(vec, -power * 0.5);
+    other.acceleration.add_scaled(vec, power * 0.5);
+}
+
+const Vector2D &Entity::get_position() const {
+    return position;
+}

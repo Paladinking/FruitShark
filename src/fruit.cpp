@@ -48,6 +48,14 @@ void Fruit::land() {
     velocity.scale(0.05);
 }
 
-const Vector2D &Fruit::getPosition() const {
+const Vector2D &Fruit::get_position() const {
     return position;
+}
+ double Fruit::get_radius() const {
+     switch (type) {
+         case FruitType::APPLE:
+             return 7.5;
+         default:
+             return 10;
+     }
 }

@@ -14,7 +14,10 @@ class Shark : public Entity {
 public:
     Shark(double x, double y);
 
-    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails, const std::vector<Fruit>& fruitsInWater);
+    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails,
+              const std::vector<Fruit>& fruitsInWater,
+              const std::vector<Ship>& ships
+              );
 
     void render() const;
 

@@ -10,6 +10,12 @@ public:
     Entity(double x, double y, int width, int length);
 
     [[nodiscard]] bool intersects(const Entity& other) const;
+
+    [[nodiscard]] bool intersects(Vector2D pos, double radius) const;
+
+    void handle_Collision(Entity& other);
+
+    [[nodiscard]] const Vector2D& get_position() const;
 protected:
     Vector2D position, velocity {}, acceleration {};
 

@@ -29,12 +29,14 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruitsInAir);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta, shark_trails, fruitsInWater);
+        shark.tick(dDelta, shark_trails, fruitsInWater, ships);
     }
 
     for (int i = 0; i < ships.size(); ++i) {
         for (int j = i + 1; j < ships.size(); ++j) {
-            ships[i].handle_collision(ships[j]);
+            if (ships[i].intersects(ships[j])) {
+                ships[i].handle_Collision(ships[j]);
+            }
         }
     }
 
@@ -42,6 +44,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         for (auto &ship : ships) {
             if (ship.intersects(shark)) {
                 shark.bite(ship);
+                ship.handle_Collision(shark);
             }
         }
     }
@@ -49,8 +52,28 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (int i = 0; i < fruitsInAir.size(); ++i) {
         auto& fruit = fruitsInAir[i];
         fruit.tick(dDelta);
+        bool collision = false;
+        for (auto& ship : ships) {
+            if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
+                sound::play(sound::Id::WATER);
+                ship.add_fruit_smell(3.0);
+                fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
+                fruitsInAir.pop_back();
+                --i;
+                collision = true;
+                break;
+            }
+        }
+        if (collision) continue;
+
         if (fruit.inWater) {
             fruitsInWater.emplace_back(fruitsInAir[i]);
+            fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
+            fruitsInAir.pop_back();
+            --i;
+        } else if (fruit.get_position().x < UI_SIZE || fruit.get_position().y >= LOGICAL_WIDTH - UI_SIZE
+                   || fruit.get_position().y < 0 || fruit.get_position().y >= LOGICAL_HEIGHT
+                ) {
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
             fruitsInAir.pop_back();
             --i;
@@ -60,6 +83,12 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (int i = 0; i < fruitsInWater.size(); ++i) {
         auto& fruit = fruitsInWater[i];
         fruit.tick(dDelta);
+        for (auto& shark : sharks) {
+            if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
+                fruit.eaten = true;
+                break;
+            }
+        }
         if (fruit.eaten) {
             fruitsInWater[i] = fruitsInWater[fruitsInWater.size() - 1];
             fruitsInWater.pop_back();
@@ -89,7 +118,7 @@ void SharkGame::render() {
 
 void SharkGame::create_shark_trails() {
     shark_trails.push_back({
-        {100.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {100.0, 430.0}
+        {150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}
     });
     shark_trails.push_back({
         {530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}
@@ -98,11 +127,11 @@ void SharkGame::create_shark_trails() {
         {960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}
     });
     shark_trails.push_back({
-        {1390.0, 100.0}, {1720.0, 100.0}, {1720.0, 430.0}, {1390.0, 430.0}
+        {1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}
     });
 
     shark_trails.push_back({
-        {100.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {100.0, 900.0}
+        {150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}
     });
     shark_trails.push_back({
         {530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}
@@ -111,7 +140,7 @@ void SharkGame::create_shark_trails() {
         {960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}
     });
     shark_trails.push_back({
-        {1390.0, 500.0}, {1720.0, 500.0}, {1720.0, 900.0}, {1390.0, 900.0}
+        {1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}
     });
 }
 

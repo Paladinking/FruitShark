@@ -7,7 +7,7 @@
 #include "engine/input.h"
 #include "fruit.h"
 
-constexpr int MAX_HP = 100;
+constexpr int MAX_HP = 50;
 
 class Cannon {
 public:
@@ -34,9 +34,11 @@ public:
 
     void handle_down(SDL_Keycode key, Uint8 mouse);
 
-    void handle_collision(Ship &other);
-
     void get_bitten(int damage);
+
+    [[nodiscard]]bool has_fruit_smell() const;
+
+    void add_fruit_smell(double duration);
 
 private:
     const Texture* shipTexture;
@@ -50,6 +52,8 @@ private:
     bool isChargingRight = false;
 
     int hp = MAX_HP;
+
+    double smell_duration = 0.0;
 
     [[nodiscard]] Vector2D leftCannonPosition() const;
     [[nodiscard]] Vector2D rightCannonPosition() const;
