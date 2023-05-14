@@ -12,6 +12,8 @@ public:
     [[nodiscard]] bool intersects(const Entity& other) const;
 
     [[nodiscard]] bool intersects(Vector2D pos, double radius) const;
+
+    const Vector2D& get_position() const;
 protected:
     Vector2D position, velocity {}, acceleration {};
 

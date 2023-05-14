@@ -1,5 +1,6 @@
 #include "shark.h"
 #include "sound.h"
+#include <iostream>
 
 constexpr double SHARK_ACCELERATION = 900.0;
 constexpr double FRUIT_DETECTION_RANGE = 400.0;
@@ -15,26 +16,34 @@ texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
 
 void Shark::tick(const double delta,
                  const std::vector<std::vector<Vector2D>>& trails,
-                 const std::vector<Fruit>& fruitsInWater) {
+                 const std::vector<Fruit>& fruitsInWater,
+                 const std::vector<Ship>& ships) {
     animationStage += delta;
     if (animationStage >= 1.3) animationStage = 0.0;
-    Vector2D target;
-    bool noTarget = true;
-    if (!fruitsInWater.empty()) {
-        Vector2D closestFruitPosition = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
-        for (auto& fruit : fruitsInWater) {
-            Vector2D fruitPosition = fruit.getPosition();
-            if (position.distance(fruitPosition) < position.distance(closestFruitPosition)) {
-                closestFruitPosition = fruitPosition;
-            }
-        }
-        if (!(closestFruitPosition.x == position.x + FRUIT_DETECTION_RANGE && closestFruitPosition.y == position.y)) {
-            target = closestFruitPosition;
-            noTarget = false;
-            trail = nullptr;
+    Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
+    bool fruit_target = false;
+
+    for (auto& ship : ships) {
+        if (ship.has_fruit_smell() &&
+            ship.get_position().distance_squared(position) <
+            target.distance_squared(position))
+        {
+            std::cout << "Target: ship" << std::endl;
+            target = ship.get_position();
+            fruit_target = true;
         }
     }
-    if (noTarget) {
+
+    if (!fruit_target) {
+        for (auto& fruit : fruitsInWater) {
+            Vector2D fruitPosition = fruit.get_position();
+            if (position.distance_squared(fruitPosition) < position.distance_squared(target)) {
+                target = fruitPosition;
+                fruit_target = true;
+            }
+        }
+    }
+    if (!fruit_target) {
         if (trail == nullptr) {
             trail = &trails[engine::random(0, static_cast<int>(trails.size()))];
         }
@@ -48,11 +57,13 @@ void Shark::tick(const double delta,
                 target = trail->at(trail_index);
             }
         }
+    } else {
+        trail = nullptr;
     }
     target.subtract(position);
     target.normalize();
     angle = target.get_angle();
-    acceleration.add_scaled(target, noTarget ? SHARK_ACCELERATION / 5.0 : SHARK_ACCELERATION);
+    acceleration.add_scaled(target, fruit_target ? SHARK_ACCELERATION : SHARK_ACCELERATION / 5.0);
     if (bite_delay > 0) {
         bite_delay -= delta;
     }

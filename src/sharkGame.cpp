@@ -29,7 +29,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruitsInAir);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta, shark_trails, fruitsInWater);
+        shark.tick(dDelta, shark_trails, fruitsInWater, ships);
     }
 
     for (int i = 0; i < ships.size(); ++i) {
@@ -51,8 +51,9 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         fruit.tick(dDelta);
         bool collision = false;
         for (auto& ship : ships) {
-            if (ship.intersects(fruit.getPosition(), fruit.getRadius())) {
+            if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
                 sound::play(sound::Id::WATER);
+                ship.add_fruit_smell(3.0);
                 fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
                 fruitsInAir.pop_back();
                 --i;
@@ -67,8 +68,8 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
             fruitsInAir.pop_back();
             --i;
-        } else if (fruit.getPosition().x < UI_SIZE || fruit.getPosition().y >= LOGICAL_WIDTH - UI_SIZE
-                   || fruit.getPosition().y < 0 || fruit.getPosition().y >= LOGICAL_HEIGHT
+        } else if (fruit.get_position().x < UI_SIZE || fruit.get_position().y >= LOGICAL_WIDTH - UI_SIZE
+                   || fruit.get_position().y < 0 || fruit.get_position().y >= LOGICAL_HEIGHT
                 ) {
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
             fruitsInAir.pop_back();
@@ -80,7 +81,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         auto& fruit = fruitsInWater[i];
         fruit.tick(dDelta);
         for (auto& shark : sharks) {
-            if (shark.intersects(fruit.getPosition(), fruit.getRadius())) {
+            if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
                 fruit.eaten = true;
                 break;
             }

@@ -100,3 +100,7 @@ bool Entity::intersects(Vector2D pos, double radius) const {
     else if (pos.y > rect.y + rect.h) test.y = rect.y + rect.h;
     return test.distance_squared(pos) < radius * radius;
 }
+
+const Vector2D &Entity::get_position() const {
+    return position;
+}

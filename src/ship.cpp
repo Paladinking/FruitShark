@@ -53,7 +53,9 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vec
             isChargingRight = false;
         }
     }
-
+    if (smell_duration > 0.0) {
+        smell_duration -= delta;
+    }
     Entity::move(delta);
 }
 
@@ -146,6 +148,14 @@ void Ship::handle_collision(Ship &other) {
 
 void Ship::get_bitten(int damage) {
     hp -= damage;
+}
+
+bool Ship::has_fruit_smell() const {
+    return smell_duration > 0.0;
+}
+
+void Ship::add_fruit_smell(double duration) {
+    smell_duration += duration;
 }
 
 

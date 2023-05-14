@@ -38,6 +38,10 @@ public:
 
     void get_bitten(int damage);
 
+    [[nodiscard]]bool has_fruit_smell() const;
+
+    void add_fruit_smell(double duration);
+
 private:
     const Texture* texture;
 
@@ -48,6 +52,8 @@ private:
     bool isChargingRight = false;
 
     int hp = MAX_HP;
+
+    double smell_duration = 0.0;
 
     [[nodiscard]] Vector2D leftCannonPosition() const;
     [[nodiscard]] Vector2D rightCannonPosition() const;

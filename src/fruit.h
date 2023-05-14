@@ -23,12 +23,12 @@ public:
 
     void land();
 
-    [[nodiscard]] const Vector2D &getPosition() const;
+    [[nodiscard]] const Vector2D &get_position() const;
 
     bool inWater = false;
     bool eaten = false;
 
-    [[nodiscard]] double getRadius() const;
+    [[nodiscard]] double get_radius() const;
 
 private:
      const Texture* texture1;
