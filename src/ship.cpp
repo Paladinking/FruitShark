@@ -109,7 +109,7 @@ void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle + PI / 2) * rightCannon.power;
     fruitVelocity.y += sin(angle + PI / 2) * rightCannon.power;
-    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::BANANA);
+    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::POMEGRANATE);
     rightCannon.power = 0.0;
     rightCannon.cooldown = COOLDOWN_TIME;
     isChargingRight = false;

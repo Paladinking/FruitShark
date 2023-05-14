@@ -9,9 +9,14 @@
 #include "fruit.h"
 #include "ship.h"
 
+
 class Shark : public Entity {
 public:
-    Shark(double x, double y);
+    enum class Type {
+        GREAT_WHITE,
+        TIGER
+    };
+    static Shark create_shark(Type type, double x, double y);
 
     void tick(double delta, const std::vector<std::vector<Vector2D>>& trails,
               const std::vector<Fruit>& fruitsInWater,
@@ -26,6 +31,13 @@ public:
 
     bool bite(Ship& ship);
 private:
+    Shark(double x, double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id);
+
+    int dmg;
+
+    double range_factor;
+    double acc_factor;
+
     const Texture* texture;
     double animationStage;
 

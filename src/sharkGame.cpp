@@ -36,9 +36,13 @@ void SharkGame::init(WindowState* window_state) {
                 }
             }
         } while(!good);
-
         int path = engine::random(0, static_cast<Sint32>(shark_trails.size()));
-        sharks.emplace_back(x, y);
+        int type = engine::random(0, 100);
+        if (type > 80) {
+            sharks.push_back(Shark::create_shark(Shark::Type::GREAT_WHITE, x, y));
+        } else {
+            sharks.push_back(Shark::create_shark(Shark::Type::TIGER, x, y));
+        }
         sharks[i].set_trail(&shark_trails[path]);
     }
     startup_textures[3] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "3", 64);
@@ -117,9 +121,10 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
     }
 
+    std::vector<Fruit> to_be_added;
     for (int i = 0; i < fruits_in_air.size(); ++i) {
         auto& fruit = fruits_in_air[i];
-        fruit.tick(dDelta);
+        fruit.tick(dDelta, to_be_added);
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
@@ -148,9 +153,13 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
     }
 
+    for (auto& fruit : to_be_added) {
+        fruits_in_air.push_back(fruit);
+    }
+
     for (int i = 0; i < fruits_in_water.size(); ++i) {
         auto& fruit = fruits_in_water[i];
-        fruit.tick(dDelta);
+        fruit.tick(dDelta, to_be_added);
         for (auto& shark : sharks) {
             if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
                 fruit.eaten = true;

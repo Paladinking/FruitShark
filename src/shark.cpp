@@ -6,9 +6,18 @@ constexpr double FRUIT_DETECTION_RANGE = 300.0;
 constexpr double PLAYER_DETECTION_RANGE = 180.0;
 constexpr double BITE_DELAY = 1.0;
 
-Shark::Shark(const double x, const double y) :
-Entity(x, y, 40, 90),
-texture(textureHandler.getTextures(TextureID::SHARK))
+Shark Shark::create_shark(Type type, const double x, const double y) {
+    switch (type) {
+        case Type::GREAT_WHITE:
+            return {x, y, 60, 120, 15, 2.0, 0.9, TextureID::WHITE_SHARK};
+        case Type::TIGER: default:
+            return {x, y, 40, 90, 10, 1.0, 1.0, TextureID::SHARK};
+    }
+}
+
+Shark::Shark(const double x, const double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id) :
+Entity(x, y, w, len), dmg(dmg), range_factor(range_factor), acc_factor(acc_factor),
+texture(textureHandler.getTextures(id))
 {
     animationStage = (engine::random(0, 4) / 6.0);
 }
@@ -19,7 +28,7 @@ void Shark::tick(const double delta,
                  const std::vector<Ship>& ships) {
     animationStage += delta;
     if (animationStage >= 1.3) animationStage = 0.0;
-    Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
+    Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE * range_factor, position.y);
     bool fruit_target = false;
     double acc = SHARK_ACCELERATION;
 
@@ -43,7 +52,7 @@ void Shark::tick(const double delta,
         }
     }
     if (!fruit_target) {
-        target = Vector2D(position.x + PLAYER_DETECTION_RANGE, position.y);
+        target = Vector2D(position.x + PLAYER_DETECTION_RANGE * range_factor, position.y);
         for (auto& ship : ships) {
             if (ship.get_position().distance_squared(position) < target.distance_squared(position))
             {
@@ -77,7 +86,7 @@ void Shark::tick(const double delta,
     if (bite_delay > 0) {
         bite_delay -= delta;
     } else {
-        acceleration.add_scaled(target, acc);
+        acceleration.add_scaled(target, acc * acc_factor);
     }
     Entity::move(delta);
 }
@@ -99,7 +108,7 @@ void Shark::set_trail(const std::vector<Vector2D> *new_trail) {
 bool Shark::bite(Ship &ship) {
     if (bite_delay <= 0) {
         sound::play(sound::Id::BITE);
-        ship.get_bitten(10);
+        ship.get_bitten(dmg);
         bite_delay = BITE_DELAY;
         return true;
     }

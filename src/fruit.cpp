@@ -26,16 +26,22 @@ texture(getFruitTexture(type))
         case FruitType::BANANA:
             maxTimeInAir = 1.5;
             break;
+        case FruitType::POMEGRANATE:
+            maxTimeInAir = 0.4;
+            break;
+        case FruitType::POMEGRANATE_SEED:
+            maxTimeInAir = 0.2;
+            break;  
         default:
             maxTimeInAir = 0.0;
     }
     maxVelocity = velocity.length();
 }
 
-void Fruit::tick(double delta) {
+void Fruit::tick(double delta, std::vector<Fruit> &fruits) {
     timeInAir += delta;
     if (timeInAir > maxTimeInAir) {
-        land();
+        land(fruits);
         acceleration.scale(0);
     }
     switch (type) {
@@ -56,9 +62,19 @@ void Fruit::render() const {
                 texture[0].render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
-void Fruit::land() {
+void Fruit::land(std::vector<Fruit> &fruits) {
     inWater = true;
     velocity.scale(0.05);
+    if (type == FruitType::POMEGRANATE) {
+        for (int i = 0; i < 5; ++i) {
+            int a = engine::random(0, 360 * 100);
+            double dir = a * 3.14159265 / (180.0 * 100);
+            Vector2D vel = {500.0, 0.0};
+            vel.rotate(dir);
+            fruits.emplace_back(position, vel, FruitType::POMEGRANATE_SEED);
+        }
+        eaten = true;
+    }
 }
 
 const Vector2D &Fruit::get_position() const {
