@@ -46,6 +46,8 @@ public:
 
     void add_fruit_smell(double duration);
 
+    void add_fruits(FruitType type, int count);
+
     bool is_dead() const;
 
     int id;
@@ -64,6 +66,9 @@ private:
     int hp = MAX_HP;
 
     double smell_duration = 0.0;
+
+    int fruit_count = -1;
+    FruitType fruit_type = FruitType::APPLE;
 
     [[nodiscard]] Vector2D leftCannonPosition() const;
     [[nodiscard]] Vector2D rightCannonPosition() const;

@@ -35,6 +35,8 @@ public:
 
     [[nodiscard]] double get_radius() const;
 
+    double get_duration();
+
 private:
     const Texture* texture;
 

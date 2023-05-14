@@ -97,7 +97,11 @@ void Ship::fireLeftCannon(std::vector<Fruit> &fruits) {
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle - PI / 2) * leftCannon.power;
     fruitVelocity.y += sin(angle - PI / 2) * leftCannon.power;
-    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::APPLE);
+    --fruit_count;
+    if (fruit_count  < 0) {
+        fruit_type = FruitType::APPLE;
+    }
+    fruits.emplace_back(fruitPosition, fruitVelocity, fruit_type);
     leftCannon.power = 0.0;
     leftCannon.cooldown = COOLDOWN_TIME;
     isChargingLeft = false;
@@ -109,7 +113,7 @@ void Ship::fireRightCannon(std::vector<Fruit> &fruits) {
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle + PI / 2) * rightCannon.power;
     fruitVelocity.y += sin(angle + PI / 2) * rightCannon.power;
-    fruits.emplace_back(fruitPosition, fruitVelocity, FruitType::POMEGRANATE);
+    fruits.emplace_back(fruitPosition, fruitVelocity, fruit_type);
     rightCannon.power = 0.0;
     rightCannon.cooldown = COOLDOWN_TIME;
     isChargingRight = false;
@@ -159,6 +163,15 @@ void Ship::add_fruit_smell(double duration) {
 
 bool Ship::is_dead() const {
     return hp <= 0;
+}
+
+void Ship::add_fruits(FruitType type, int count) {
+    if (type == fruit_type) {
+        fruit_count += count;
+    } else {
+        fruit_type = type;
+        fruit_count = count;
+    }
 }
 
 
