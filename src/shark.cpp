@@ -2,7 +2,7 @@
 #include "sound.h"
 
 constexpr double SHARK_ACCELERATION = 900.0;
-constexpr double FRUIT_DETECTION_RANGE = 200.0;
+constexpr double FRUIT_DETECTION_RANGE = 400.0;
 constexpr double BITE_DELAY = 1.5;
 
 Shark::Shark(const double x, const double y) :
@@ -52,7 +52,7 @@ void Shark::tick(const double delta,
     target.subtract(position);
     target.normalize();
     angle = target.get_angle();
-    acceleration.add_scaled(target, SHARK_ACCELERATION / 5.0);
+    acceleration.add_scaled(target, noTarget ? SHARK_ACCELERATION / 5.0 : SHARK_ACCELERATION);
     if (bite_delay > 0) {
         bite_delay -= delta;
     }

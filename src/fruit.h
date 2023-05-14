@@ -31,7 +31,7 @@ public:
     [[nodiscard]] double getRadius() const;
 
 private:
-    const Texture* texture1;
+     const Texture* texture1;
     const Texture* texture2;
 
     FruitType type;

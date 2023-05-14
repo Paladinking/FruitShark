@@ -61,8 +61,15 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
             }
         }
         if (collision) continue;
+
         if (fruit.inWater) {
             fruitsInWater.emplace_back(fruitsInAir[i]);
+            fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
+            fruitsInAir.pop_back();
+            --i;
+        } else if (fruit.getPosition().x < UI_SIZE || fruit.getPosition().y >= LOGICAL_WIDTH - UI_SIZE
+                   || fruit.getPosition().y < 0 || fruit.getPosition().y >= LOGICAL_HEIGHT
+                ) {
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
             fruitsInAir.pop_back();
             --i;
@@ -72,6 +79,12 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (int i = 0; i < fruitsInWater.size(); ++i) {
         auto& fruit = fruitsInWater[i];
         fruit.tick(dDelta);
+        for (auto& shark : sharks) {
+            if (shark.intersects(fruit.getPosition(), fruit.getRadius())) {
+                fruit.eaten = true;
+                break;
+            }
+        }
         if (fruit.eaten) {
             fruitsInWater[i] = fruitsInWater[fruitsInWater.size() - 1];
             fruitsInWater.pop_back();
@@ -101,7 +114,7 @@ void SharkGame::render() {
 
 void SharkGame::create_shark_trails() {
     shark_trails.push_back({
-        {100.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {100.0, 430.0}
+        {150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}
     });
     shark_trails.push_back({
         {530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}
@@ -110,11 +123,11 @@ void SharkGame::create_shark_trails() {
         {960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}
     });
     shark_trails.push_back({
-        {1390.0, 100.0}, {1720.0, 100.0}, {1720.0, 430.0}, {1390.0, 430.0}
+        {1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}
     });
 
     shark_trails.push_back({
-        {100.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {100.0, 900.0}
+        {150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}
     });
     shark_trails.push_back({
         {530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}
@@ -123,7 +136,7 @@ void SharkGame::create_shark_trails() {
         {960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}
     });
     shark_trails.push_back({
-        {1390.0, 500.0}, {1720.0, 500.0}, {1720.0, 900.0}, {1390.0, 900.0}
+        {1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}
     });
 }
 
