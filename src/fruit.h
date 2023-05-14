@@ -6,11 +6,14 @@
 #include "engine/engine.h"
 #include "textureHandler.h"
 #include "config.h"
+#include <vector>
 
 enum class FruitType {
     APPLE = 1,
     BANANA = 2,
-    STARFRUIT = 3
+    STARFRUIT = 3,
+    POMEGRANATE = 4,
+    POMEGRANATE_SEED = 5
 };
 
 class Fruit {
@@ -19,9 +22,9 @@ public:
 
     void render() const;
 
-    void tick(double delta);
+    void tick(double delta, std::vector<Fruit> &fruits);
 
-    void land();
+    void land(std::vector<Fruit> &fruits);
 
     [[nodiscard]] const Vector2D &get_position() const;
 
