@@ -1,16 +1,15 @@
 #include "shark.h"
 #include "sound.h"
-#include <iostream>
 
 constexpr double SHARK_ACCELERATION = 900.0;
 constexpr double FRUIT_DETECTION_RANGE = 300.0;
+constexpr double PLAYER_DETECTION_RANGE = 180.0;
 constexpr double BITE_DELAY = 1.0;
 
 Shark::Shark(const double x, const double y) :
 Entity(x, y, 40, 90),
-texture1(&textureHandler.getTexture(TextureID::SHARK1)),
-texture2(&textureHandler.getTexture(TextureID::SHARK2)),
-texture3(&textureHandler.getTexture(TextureID::SHARK3)) {
+texture(textureHandler.getTextures(TextureID::SHARK))
+{
     animationStage = (engine::random(0, 4) / 6.0);
 }
 
@@ -22,6 +21,7 @@ void Shark::tick(const double delta,
     if (animationStage >= 1.3) animationStage = 0.0;
     Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE, position.y);
     bool fruit_target = false;
+    double acc = SHARK_ACCELERATION;
 
     for (auto& ship : ships) {
         if (ship.has_fruit_smell() &&
@@ -43,6 +43,18 @@ void Shark::tick(const double delta,
         }
     }
     if (!fruit_target) {
+        target = Vector2D(position.x + PLAYER_DETECTION_RANGE, position.y);
+        for (auto& ship : ships) {
+            if (ship.get_position().distance_squared(position) < target.distance_squared(position))
+            {
+                target = ship.get_position();
+                fruit_target = true;
+                acc = SHARK_ACCELERATION / 3.0;
+            }
+        }
+    }
+    if (!fruit_target) {
+        acc = SHARK_ACCELERATION / 5.0;
         if (trail == nullptr) {
             trail = &trails[engine::random(0, static_cast<int>(trails.size()))];
         }
@@ -62,15 +74,16 @@ void Shark::tick(const double delta,
     target.subtract(position);
     target.normalize();
     angle = target.get_angle();
-    acceleration.add_scaled(target, fruit_target ? SHARK_ACCELERATION : SHARK_ACCELERATION / 5.0);
     if (bite_delay > 0) {
         bite_delay -= delta;
+    } else {
+        acceleration.add_scaled(target, acc);
     }
     Entity::move(delta);
 }
 
 void Shark::render() const {
-    const Texture* textures[] = {texture1, texture2, texture3, texture2};
+    const Texture* textures[] = {texture, texture + 1, texture + 2, texture + 1};
     (animationStage < 0.665) ?
     textures[static_cast<int>(animationStage * 6)]->
     render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
@@ -83,10 +96,16 @@ void Shark::set_trail(const std::vector<Vector2D> *new_trail) {
     trail = new_trail;
 }
 
-void Shark::bite(Ship &ship) {
+bool Shark::bite(Ship &ship) {
     if (bite_delay <= 0) {
         sound::play(sound::Id::BITE);
         ship.get_bitten(10);
         bite_delay = BITE_DELAY;
+        return true;
     }
+    return false;
+}
+
+Vector2D Shark::get_mouth() const {
+    return {(corners[1].x + corners[2].x) / 2, (corners[1].y + corners[2].y) / 2};
 }

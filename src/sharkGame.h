@@ -8,6 +8,7 @@
 #include "config.h"
 #include "shark.h"
 #include "fruit.h"
+#include "bite.h"
 
 class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;
@@ -32,6 +33,7 @@ private:
     std::vector<Shark> sharks;
     std::vector<Fruit> fruitsInAir;
     std::vector<Fruit> fruitsInWater;
+    std::vector<Bite> bites;
 
     std::vector<std::vector<Vector2D>> shark_trails;
 

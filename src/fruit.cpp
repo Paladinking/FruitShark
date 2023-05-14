@@ -1,33 +1,23 @@
 #include "fruit.h"
 
-Texture* getFruitTexture1(FruitType type) {
+const Texture* getFruitTexture(FruitType type) {
     switch (type) {
         case FruitType::APPLE:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::APPLE1));
+            return textureHandler.getTextures(TextureID::APPLE);
         case FruitType::BANANA:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::BANANA1));
+            return textureHandler.getTextures(TextureID::BANANA);
         default:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::APPLE1));
+            return textureHandler.getTextures(TextureID::APPLE);
     }
 }
 
-Texture* getFruitTexture2(FruitType type) {
-    switch (type) {
-        case FruitType::APPLE:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::APPLE2));
-        case FruitType::BANANA:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::BANANA2));
-        default:
-            return const_cast<Texture *>(&textureHandler.getTexture(TextureID::APPLE2));
-    }
-}
 
 Fruit::Fruit(Vector2D position, Vector2D velocity, FruitType type = FruitType::APPLE) :
 position(position),
 velocity(velocity),
 type(type),
-texture1(getFruitTexture1(type)),
-texture2(getFruitTexture2(type)) {
+texture(getFruitTexture(type))
+ {
     if (type == FruitType::BANANA) acceleration.add_scaled(velocity, -2);
     switch (type) {
         case FruitType::APPLE:
@@ -62,8 +52,8 @@ void Fruit::tick(double delta) {
 }
 
 void Fruit::render() const {
-    (inWater) ? texture2->render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
-                texture1->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    (inWater) ? texture[1].render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
+                texture[0].render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
 void Fruit::land() {

@@ -14,16 +14,22 @@ void TextureHandler::loadTextures() {
 
     int sharkWidth = 100;
     int sharkHeight = 50;
-    sharkTexture1.load_from_file("Shark1.png", sharkWidth, sharkHeight);
-    sharkTexture2.load_from_file("Shark2.png", sharkWidth, sharkHeight);
-    sharkTexture3.load_from_file("Shark3.png", sharkWidth, sharkHeight);
+    sharkTexture[0].load_from_file("Shark1.png", sharkWidth, sharkHeight);
+    sharkTexture[1].load_from_file("Shark2.png", sharkWidth, sharkHeight);
+    sharkTexture[2].load_from_file("Shark3.png", sharkWidth, sharkHeight);
 
     int fruitSize = 20;
-    appleTexture1.load_from_file("Apple1.png", fruitSize, fruitSize);
-    appleTexture2.load_from_file("Apple2.png", fruitSize, fruitSize);
+    appleTexture[0].load_from_file("Apple1.png", fruitSize, fruitSize);
+    appleTexture[1].load_from_file("Apple2.png", fruitSize, fruitSize);
 
-    bananaTexture1.load_from_file("Banana1.png", fruitSize, fruitSize);
-    bananaTexture2.load_from_file("Banana2.png", fruitSize, fruitSize);
+    bananaTexture[0].load_from_file("Banana1.png", fruitSize, fruitSize);
+    bananaTexture[1].load_from_file("Banana2.png", fruitSize, fruitSize);
+
+    teethTexture[0].load_from_file("Teeth1.png", 75, 75);
+    teethTexture[1].load_from_file("Teeth2.png", 75, 75);
+    teethTexture[2].load_from_file("Teeth3.png", 75, 75);
+    teethTexture[3].load_from_file("Teeth4.png", 75, 75);
+    teethTexture[4].load_from_file("Teeth5.png", 75, 75);
 }
 
 const Texture& TextureHandler::getTexture(TextureID texture) const {
@@ -42,22 +48,24 @@ const Texture& TextureHandler::getTexture(TextureID texture) const {
             return sailsRedTexture;
         case TextureID::CANNON:
             return cannonTexture;
-        case TextureID::SHARK1:
-            return sharkTexture1;
-        case TextureID::SHARK2:
-            return sharkTexture2;
-        case TextureID::SHARK3:
-            return sharkTexture3;
-        case TextureID::APPLE1:
-            return appleTexture1;
-        case TextureID::APPLE2:
-            return appleTexture2;
-        case TextureID::BANANA1:
-            return bananaTexture1;
-        case TextureID::BANANA2:
-            return bananaTexture2;
         default:
             throw image_load_exception("Invalid texture id");
+    }
+}
+
+const Texture *TextureHandler::getTextures(TextureID texture) const {
+    switch (texture) {
+        case TextureID::SHARK:
+            return sharkTexture;
+        case TextureID::TEETH:
+            return teethTexture;
+        case TextureID::BANANA:
+            return bananaTexture;
+        case TextureID::APPLE:
+            return appleTexture;
+        default:
+            throw image_load_exception("Invalid texture id");
+
     }
 }
 
