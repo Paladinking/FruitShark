@@ -8,6 +8,7 @@ constexpr double PI = 3.14159265;
 class Entity {
 public:
     Entity(double x, double y, int width, int length);
+    Entity(double x, double y, int width, int length, double angle);
 
     [[nodiscard]] bool intersects(const Entity& other) const;
 

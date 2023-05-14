@@ -3,7 +3,7 @@
 #include <iostream>
 
 constexpr double SHARK_ACCELERATION = 900.0;
-constexpr double FRUIT_DETECTION_RANGE = 400.0;
+constexpr double FRUIT_DETECTION_RANGE = 300.0;
 constexpr double BITE_DELAY = 1.0;
 
 Shark::Shark(const double x, const double y) :
@@ -28,7 +28,6 @@ void Shark::tick(const double delta,
             ship.get_position().distance_squared(position) <
             target.distance_squared(position))
         {
-            std::cout << "Target: ship" << std::endl;
             target = ship.get_position();
             fruit_target = true;
         }

@@ -24,7 +24,7 @@ private:
 
 class Ship : public Entity {
 public:
-    Ship(double x, double y, const char *const *bindings, const TextureID sail_color);
+    Ship(double x, double y, const char *const *bindings, TextureID sail_color, int id, double angle);
 
     void render() const;
 
@@ -39,6 +39,10 @@ public:
     [[nodiscard]]bool has_fruit_smell() const;
 
     void add_fruit_smell(double duration);
+
+    bool is_dead();
+
+    int id;
 
 private:
     const Texture* shipTexture;

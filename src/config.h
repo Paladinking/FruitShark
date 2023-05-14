@@ -17,7 +17,19 @@ constexpr const char*  BINDINGS[2][6] = {
 
 constexpr TextureID COLORS[4] = {TextureID::SAILS_WHITE, TextureID::SAILS_BLUE,
                                  TextureID::SAILS_GREEN, TextureID::SAILS_RED};
+constexpr int START_X[4][4] = {
+        {UI_SIZE + LOGICAL_WIDTH /2, 0, 0, 0 },
+        {UI_SIZE + 150, LOGICAL_WIDTH - UI_SIZE - 150, 0, 0},
+        {UI_SIZE + 150, LOGICAL_WIDTH - UI_SIZE - 150, UI_SIZE + GAME_WIDTH / 2, 0},
+        {UI_SIZE + 150, LOGICAL_WIDTH - UI_SIZE - 150, UI_SIZE + 150, LOGICAL_WIDTH - UI_SIZE - 150}
+};
 
+constexpr int START_Y[4][4] = {
+        {LOGICAL_HEIGHT / 2, 0, 0, 0},
+        {LOGICAL_HEIGHT / 2, LOGICAL_HEIGHT / 2, 0, 0},
+        {3 * LOGICAL_HEIGHT / 4 , LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4, 0},
+        { LOGICAL_HEIGHT / 4, LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4}
+};
 extern TextureHandler textureHandler;
 
 

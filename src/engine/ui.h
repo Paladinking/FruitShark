@@ -60,7 +60,7 @@ class TextBox {
 		/**
 		 * Initializes the button class, loading the font used for the button text.
 		 */
-		static void init(SDL_RWops* font_data);
+		static void init(TTF_Font * font_data);
 
 	protected:
 		int x{}, y{}, w{}, h{};

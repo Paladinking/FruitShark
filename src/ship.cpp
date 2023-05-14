@@ -8,11 +8,12 @@ constexpr double MAX_POWER = 1000.0;
 constexpr double POWER_PER_SECOND = 1000.0;
 
 
-Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color) :
-Entity(x, y, 25, 50),
+Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color, int id, double angle) :
+Entity(x, y, 25, 50, angle),
 shipTexture(&textureHandler.getTexture(TextureID::SHIP)),
 mastsTexture(&textureHandler.getTexture(TextureID::MASTS)),
 sailsTexture(&textureHandler.getTexture(sail_color)),
+id(id),
 leftCannon(width),
 rightCannon(width) {
     forward = get_hold_input(bindings[0]);
@@ -149,6 +150,10 @@ bool Ship::has_fruit_smell() const {
 
 void Ship::add_fruit_smell(double duration) {
     smell_duration += duration;
+}
+
+bool Ship::is_dead() {
+    return hp <= 0;
 }
 
 

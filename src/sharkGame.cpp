@@ -1,16 +1,23 @@
 #include "sharkGame.h"
 #include "config.h"
 #include "sound.h"
+#include "engine/ui.h"
+
+void Restarter::tick(Uint64 delt, StateStatus &res) {
+    res.action = StateStatus::SWAP;
+    res.new_state = new SharkGame();
+}
 
 TextureHandler textureHandler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
-    textureHandler.loadTextures();
     sound::play(sound::WATER);
     State::init(window_state);
     exit_input = get_hold_input("Escape");
+    restart_input = get_hold_input("Space");
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
-        ships.emplace_back(200.0 * (i + 1), 500.0, BINDINGS[i], COLORS[i]);
+        ships.emplace_back(START_X[PLAYER_COUNT - 1][i], START_Y[PLAYER_COUNT - 1][i], BINDINGS[i],
+                           COLORS[i], i, PI * i);
     }
     create_shark_trails();
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {
@@ -20,11 +27,35 @@ void SharkGame::init(WindowState* window_state) {
         sharks.emplace_back(x, y);
         sharks[i].set_trail(&shark_trails[path]);
     }
+    startup_textures[3] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "3", 64);
+    startup_textures[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "2", 64);
+    startup_textures[1] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "1", 64);
+    startup_textures[0] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Go", 64);
+
+    game_over[0] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Game Over", 64);
+    game_over[1] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "Press space to restart", 64);
+
 }
 
 void SharkGame::tick(Uint64 delta, StateStatus& res) {
     if (delta == 0) return;
+    if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
+        res.action = StateStatus::POP;
+    }
     double dDelta = static_cast<double>(delta) / 1000.0;
+    if (startup_delay >= 0.0) {
+        startup_delay -= dDelta;
+        if (startup_delay <= 1.0) {
+            state = PLAYING;
+        } else if (state == STARTUP) return;
+    }
+    if (state == GAME_OVER) {
+        if (restart_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
+            res.action = StateStatus::SWAP;
+            res.new_state = new Restarter();
+        }
+        return;
+    }
     for (auto& ship : ships) {
         ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruitsInAir);
     }
@@ -41,10 +72,20 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     }
 
     for (auto &shark : sharks) {
-        for (auto &ship : ships) {
-            if (ship.intersects(shark)) {
-                shark.bite(ship);
-                ship.handle_Collision(shark);
+        for (int i = 0; i < ships.size(); ++i) {
+            if (ships[i].intersects(shark)) {
+                shark.bite(ships[i]);
+                ships[i].handle_Collision(shark);
+                if (ships[i].is_dead()) {
+                    ships.erase(ships.begin() + i);
+                    --i;
+                    if (ships.size() == 1) {
+                        state = GAME_OVER;
+                        std::string msg = "Player " + std::to_string(ships[0].id + 1) + " Won!";
+                        game_over[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, msg, 64);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -55,7 +96,6 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
-                sound::play(sound::Id::WATER);
                 ship.add_fruit_smell(3.0);
                 fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
                 fruitsInAir.pop_back();
@@ -67,6 +107,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         if (collision) continue;
 
         if (fruit.inWater) {
+            sound::play(sound::Id::WATER);
             fruitsInWater.emplace_back(fruitsInAir[i]);
             fruitsInAir[i] = fruitsInAir[fruitsInAir.size() - 1];
             fruitsInAir.pop_back();
@@ -95,10 +136,6 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
             --i;
         }
     }
-
-    if (exit_input->is_pressed(window_state->keyboard_state, window_state->mouse_mask)) {
-        res.action = StateStatus::POP;
-    }
 }
 
 
@@ -112,6 +149,15 @@ void SharkGame::render() {
     for (const auto& shark : sharks) shark.render();
     for (const auto& fruit : fruitsInAir) fruit.render();
     for (const auto& fruit : fruitsInWater) fruit.render();
+
+    if (startup_delay >= 0.0) {
+        startup_textures[static_cast<int>(startup_delay)].render(0, 0);
+    }
+    if (state == GAME_OVER) {
+        game_over[0].render(0, -200);
+        game_over[1].render(0, 0);
+        game_over[2].render(0, 200);
+    }
 
     SDL_RenderPresent(gRenderer);
 }

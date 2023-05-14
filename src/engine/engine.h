@@ -1,10 +1,14 @@
 #ifndef ENGINE_00_H
 #define ENGINE_00_H
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 // Global renderer variable
 extern SDL_Renderer* gRenderer;
 // Global window variable
 extern SDL_Window* gWindow;
+
+extern TTF_Font* gFont;
 
 /**
  * Struct used for putting an SDL_Surface in a smart-pointer.

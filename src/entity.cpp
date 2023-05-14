@@ -4,6 +4,8 @@
 constexpr double FRICTION = 0.02;
 
 Entity::Entity(double x, double y, int width, int length) : position(x, y), width(width), length(length) {}
+Entity::Entity(double x, double y, int width, int length, double angle)
+: position(x, y), width(width), length(length), angle(angle) {}
 
 SDL_FPoint rotated(Vector2D v, const Vector2D& center, double angle) {
     v.rotate(angle);
