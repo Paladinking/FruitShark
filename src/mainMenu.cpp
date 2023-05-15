@@ -14,7 +14,7 @@ void MainMenu::init(WindowState *window_state) {
     SDL_ShowWindow(gWindow);
     State::init(window_state);
     sound::init();
-    textureHandler.loadTextures();
+    texture_handler.load_textures();
     SDL_RenderGetLogicalSize(gRenderer, &window_state->screen_width, &window_state->screen_height);
     SDL_GetRendererOutputSize(gRenderer, &window_state->window_width, &window_state->window_height);
     shark_trails.push_back({

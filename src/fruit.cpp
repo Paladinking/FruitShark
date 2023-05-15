@@ -1,17 +1,17 @@
 #include "fruit.h"
 
-const Texture* getFruitTexture(FruitType type) {
+const Texture* get_fruit_texture(FruitType type) {
     switch (type) {
         case FruitType::APPLE:
-            return textureHandler.getTextures(TextureID::APPLE);
+            return texture_handler.get_textures(TextureID::APPLE);
         case FruitType::BANANA:
-            return textureHandler.getTextures(TextureID::BANANA);
+            return texture_handler.get_textures(TextureID::BANANA);
         case FruitType::POMEGRANATE:
-            return textureHandler.getTextures(TextureID::POMEGRANATE);
+            return texture_handler.get_textures(TextureID::POMEGRANATE);
         case FruitType::POMEGRANATE_SEED:
-            return textureHandler.getTextures(TextureID::POMEGRANATE_SEED);
+            return texture_handler.get_textures(TextureID::POMEGRANATE_SEED);
         default:
-            return textureHandler.getTextures(TextureID::APPLE);
+            return texture_handler.get_textures(TextureID::APPLE);
     }
 }
 
@@ -20,38 +20,38 @@ Fruit::Fruit(Vector2D position, Vector2D velocity, FruitType type = FruitType::A
 position(position),
 velocity(velocity),
 type(type),
-texture(getFruitTexture(type))
+texture(get_fruit_texture(type))
  {
     if (type == FruitType::BANANA) acceleration.add_scaled(velocity, -2);
     switch (type) {
         case FruitType::APPLE:
-            maxTimeInAir = 0.5;
+            max_time_in_air = 0.5;
             break;
         case FruitType::BANANA:
-            maxTimeInAir = 1.5;
+            max_time_in_air = 1.5;
             break;
         case FruitType::POMEGRANATE:
-            maxTimeInAir = 0.4;
+            max_time_in_air = 0.4;
             break;
         case FruitType::POMEGRANATE_SEED:
-            maxTimeInAir = 0.2;
+            max_time_in_air = 0.2;
             break;
         default:
-            maxTimeInAir = 0.0;
+            max_time_in_air = 0.0;
     }
-    maxVelocity = velocity.length();
+     max_velocity = velocity.length();
 }
 
 void Fruit::tick(double delta, std::vector<Fruit> &fruits) {
-    timeInAir += delta;
-    if (timeInAir > maxTimeInAir) {
+    time_in_air += delta;
+    if (time_in_air > max_time_in_air) {
         land(fruits);
         acceleration.scale(0);
     }
     switch (type) {
         case FruitType::BANANA:
             angle += acceleration.length() * delta / 64;
-            if (velocity.length() <= maxVelocity) velocity.add_scaled(acceleration, delta);
+            if (velocity.length() <= max_velocity) velocity.add_scaled(acceleration, delta);
             position.add_scaled(velocity, delta);
             break;
         default:
@@ -62,12 +62,12 @@ void Fruit::tick(double delta, std::vector<Fruit> &fruits) {
 }
 
 void Fruit::render() const {
-    (inWater) ? texture[1].render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
-                texture[0].render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    (in_water) ? texture[1].render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
+    texture[0].render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
 void Fruit::land(std::vector<Fruit> &fruits) {
-    inWater = true;
+    in_water = true;
     velocity.scale(0.05);
     if (type == FruitType::POMEGRANATE) {
         for (int i = 0; i < 5; ++i) {

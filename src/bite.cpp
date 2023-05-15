@@ -4,7 +4,7 @@
 #include "config.h"
 
 #include "bite.h"
-Bite::Bite(int x, int y) : x(x), y(y), textures(textureHandler.getTextures(TextureID::TEETH)){
+Bite::Bite(int x, int y) : x(x), y(y), textures(texture_handler.get_textures(TextureID::TEETH)){
 
 }
 

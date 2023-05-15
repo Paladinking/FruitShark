@@ -25,28 +25,27 @@ class TextureHandler {
 public:
     TextureHandler() = default;
 
-    void loadTextures();
+    void load_textures();
 
-    [[nodiscard]] const Texture& getTexture(TextureID texture) const;
+    [[nodiscard]] const Texture& get_texture(TextureID texture) const;
 
-    [[nodiscard]] const Texture* getTextures(TextureID texture) const;
+    [[nodiscard]] const Texture* get_textures(TextureID texture) const;
 private:
-    Texture shipTexture;
-    Texture mastsTexture;
-    Texture sailsWhiteTexture;
-    Texture sailsBlueTexture;
-    Texture sailsGreenTexture;
-    Texture sailsRedTexture;
-    Texture cannonTexture;
-    Texture boxTexture;
-    Texture sharkTexture[3];
-    Texture whiteSharkTexture[3];
-    Texture appleTexture[2];
-    Texture bananaTexture[2];
-    Texture pomegranateTexture[2];
-    Texture pomegranateSeedTexture[2];
-    Texture starfruitTexture[2];
-    Texture teethTexture[5];
+    Texture ship_texture;
+    Texture masts_texture;
+    Texture sails_white_texture;
+    Texture sails_blue_texture;
+    Texture sails_green_texture;
+    Texture sails_red_texture;
+    Texture cannon_texture;
+    Texture box_texture;
+    Texture shark_texture[3];
+    Texture white_shark_texture[3];
+    Texture apple_texture[2];
+    Texture banana_texture[2];
+    Texture pomegranate_texture[2];
+    Texture pomegranate_seed_texture[2];
+    Texture teeth_texture[5];
 };
 
 

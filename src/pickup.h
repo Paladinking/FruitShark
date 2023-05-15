@@ -14,17 +14,17 @@ public:
 
     void render() const;
 
-    FruitType getType();
+    FruitType get_type();
 
     [[nodiscard]] const Vector2D& get_position() const;
 
     [[nodiscard]] double get_radius() const;
 
-    double timeAlive;
+    double time_alive;
 
 private:
-    const Texture* boxTexture;
-    const Texture* fruitTexture;
+    const Texture* box_texture;
+    const Texture* fruit_texture;
 
     Vector2D position;
 

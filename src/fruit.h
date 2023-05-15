@@ -16,7 +16,7 @@ enum class FruitType {
     POMEGRANATE_SEED = 5
 };
 
-const Texture* getFruitTexture(FruitType type);
+const Texture* get_fruit_texture(FruitType type);
 
 class Fruit {
 public:
@@ -30,7 +30,7 @@ public:
 
     [[nodiscard]] const Vector2D &get_position() const;
 
-    bool inWater = false;
+    bool in_water = false;
     bool eaten = false;
 
     [[nodiscard]] double get_radius() const;
@@ -47,9 +47,9 @@ private:
     Vector2D acceleration;
 
     double angle = 0.0;
-    double timeInAir = 0.0;
-    double maxTimeInAir;
-    double maxVelocity;
+    double time_in_air = 0.0;
+    double max_time_in_air;
+    double max_velocity;
 };
 
 #endif //FRUITSHARK_FRUIT_H

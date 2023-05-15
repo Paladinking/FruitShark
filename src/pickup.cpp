@@ -1,25 +1,25 @@
 #include "pickup.h"
 
 Pickup::Pickup(int x, int y, FruitType type) :
-position(x, y),
-type(type),
-boxTexture(&textureHandler.getTexture(TextureID::BOX)),
-fruitTexture(getFruitTexture(type)) {
+        position(x, y),
+        type(type),
+        box_texture(&texture_handler.get_texture(TextureID::BOX)),
+        fruit_texture(get_fruit_texture(type)) {
     angle = engine::random(0, 5) * 3.1415 / 5.0;
-    timeAlive = 0.0;
+    time_alive = 0.0;
 }
 
 void Pickup::tick(double delta) {
     angle += delta;
-    timeAlive += delta;
+    time_alive += delta;
 }
 
 void Pickup::render() const {
-    boxTexture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
-    fruitTexture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    box_texture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
+    fruit_texture->render(static_cast<int>(position.x), static_cast<int>(position.y), angle);
 }
 
-FruitType Pickup::getType() {
+FruitType Pickup::get_type() {
     return type;
 }
 

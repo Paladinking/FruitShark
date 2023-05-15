@@ -17,17 +17,17 @@ Shark Shark::create_shark(Type type, const double x, const double y) {
 
 Shark::Shark(const double x, const double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id) :
 Entity(x, y, w, len), dmg(dmg), range_factor(range_factor), acc_factor(acc_factor),
-texture(textureHandler.getTextures(id))
+texture(texture_handler.get_textures(id))
 {
-    animationStage = (engine::random(0, 4) / 6.0);
+    animation_stage = (engine::random(0, 4) / 6.0);
 }
 
 void Shark::tick(const double delta,
                  const std::vector<std::vector<Vector2D>>& trails,
                  const std::vector<Fruit>& fruitsInWater,
                  const std::vector<Ship>& ships) {
-    animationStage += delta;
-    if (animationStage >= 1.3) animationStage = 0.0;
+    animation_stage += delta;
+    if (animation_stage >= 1.3) animation_stage = 0.0;
     Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE * range_factor, position.y);
     bool fruit_target = false;
     double acc = SHARK_ACCELERATION;
@@ -93,10 +93,10 @@ void Shark::tick(const double delta,
 
 void Shark::render() const {
     const Texture* textures[] = {texture, texture + 1, texture + 2, texture + 1};
-    (animationStage < 0.665) ?
-    textures[static_cast<int>(animationStage * 6)]->
+    (animation_stage < 0.665) ?
+    textures[static_cast<int>(animation_stage * 6)]->
     render(static_cast<int>(position.x), static_cast<int>(position.y), angle) :
-    textures[static_cast<int>((animationStage - 0.665) * 6)]->
+    textures[static_cast<int>((animation_stage - 0.665) * 6)]->
     render(static_cast<int>(position.x), static_cast<int>(position.y),
              angle + 3.1415, SDL_FLIP_HORIZONTAL);
 }

@@ -30,7 +30,7 @@ constexpr int START_Y[4][4] = {
         {3 * LOGICAL_HEIGHT / 4 , LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4, 0},
         { LOGICAL_HEIGHT / 4, LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4, 3 * LOGICAL_HEIGHT / 4}
 };
-extern TextureHandler textureHandler;
+extern TextureHandler texture_handler;
 
 
 #endif //FRUITSHARK_CONFIG_H

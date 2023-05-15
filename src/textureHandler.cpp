@@ -1,96 +1,96 @@
 #include "textureHandler.h"
 #include "engine/exceptions.h"
 
-void TextureHandler::loadTextures() {
-    int shipWidth = 75;
-    int shipHeight = 37;
-    shipTexture.load_from_file("assets/images/Ship.png", shipWidth, shipHeight);
-    mastsTexture.load_from_file("assets/images/Masts.png", shipWidth, shipHeight);
-    sailsWhiteTexture.load_from_file("assets/images/Sails_white.png", shipWidth, shipHeight);
-    sailsBlueTexture.load_from_file("assets/images/Sails_blue.png", shipWidth, shipHeight);
-    sailsGreenTexture.load_from_file("assets/images/Sails_green.png", shipWidth, shipHeight);
-    sailsRedTexture.load_from_file("assets/images/Sails_red.png", shipWidth, shipHeight);
-    cannonTexture.load_from_file("assets/images/Cannon.png", 17, 12);
+void TextureHandler::load_textures() {
+    int ship_width = 75;
+    int ship_height = 37;
+    ship_texture.load_from_file("assets/images/Ship.png", ship_width, ship_height);
+    masts_texture.load_from_file("assets/images/Masts.png", ship_width, ship_height);
+    sails_white_texture.load_from_file("assets/images/Sails_white.png", ship_width, ship_height);
+    sails_blue_texture.load_from_file("assets/images/Sails_blue.png", ship_width, ship_height);
+    sails_green_texture.load_from_file("assets/images/Sails_green.png", ship_width, ship_height);
+    sails_red_texture.load_from_file("assets/images/Sails_red.png", ship_width, ship_height);
+    cannon_texture.load_from_file("assets/images/Cannon.png", 17, 12);
 
-    int sharkWidth = 100;
-    int sharkHeight = 50;
-    sharkTexture[0].load_from_file("assets/images/Shark1.png", sharkWidth, sharkHeight);
-    sharkTexture[1].load_from_file("assets/images/Shark2.png", sharkWidth, sharkHeight);
-    sharkTexture[2].load_from_file("assets/images/Shark3.png", sharkWidth, sharkHeight);
+    int shark_width = 100;
+    int shark_height = 50;
+    shark_texture[0].load_from_file("assets/images/Shark1.png", shark_width, shark_height);
+    shark_texture[1].load_from_file("assets/images/Shark2.png", shark_width, shark_height);
+    shark_texture[2].load_from_file("assets/images/Shark3.png", shark_width, shark_height);
 
-    whiteSharkTexture[0].load_from_file("assets/images/GreatWhite1.png", 140, 70);
-    whiteSharkTexture[1].load_from_file("assets/images/GreatWhite2.png", 140, 70);
-    whiteSharkTexture[2].load_from_file("assets/images/GreatWhite3.png", 140, 70);
+    white_shark_texture[0].load_from_file("assets/images/GreatWhite1.png", 140, 70);
+    white_shark_texture[1].load_from_file("assets/images/GreatWhite2.png", 140, 70);
+    white_shark_texture[2].load_from_file("assets/images/GreatWhite3.png", 140, 70);
 
-    int fruitSize = 20;
-    appleTexture[0].load_from_file("assets/images/Apple1.png", fruitSize, fruitSize);
-    appleTexture[1].load_from_file("assets/images/Apple2.png", fruitSize, fruitSize);
+    int fruit_size = 20;
+    apple_texture[0].load_from_file("assets/images/Apple1.png", fruit_size, fruit_size);
+    apple_texture[1].load_from_file("assets/images/Apple2.png", fruit_size, fruit_size);
 
-    bananaTexture[0].load_from_file("assets/images/Banana1.png", fruitSize, fruitSize);
-    bananaTexture[1].load_from_file("assets/images/Banana2.png", fruitSize, fruitSize);
+    banana_texture[0].load_from_file("assets/images/Banana1.png", fruit_size, fruit_size);
+    banana_texture[1].load_from_file("assets/images/Banana2.png", fruit_size, fruit_size);
 
-    pomegranateTexture[0].load_from_file("assets/images/Pomegranate1.png", fruitSize, fruitSize);
-    pomegranateTexture[1].load_from_file("assets/images/Pomegranate1.png", fruitSize, fruitSize);
+    pomegranate_texture[0].load_from_file("assets/images/Pomegranate1.png", fruit_size, fruit_size);
+    pomegranate_texture[1].load_from_file("assets/images/Pomegranate1.png", fruit_size, fruit_size);
 
-    pomegranateSeedTexture[0].load_from_file("assets/images/Seed1.png", fruitSize / 2, fruitSize / 2);
-    pomegranateSeedTexture[1].load_from_file("assets/images/Seed2.png", fruitSize / 2, fruitSize / 2);
+    pomegranate_seed_texture[0].load_from_file("assets/images/Seed1.png", fruit_size / 2, fruit_size / 2);
+    pomegranate_seed_texture[1].load_from_file("assets/images/Seed2.png", fruit_size / 2, fruit_size / 2);
 
-    int boxSize = fruitSize + 10;
-    boxTexture.load_from_file("assets/images/PickupBox.png", boxSize, boxSize);
+    int box_size = fruit_size + 10;
+    box_texture.load_from_file("assets/images/PickupBox.png", box_size, box_size);
 
-    int teethSize = 75;
-    teethTexture[0].load_from_file("assets/images/Teeth1.png", teethSize, teethSize);
-    teethTexture[1].load_from_file("assets/images/Teeth2.png", teethSize, teethSize);
-    teethTexture[2].load_from_file("assets/images/Teeth3.png", teethSize, teethSize);
-    teethTexture[3].load_from_file("assets/images/Teeth4.png", teethSize, teethSize);
-    teethTexture[4].load_from_file("assets/images/Teeth5.png", teethSize, teethSize);
+    int teeth_size = 75;
+    teeth_texture[0].load_from_file("assets/images/Teeth1.png", teeth_size, teeth_size);
+    teeth_texture[1].load_from_file("assets/images/Teeth2.png", teeth_size, teeth_size);
+    teeth_texture[2].load_from_file("assets/images/Teeth3.png", teeth_size, teeth_size);
+    teeth_texture[3].load_from_file("assets/images/Teeth4.png", teeth_size, teeth_size);
+    teeth_texture[4].load_from_file("assets/images/Teeth5.png", teeth_size, teeth_size);
 }
 
-const Texture& TextureHandler::getTexture(TextureID texture) const {
+const Texture& TextureHandler::get_texture(TextureID texture) const {
     switch (texture) {
         case TextureID::SHIP:
-            return shipTexture;
+            return ship_texture;
         case TextureID::MASTS:
-            return mastsTexture;
+            return masts_texture;
         case TextureID::SAILS_WHITE:
-            return sailsWhiteTexture;
+            return sails_white_texture;
         case TextureID::SAILS_BLUE:
-            return sailsBlueTexture;
+            return sails_blue_texture;
         case TextureID::SAILS_GREEN:
-            return sailsGreenTexture;
+            return sails_green_texture;
         case TextureID::SAILS_RED:
-            return sailsRedTexture;
+            return sails_red_texture;
         case TextureID::CANNON:
-            return cannonTexture;
+            return cannon_texture;
         case TextureID::BOX:
-            return boxTexture;
+            return box_texture;
         case TextureID::APPLE:
-            return appleTexture[0];
+            return apple_texture[0];
         case TextureID::BANANA:
-            return bananaTexture[0];
+            return banana_texture[0];
         case TextureID::POMEGRANATE:
-            return pomegranateTexture[0];
+            return pomegranate_texture[0];
         default:
             throw image_load_exception("Invalid texture id");
     }
 }
 
-const Texture *TextureHandler::getTextures(TextureID texture) const {
+const Texture *TextureHandler::get_textures(TextureID texture) const {
     switch (texture) {
         case TextureID::SHARK:
-            return sharkTexture;
+            return shark_texture;
         case TextureID::TEETH:
-            return teethTexture;
+            return teeth_texture;
         case TextureID::BANANA:
-            return bananaTexture;
+            return banana_texture;
         case TextureID::APPLE:
-            return appleTexture;
+            return apple_texture;
         case TextureID::POMEGRANATE:
-            return pomegranateTexture;
+            return pomegranate_texture;
         case TextureID::POMEGRANATE_SEED:
-            return pomegranateSeedTexture;
+            return pomegranate_seed_texture;
         case TextureID::WHITE_SHARK:
-            return whiteSharkTexture;
+            return white_shark_texture;
         default:
             throw image_load_exception("Invalid texture id");
 

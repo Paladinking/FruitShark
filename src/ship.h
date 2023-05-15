@@ -53,15 +53,15 @@ public:
     int id;
 
 private:
-    const Texture* shipTexture;
-    const Texture* mastsTexture;
-    const Texture* sailsTexture;
+    const Texture* ship_texture;
+    const Texture* masts_texture;
+    const Texture* sails_texture;
 
     std::unique_ptr<HoldInput> forward, back, left, right;
     std::unique_ptr<PressInput> fire_left, fire_right;
 
-    bool isChargingLeft = false;
-    bool isChargingRight = false;
+    bool is_charging_left = false;
+    bool is_charging_right = false;
 
     int hp = MAX_HP;
 
@@ -70,14 +70,14 @@ private:
     int fruit_count = -1;
     FruitType fruit_type = FruitType::APPLE;
 
-    [[nodiscard]] Vector2D leftCannonPosition() const;
-    [[nodiscard]] Vector2D rightCannonPosition() const;
+    [[nodiscard]] Vector2D left_cannon_position() const;
+    [[nodiscard]] Vector2D right_cannon_position() const;
 
-    void fireLeftCannon(std::vector<Fruit>& fruits);
-    void fireRightCannon(std::vector<Fruit>& fruits);
+    void fire_left_cannon(std::vector<Fruit>& fruits);
+    void fire_right_cannon(std::vector<Fruit>& fruits);
 
-    Cannon leftCannon;
-    Cannon rightCannon;
+    Cannon left_cannon;
+    Cannon right_cannon;
 };
 
 

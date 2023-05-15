@@ -39,7 +39,7 @@ private:
     double acc_factor;
 
     const Texture* texture;
-    double animationStage;
+    double animation_stage;
 
     const std::vector<Vector2D>* trail = nullptr;
     unsigned trail_index = 0;

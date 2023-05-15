@@ -8,7 +8,7 @@ void Restarter::tick(Uint64 delt, StateStatus &res) {
     res.new_state = new SharkGame();
 }
 
-TextureHandler textureHandler = TextureHandler();
+TextureHandler texture_handler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -100,7 +100,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
         for (int j = 0; j < pickups.size(); ++j) {
             if (ships[i].intersects(pickups[j].get_position(), pickups[j].get_radius())) {
-                ships[i].add_fruits(pickups[j].getType(), 4);
+                ships[i].add_fruits(pickups[j].get_type(), 4);
                 pickups.erase(pickups.begin() + j);
                 --j;
             }
@@ -146,7 +146,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
         if (collision) continue;
 
-        if (fruit.inWater) {
+        if (fruit.in_water) {
             sound::play(sound::Id::WATER);
             if (fruit.get_position().x >= UI_SIZE && fruit.get_position().x < LOGICAL_WIDTH - UI_SIZE
                 && fruit.get_position().y >= 0 && fruit.get_position().y < LOGICAL_HEIGHT) {

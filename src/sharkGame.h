@@ -52,7 +52,7 @@ private:
     } state = STARTUP;
 
     double startup_delay = 3.999;
-    double pickup_delay;
+    double pickup_delay = PICKUP_SPAWN_TIME;
 
     TextBox startup_textures[4];
 
