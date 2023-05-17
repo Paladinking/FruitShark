@@ -39,13 +39,15 @@ void SharkGame::init(WindowState* window_state) {
         } while(!good);
         int path = engine::random(0, static_cast<Sint32>(shark_trails.size()));
         int type = engine::random(0, 100);
-        if (type > 80) {
+        if (type > 50) {
             sharks.push_back(Shark::create_shark(Shark::Type::GREAT_WHITE, x, y));
         } else {
             sharks.push_back(Shark::create_shark(Shark::Type::TIGER, x, y));
         }
+
         sharks[i].set_trail(&shark_trails[path]);
     }
+
     startup_textures[3] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "3", 64);
     startup_textures[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "2", 64);
     startup_textures[1] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "1", 64);

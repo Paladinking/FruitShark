@@ -49,16 +49,7 @@ void Entity::move(const double delta) {
     acceleration.x = 0.0;
     acceleration.y = 0.0;
     update_bounds();
-    if (bounds.x < UI_SIZE) {
-        adjust_bounds(UI_SIZE - bounds.x, 0.0);
-    } else if (bounds.x + bounds.w >= LOGICAL_WIDTH - UI_SIZE) {
-        adjust_bounds((LOGICAL_WIDTH - UI_SIZE) - (bounds.x + bounds.w), 0.0);
-    }
-    if (bounds.y < 0.0) {
-        adjust_bounds(0.0, -bounds.y);
-    } else if (bounds.y + bounds.h >= LOGICAL_HEIGHT) {
-        adjust_bounds(0.0, LOGICAL_HEIGHT - (bounds.y + bounds.h));
-    }
+
 }
 
 bool Entity::intersects(const Entity &other) const {

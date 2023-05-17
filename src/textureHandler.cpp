@@ -22,6 +22,13 @@ void TextureHandler::loadTextures() {
     whiteSharkTexture[1].load_from_file("assets/images/GreatWhite2.png", 140, 70);
     whiteSharkTexture[2].load_from_file("assets/images/GreatWhite3.png", 140, 70);
 
+    megaSharktexture[0].load_from_file("assets/images/GreatWhite1.png", 310, 155);
+    megaSharktexture[0].set_color_mod(0xe0, 0xe0, 0xe0);
+    megaSharktexture[1].load_from_file("assets/images/GreatWhite2.png", 310, 155);
+    megaSharktexture[1].set_color_mod(0xe0, 0xe0, 0xe0);
+    megaSharktexture[2].load_from_file("assets/images/GreatWhite3.png", 310, 155);
+    megaSharktexture[2].set_color_mod(0xe0, 0xe0, 0xe0);
+
     int fruitSize = 20;
     appleTexture[0].load_from_file("assets/images/Apple1.png", fruitSize, fruitSize);
     appleTexture[1].load_from_file("assets/images/Apple2.png", fruitSize, fruitSize);
@@ -91,6 +98,8 @@ const Texture *TextureHandler::getTextures(TextureID texture) const {
             return pomegranateSeedTexture;
         case TextureID::WHITE_SHARK:
             return whiteSharkTexture;
+        case TextureID::MEGA_SHARK:
+            return megaSharktexture;
         default:
             throw image_load_exception("Invalid texture id");
 

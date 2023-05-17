@@ -14,7 +14,8 @@ class Shark : public Entity {
 public:
     enum class Type {
         GREAT_WHITE,
-        TIGER
+        TIGER,
+        MEGA
     };
     static Shark create_shark(Type type, double x, double y);
 

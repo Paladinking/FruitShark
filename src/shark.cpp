@@ -10,8 +10,11 @@ Shark Shark::create_shark(Type type, const double x, const double y) {
     switch (type) {
         case Type::GREAT_WHITE:
             return {x, y, 60, 120, 15, 2.0, 0.9, TextureID::WHITE_SHARK};
+        case Type::MEGA:
+            return {x, y, 160, 260, 30, 3.5, 1.5, TextureID::MEGA_SHARK};
         case Type::TIGER: default:
             return {x, y, 40, 90, 10, 1.0, 1.0, TextureID::SHARK};
+
     }
 }
 
