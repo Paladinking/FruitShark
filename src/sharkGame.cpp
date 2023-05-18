@@ -47,6 +47,7 @@ void SharkGame::init(WindowState* window_state) {
 
         sharks[i].set_trail(&shark_trails[path]);
     }
+    sharks.push_back(Shark::create_shark(Shark::Type::MEGA, LOGICAL_WIDTH / 2, LOGICAL_HEIGHT / 2));
 
     startup_textures[3] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "3", 64);
     startup_textures[2] = TextBox(UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT, "2", 64);

@@ -8,11 +8,11 @@ constexpr int GAME_WIDTH = LOGICAL_WIDTH - 2 * UI_SIZE, GAME_HEIGHT = LOGICAL_HE
 
 constexpr unsigned PLAYER_COUNT = 2;
 
-constexpr unsigned INITIAL_SHARK_COUNT = 10;
+constexpr unsigned INITIAL_SHARK_COUNT = 0;
 
 constexpr const char* BINDINGS[2][6] = {
         {"W", "A", "S", "D", "V", "B"},
-        {"Up", "Left", "Down", "Right", "N", "M"}
+        {"Up", "Left", "Down", "Right", ",", "."}
 };
 
 constexpr TextureID COLORS[4] = {TextureID::SAILS_WHITE, TextureID::SAILS_BLUE,
