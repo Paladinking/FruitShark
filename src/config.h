@@ -12,7 +12,7 @@ constexpr unsigned INITIAL_SHARK_COUNT = 10;
 
 constexpr const char*  BINDINGS[2][6] = {
         {"W", "A", "S", "D", "V", "B"},
-        {"I", "J", "K", "L", "T", "Y"}
+        {"Up", "Left", "Down", "Right", ",", "."}
 };
 
 constexpr TextureID COLORS[4] = {TextureID::SAILS_WHITE, TextureID::SAILS_BLUE,

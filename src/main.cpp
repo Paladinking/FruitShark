@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
+#include <enet/enet.h>
 #include "engine/game.h"
 #include "mainMenu.h"
 /**
@@ -27,6 +28,7 @@ void cleanup()
     Mix_CloseAudio();
     Mix_Quit();
     SDL_Quit();
+    enet_deinitialize();
 }
 
 /**
@@ -49,11 +51,16 @@ void init() {
         exit(-3);
     }
 
+    if (enet_initialize() < 0) {
+        std::cout << "Could not initialize enet" << std::endl;
+        exit(-4);
+    }
+
     try {
         engine::init();
     } catch (const base_exception &e) {
         std::cout << e.msg << std::endl;
-        exit(-4);
+        exit(-5);
     }
 }
 
