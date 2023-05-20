@@ -1,7 +1,7 @@
 #ifndef FRUITSHARK_MAINMENU_H
 #define FRUITSHARK_MAINMENU_H
 #include "engine/ui.h"
-#include "shark.h"
+#include "entities/shark.h"
 
 class MainMenu : public Menu {
 public:

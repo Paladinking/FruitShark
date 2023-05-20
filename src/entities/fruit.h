@@ -4,9 +4,9 @@
 #include "vector2D.h"
 #include "engine/texture.h"
 #include "engine/engine.h"
-#include "textureHandler.h"
+#include "asset_handlers/textureHandler.h"
 #include "config.h"
-#include "entity.h"
+#include "entities/entity.h"
 #include <vector>
 
 enum class FruitType {

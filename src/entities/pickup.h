@@ -2,7 +2,7 @@
 #define FRUITSHARK_PICKUP_H
 
 #include "vector2D.h"
-#include "fruit.h"
+#include "entities/fruit.h"
 #include "config.h"
 #include "engine/engine.h"
 

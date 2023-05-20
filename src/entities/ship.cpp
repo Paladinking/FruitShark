@@ -1,5 +1,5 @@
-#include "Ship.h"
-#include "shark.h"
+#include "ship.h"
+#include "entities/shark.h"
 
 
 Ship::Ship(double x, double y, const TextureID sail_color, int id, double angle) :

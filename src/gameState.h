@@ -1,12 +1,12 @@
 #ifndef FRUITSHARK_GAMESTATE_H
 #define FRUITSHARK_GAMESTATE_H
-#include "fruit.h"
-#include "pickup.h"
+#include "entities/fruit.h"
+#include "entities/pickup.h"
 #include "config.h"
 
 class GameState {
 public:
-    void tick_physics(double delta, const std::vector<bool*> inputs);
+    void tick_physics(double delta, const std::vector<bool*>& inputs);
 
     void initialize();
 

@@ -4,12 +4,12 @@
 #include "engine/game.h"
 #include "engine/input.h"
 #include "engine/ui.h"
-#include "ship.h"
+#include "entities/ship.h"
 #include "config.h"
-#include "shark.h"
-#include "bite.h"
-#include "fruit.h"
-#include "pickup.h"
+#include "entities/shark.h"
+#include "entities/bite.h"
+#include "entities/fruit.h"
+#include "entities/pickup.h"
 #include "gameState.h"
 
 class Restarter : public State {

@@ -21,7 +21,7 @@ Running headless server + clients:
             gives 10 bits for angle => 1024, ca 0.35 degree precision
             Fits into single int32
             This would mean 100 objects of any kind => 400 bytes
-            0.5 Mbps = 65536 bytes / s => 100 bytes / 6ms
+            0.5 Mbps = 65536 bytes / s => 400 bytes / 6ms
             16.666 ms gives 60 fps, allows 1048 bytes (not 4 players...)
             Could also compress data...
                 That takes time but could be faster if network speed is limiting

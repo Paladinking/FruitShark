@@ -8,15 +8,15 @@ constexpr double BITE_DELAY = 1.0;
 Shark Shark::create_shark(Type type, const double x, const double y) {
     switch (type) {
         case Type::GREAT_WHITE:
-            return {x, y, 60, 120, 15, 2.0, 0.9, TextureID::WHITE_SHARK};
+            return {x, y, 60, 120, 15, 2.0, 0.9, type, TextureID::WHITE_SHARK};
         case Type::TIGER: default:
-            return {x, y, 40, 90, 10, 1.0, 1.0, TextureID::SHARK};
+            return {x, y, 40, 90, 10, 1.0, 1.0, type, TextureID::SHARK};
     }
 }
 
-Shark::Shark(const double x, const double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id) :
+Shark::Shark(const double x, const double y, int w, int len, int dmg, double range_factor, double acc_factor, Type type, TextureID id) :
         BoxEntity(x, y, w, len), dmg(dmg), range_factor(range_factor), acc_factor(acc_factor),
-        texture(texture_handler.get_textures(id))
+        texture(texture_handler.get_textures(id)), type(type)
 {
     animation_stage = (engine::random(0, 4) / 6.0);
 }

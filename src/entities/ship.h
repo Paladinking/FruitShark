@@ -2,10 +2,10 @@
 #define FRUITSHARK_SHIP_H
 
 #include <vector>
-#include "entity.h"
+#include "entities/entity.h"
 #include "engine/texture.h"
 #include "engine/input.h"
-#include "fruit.h"
+#include "entities/fruit.h"
 #include "gameState.h"
 
 constexpr int MAX_HP = 50;

@@ -3,19 +3,19 @@
 
 #include "engine/texture.h"
 #include "engine/engine.h"
-#include "entity.h"
+#include "entities/entity.h"
 #include <vector>
 #include "config.h"
-#include "fruit.h"
+#include "entities/fruit.h"
 #include "ship.h"
 
 
 class Shark : public BoxEntity {
 public:
-    enum class Type {
+    const enum class Type : Uint8{
         GREAT_WHITE,
         TIGER
-    };
+    } type;
     static Shark create_shark(Type type, double x, double y);
 
     void tick_animation(double delta);
@@ -33,7 +33,7 @@ public:
 
     bool bite(Ship& ship);
 private:
-    Shark(double x, double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id);
+    Shark(double x, double y, int w, int len, int dmg, double range_factor, double acc_factor, Type type, TextureID id);
 
     int dmg;
 

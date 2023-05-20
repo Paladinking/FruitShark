@@ -1,7 +1,7 @@
 #include "mainMenu.h"
 #include "config.h"
 #include "sharkGame.h"
-#include "sound.h"
+#include "asset_handlers/sound.h"
 
 const std::string MainMenu::BUTTON_NAMES[] = {"Start Game", "Exit"};
 const int MainMenu::BUTTON_WIDTH = 220;

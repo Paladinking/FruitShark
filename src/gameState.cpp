@@ -1,5 +1,5 @@
 #include "gameState.h"
-#include "shark.h"
+#include "entities/shark.h"
 
 void GameState::initialize() {
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
@@ -35,7 +35,7 @@ void GameState::initialize() {
     pickup_delay = PICKUP_SPAWN_TIME;
 }
 
-void GameState::tick_physics(double delta, const std::vector<bool*> inputs) {
+void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
     for (int i = 0; i < ships.size(); ++i) {
         const bool* input = inputs[i];
         ships[i].tick_physics(delta, input, *this);

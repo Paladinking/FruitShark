@@ -1,7 +1,7 @@
 #ifndef FRUITSHARK_ENTITY_H
 #define FRUITSHARK_ENTITY_H
 #include "vector2D.h"
-#include "serialize.h"
+#include "net/serialize.h"
 #include <SDL.h>
 
 constexpr double PI = 3.14159265;

@@ -1,6 +1,6 @@
 #include "sharkGame.h"
 #include "config.h"
-#include "sound.h"
+#include "asset_handlers/sound.h"
 #include "engine/ui.h"
 
 void Restarter::tick(Uint64 delt, StateStatus &res) {

@@ -1,6 +1,6 @@
 #ifndef FRUITSHARK_CONFIG_H
 #define FRUITSHARK_CONFIG_H
-#include "textureHandler.h"
+#include "asset_handlers/textureHandler.h"
 #include <vector>
 #include "vector2D.h"
 

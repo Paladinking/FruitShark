@@ -45,15 +45,15 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(main src/main.cpp
         src/sharkGame.cpp
-        src/ship.cpp src/shark.cpp
-        src/entity.cpp src/fruit.cpp
-        src/textureHandler.cpp
+        src/entities/ship.cpp src/entities/shark.cpp
+        src/entities/entity.cpp src/entities/fruit.cpp
+        src/asset_handlers/textureHandler.cpp
         src/mainMenu.cpp
-        src/sound.cpp
-        src/bite.cpp
-        src/pickup.cpp
+        src/asset_handlers/sound.cpp
+        src/entities/bite.cpp
+        src/entities/pickup.cpp
         src/gameState.cpp
-        src/server.cpp)
+        src/net/server.cpp)
 target_link_libraries(main Engine)
 target_link_libraries(main ${SDL2_LIBRARIES})
 target_link_libraries(main SDL2_image::SDL2_image)

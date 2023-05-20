@@ -2,10 +2,13 @@
 #define FRUITSHARK_SERVER_H
 #include "engine/game.h"
 #include <vector>
-#include "ship.h"
-#include "shark.h"
-#include "bite.h"
-#include "pickup.h"
+#include "entities/ship.h"
+#include "entities/shark.h"
+#include "entities/bite.h"
+#include "entities/pickup.h"
+#include "net/net.h"
+
+
 
 class Server : public State, public GameState {
 public:
@@ -27,6 +30,10 @@ public:
 
 private:
     std::vector<bool*> inputs;
+
+    size_t state_size = 0;
+
+    std::unique_ptr<ENetHost, HostDeleter> server;
 };
 
 
