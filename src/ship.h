@@ -30,15 +30,15 @@ private:
 
 class Ship : public BoxEntity {
 public:
-    Ship(double x, double y, const char *const *bindings, TextureID sail_color, int id, double angle);
+    Ship(double x, double y, TextureID sail_color, int id, double angle);
 
     void render() const;
 
-    void tick(double delta, const Uint8* keyboard, Uint32 mouse_mask, std::vector<Fruit>& fruits);
+    void tick(double delta, const bool* inputs, std::vector<Fruit>& fruits);
 
-    void handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits);
+    void handle_up(bool left, bool right, std::vector<Fruit>& fruits);
 
-    void handle_down(SDL_Keycode key, Uint8 mouse);
+    void handle_down(bool left, bool right);
 
     void get_bitten(int damage);
 
@@ -52,13 +52,14 @@ public:
 
     int id;
 
+    enum class Direction : Uint8 {
+        FORWARDS = 0, LEFT = 1, RIGHT = 3
+    };
+
 private:
     const Texture* ship_texture;
     const Texture* masts_texture;
     const Texture* sails_texture;
-
-    std::unique_ptr<HoldInput> forward, back, left, right;
-    std::unique_ptr<PressInput> fire_left, fire_right;
 
     bool is_charging_left = false;
     bool is_charging_right = false;

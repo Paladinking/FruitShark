@@ -17,6 +17,18 @@ class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;
 };
 
+class Input {
+public:
+    explicit Input(const char *const *bindings);
+
+    const bool* state(const Uint8 *keyboard, Uint32 mouse_mask);
+
+    std::unique_ptr<HoldInput> left, right, forwards;
+    std::unique_ptr<PressInput> left_cannon, right_cannon;
+private:
+    bool hold_state[3];
+};
+
 class SharkGame : public State {
 public:
     SharkGame() : State() {}
@@ -33,6 +45,7 @@ public:
 private:
     std::unique_ptr<HoldInput> exit_input, restart_input;
     std::vector<Ship> ships;
+    std::vector<Input> inputs;
     std::vector<Shark> sharks;
     std::vector<Bite> bites;
     std::vector<Fruit> fruits_in_air;

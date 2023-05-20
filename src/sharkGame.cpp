@@ -8,6 +8,24 @@ void Restarter::tick(Uint64 delt, StateStatus &res) {
     res.new_state = new SharkGame();
 }
 
+Input::Input(const char *const *bindings) {
+    forwards = get_hold_input(bindings[static_cast<Uint8>(Ship::Direction::FORWARDS)]);
+    left = get_hold_input(bindings[static_cast<Uint8>(Ship::Direction::LEFT)]);
+    right = get_hold_input(bindings[static_cast<Uint8>(Ship::Direction::RIGHT)]);
+    left_cannon = get_press_input(bindings[4]);
+    right_cannon = get_press_input(bindings[5]);
+}
+
+const bool* Input::state(const Uint8 *keyboard, Uint32 mouse_mask) {
+    hold_state[static_cast<Uint8>(Ship::Direction::FORWARDS)] =
+            forwards->is_pressed(keyboard, mouse_mask);
+    hold_state[static_cast<Uint8>(Ship::Direction::LEFT)] =
+            left->is_pressed(keyboard, mouse_mask);
+    hold_state[static_cast<Uint8>(Ship::Direction::RIGHT)] =
+            right->is_pressed(keyboard, mouse_mask);
+    return hold_state;
+}
+
 TextureHandler texture_handler = TextureHandler();
 
 void SharkGame::init(WindowState* window_state) {
@@ -17,8 +35,9 @@ void SharkGame::init(WindowState* window_state) {
     exit_input = get_hold_input("Escape");
     restart_input = get_hold_input("Space");
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
-        ships.emplace_back(START_X[PLAYER_COUNT - 1][i], START_Y[PLAYER_COUNT - 1][i], BINDINGS[i],
+        ships.emplace_back(START_X[PLAYER_COUNT - 1][i], START_Y[PLAYER_COUNT - 1][i],
                            COLORS[i], i, PI * i);
+        inputs.emplace_back(BINDINGS[i]);
     }
     create_shark_trails();
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {
@@ -76,8 +95,9 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         }
         return;
     }
-    for (auto& ship : ships) {
-        ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruits_in_air);
+    for (int i = 0; i < ships.size(); ++i) {
+        const bool* input = inputs[i].state(window_state->keyboard_state, window_state->mouse_mask);
+        ships[i].tick(dDelta, input, fruits_in_air);
     }
     for (auto& shark : sharks) {
         shark.tick_physics(dDelta, shark_trails, fruits_in_water, ships);
@@ -254,15 +274,22 @@ void SharkGame::create_shark_trails() {
 
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
     if (state != PLAYING) return;
-    for (auto& ship : ships) {
-        ship.handle_up(key, mouse, fruits_in_air);
+    for (int i = 0; i < ships.size(); ++i) {
+        ships[i].handle_up(
+                inputs[i].left_cannon->is_targeted(key, mouse),
+                inputs[i].right_cannon->is_targeted(key, mouse),
+                fruits_in_air);
+
     }
 }
 
 void SharkGame::handle_down(SDL_Keycode key, Uint8 mouse) {
     if (state != PLAYING) return;
-    for (auto& ship : ships) {
-        ship.handle_down(key, mouse);
+    for (int i = 0; i < ships.size(); ++i) {
+        ships[i].handle_down(
+                inputs[i].left_cannon->is_targeted(key, mouse),
+                inputs[i].right_cannon->is_targeted(key, mouse));
+
     }
 }
 

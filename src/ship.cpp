@@ -3,7 +3,7 @@
 #include "shark.h"
 
 
-Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color, int id, double angle) :
+Ship::Ship(double x, double y, const TextureID sail_color, int id, double angle) :
         BoxEntity(x, y, 25, 50, angle),
         ship_texture(&texture_handler.get_texture(TextureID::SHIP)),
         masts_texture(&texture_handler.get_texture(TextureID::MASTS)),
@@ -11,26 +11,19 @@ Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail
         id(id),
         left_cannon(),
         right_cannon() {
-    forward = get_hold_input(bindings[0]);
-    left = get_hold_input(bindings[1]);
-    back = get_hold_input(bindings[2]);
-    right = get_hold_input(bindings[3]);
-
-    fire_left = get_press_input(bindings[4]);
-    fire_right = get_press_input(bindings[5]);
 }
 
-void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vector<Fruit>& fruits) {
+void Ship::tick(double delta, const bool* inputs, std::vector<Fruit>& fruits) {
     Vector2D vel_delta = { cos(angle), sin(angle)};
-    if (forward->is_pressed(keyboard, mouse_mask)) {
+    if (inputs[static_cast<Uint8>(Direction::FORWARDS)]) {
         acceleration.add_scaled(vel_delta,  ACCELERATION);
     }
 
-    if (left->is_pressed(keyboard, mouse_mask)) {
+    if (inputs[static_cast<Uint8>(Direction::LEFT)]) {
         angle -= 120.0 * delta * PI / 180.0; // Remove to stop rotate while still
         velocity.rotate(-120.0 * delta * PI / 180.0);
     }
-    if (right->is_pressed(keyboard, mouse_mask)) {
+    if (inputs[static_cast<Uint8>(Direction::RIGHT)]) {
         angle += 120.0 * delta * PI / 180.0; // Remove to stop rotate while still
         velocity.rotate(120.0 * delta * PI / 180.0);
     }
@@ -119,8 +112,8 @@ void Ship::fire_right_cannon(std::vector<Fruit> &fruits) {
     is_charging_right = false;
 }
 
-void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
-    if (fire_left->is_targeted(key, mouse)) {
+void Ship::handle_up(const bool left, const bool right, std::vector<Fruit>& fruits) {
+    if (left) {
         if (is_charging_left && left_cannon.cooldown == 0.0) {
             fire_left_cannon(fruits);
             left_cannon.power = 0.0;
@@ -128,7 +121,7 @@ void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
             is_charging_left = false;
         }
     }
-    if (fire_right->is_targeted(key, mouse)) {
+    if (right) {
         if (is_charging_right && right_cannon.cooldown == 0.0) {
             fire_right_cannon(fruits);
             right_cannon.power = 0.0;
@@ -138,12 +131,12 @@ void Ship::handle_up(SDL_Keycode key, Uint8 mouse, std::vector<Fruit>& fruits) {
     }
 }
 
-void Ship::handle_down(SDL_Keycode key, Uint8 mouse) {
-    if (fire_left->is_targeted(key, mouse) && !is_charging_left) {
+void Ship::handle_down(const bool left, const bool right) {
+    if (left && !is_charging_left) {
         left_cannon.power = MIN_POWER;
         is_charging_left = true;
     }
-    if (fire_right->is_targeted(key, mouse) && !is_charging_right) {
+    if (right && !is_charging_right) {
         right_cannon.power = MIN_POWER;
         is_charging_right = true;
     }
