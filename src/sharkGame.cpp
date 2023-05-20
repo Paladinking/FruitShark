@@ -112,7 +112,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
             if (ships[i].intersects(shark)) {
                 if (shark.bite(ships[i])) {
                     Vector2D pos = shark.get_mouth();
-                    bites.emplace_back(pos.x, pos.y);
+                    bites.emplace_back(static_cast<int>(pos.x), static_cast<int>(pos.y));
                     if (ships[i].is_dead()) {
                         ships.erase(ships.begin() + i);
                         --i;
