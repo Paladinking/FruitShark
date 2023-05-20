@@ -10,6 +10,7 @@
 #include "bite.h"
 #include "fruit.h"
 #include "pickup.h"
+#include "gameState.h"
 
 class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;
@@ -19,15 +20,15 @@ class Input {
 public:
     explicit Input(const char *const *bindings);
 
-    const bool* state(const Uint8 *keyboard, Uint32 mouse_mask);
+    void update(const Uint8 *keyboard, Uint32 mouse_mask);
 
     std::unique_ptr<HoldInput> left, right, forwards;
     std::unique_ptr<PressInput> left_cannon, right_cannon;
-private:
-    bool hold_state[4];
+
+    bool hold_state[4] = {false, false, false, false};
 };
 
-class SharkGame : public State {
+class SharkGame : public State, public GameState {
 public:
     SharkGame() : State() {}
 
@@ -40,15 +41,24 @@ public:
     void handle_up(SDL_Keycode key, Uint8 mouse) override;
 
     void handle_down(SDL_Keycode key, Uint8 mouse) override;
+
+    void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
+
+    void create_bite(Vector2D position) override;
+
+    void ship_destroyed(int id) override;
+
+    void fruit_hit_water(const Fruit &fruit) override;
+
+    void fruit_hit_player(const Fruit &fruit, int player_id) override;
+
+    void pickup_created(const Pickup &pickup) override;
+
 private:
     std::unique_ptr<HoldInput> exit_input, restart_input;
-    std::vector<Ship> ships;
     std::vector<Input> inputs;
-    std::vector<Shark> sharks;
+    std::vector<bool*> input_values;
     std::vector<Bite> bites;
-    std::vector<Fruit> fruits_in_air;
-    std::vector<Fruit> fruits_in_water;
-    std::vector<Pickup> pickups;
 
     SDL_Rect game_viewport = {UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT};
 
@@ -57,7 +67,6 @@ private:
     } state = STARTUP;
 
     double startup_delay = 3.999;
-    double pickup_delay = PICKUP_SPAWN_TIME;
 
     TextBox startup_textures[4];
 

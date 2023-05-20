@@ -52,6 +52,7 @@ add_executable(main src/main.cpp
         src/sound.cpp
         src/bite.cpp
         src/pickup.cpp
+        src/gameState.cpp
         src/server.cpp)
 target_link_libraries(main Engine)
 target_link_libraries(main ${SDL2_LIBRARIES})

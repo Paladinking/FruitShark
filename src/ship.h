@@ -6,6 +6,7 @@
 #include "engine/texture.h"
 #include "engine/input.h"
 #include "fruit.h"
+#include "gameState.h"
 
 constexpr int MAX_HP = 50;
 constexpr double ACCELERATION = 800.0;
@@ -34,9 +35,9 @@ public:
 
     void render() const;
 
-    void tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fruits);
+    void tick_physics(double delta, const bool* inputs, GameState &game_state);
 
-    void handle_up(bool left, bool right, std::vector<Fruit>& fruits);
+    void handle_up(bool left, bool right, GameState& game_state);
 
     void handle_down(bool left, bool right);
 
@@ -74,8 +75,8 @@ private:
     [[nodiscard]] Vector2D left_cannon_position() const;
     [[nodiscard]] Vector2D right_cannon_position() const;
 
-    void fire_left_cannon(std::vector<Fruit>& fruits);
-    void fire_right_cannon(std::vector<Fruit>& fruits);
+    void fire_left_cannon(GameState& game_state);
+    void fire_right_cannon(GameState& game_state);
 
     Cannon left_cannon;
     Cannon right_cannon;

@@ -1,5 +1,4 @@
 #include "Ship.h"
-#include "sound.h"
 #include "shark.h"
 
 
@@ -13,7 +12,7 @@ Ship::Ship(double x, double y, const TextureID sail_color, int id, double angle)
         right_cannon() {
 }
 
-void Ship::tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fruits) {
+void Ship::tick_physics(double delta, const bool* inputs, GameState &game_state) {
     Vector2D vel_delta = { cos(angle), sin(angle)};
     if (inputs[static_cast<Uint8>(Direction::FORWARDS)]) {
         acceleration.add_scaled(vel_delta,  ACCELERATION);
@@ -34,7 +33,7 @@ void Ship::tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fr
         left_cannon.power += POWER_PER_SECOND * delta;
         if (left_cannon.power > MAX_POWER) {
             left_cannon.power = MAX_POWER;
-            fire_left_cannon(fruits);
+            fire_left_cannon(game_state);
         }
     }
     if (right_cannon.cooldown > 0.0) right_cannon.cooldown -= delta;
@@ -43,7 +42,7 @@ void Ship::tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fr
         right_cannon.power += POWER_PER_SECOND * delta;
         if (right_cannon.power > MAX_POWER) {
             right_cannon.power = MAX_POWER;
-            fire_right_cannon(fruits);
+            fire_right_cannon(game_state);
         }
     }
     if (smell_duration > 0.0) {
@@ -84,8 +83,7 @@ Vector2D Ship::right_cannon_position() const {
             position.y + (width * sin(angle + PI / 2.0)) / 1.5};
 }
 
-void Ship::fire_left_cannon(std::vector<Fruit> &fruits) {
-    sound::play(sound::Id::CANNON);
+void Ship::fire_left_cannon(GameState& game_state) {
     Vector2D fruitPosition = left_cannon_position();
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle - PI / 2) * left_cannon.power;
@@ -94,28 +92,27 @@ void Ship::fire_left_cannon(std::vector<Fruit> &fruits) {
     if (fruit_count  < 0) {
         fruit_type = FruitType::APPLE;
     }
-    fruits.emplace_back(fruitPosition, fruitVelocity, fruit_type);
     left_cannon.power = 0.0;
     left_cannon.cooldown = COOLDOWN_TIME;
     is_charging_left = false;
+    game_state.cannon_fired(fruitPosition, fruitVelocity, fruit_type);
 }
 
-void Ship::fire_right_cannon(std::vector<Fruit> &fruits) {
-    sound::play(sound::Id::CANNON);
+void Ship::fire_right_cannon(GameState& game_state) {
     Vector2D fruitPosition = right_cannon_position();
     Vector2D fruitVelocity = velocity;
     fruitVelocity.x += cos(angle + PI / 2) * right_cannon.power;
     fruitVelocity.y += sin(angle + PI / 2) * right_cannon.power;
-    fruits.emplace_back(fruitPosition, fruitVelocity, fruit_type);
     right_cannon.power = 0.0;
     right_cannon.cooldown = COOLDOWN_TIME;
     is_charging_right = false;
+    game_state.cannon_fired(fruitPosition, fruitVelocity, fruit_type);
 }
 
-void Ship::handle_up(const bool left, const bool right, std::vector<Fruit>& fruits) {
+void Ship::handle_up(const bool left, const bool right, GameState& game_state) {
     if (left) {
         if (is_charging_left && left_cannon.cooldown == 0.0) {
-            fire_left_cannon(fruits);
+            fire_left_cannon(game_state);
             left_cannon.power = 0.0;
         } else {
             is_charging_left = false;
@@ -123,7 +120,7 @@ void Ship::handle_up(const bool left, const bool right, std::vector<Fruit>& frui
     }
     if (right) {
         if (is_charging_right && right_cannon.cooldown == 0.0) {
-            fire_right_cannon(fruits);
+            fire_right_cannon(game_state);
             right_cannon.power = 0.0;
         } else {
             is_charging_right = false;

@@ -1,5 +1,4 @@
 #include "shark.h"
-#include "sound.h"
 
 constexpr double SHARK_ACCELERATION = 900.0;
 constexpr double FRUIT_DETECTION_RANGE = 300.0;
@@ -110,7 +109,6 @@ void Shark::set_trail(const std::vector<Vector2D> *new_trail) {
 
 bool Shark::bite(Ship &ship) {
     if (bite_delay <= 0) {
-        sound::play(sound::Id::BITE);
         ship.get_bitten(dmg);
         bite_delay = BITE_DELAY;
         return true;
