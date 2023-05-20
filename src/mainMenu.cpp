@@ -17,31 +17,7 @@ void MainMenu::init(WindowState *window_state) {
     texture_handler.load_textures();
     SDL_RenderGetLogicalSize(gRenderer, &window_state->screen_width, &window_state->screen_height);
     SDL_GetRendererOutputSize(gRenderer, &window_state->window_width, &window_state->window_height);
-    shark_trails.push_back({
-        {150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}
-    });
-    shark_trails.push_back({
-        {530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}
-    });
-    shark_trails.push_back({
-        {960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}
-    });
-    shark_trails.push_back({
-        {1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}
-    });
-
-    shark_trails.push_back({
-        {150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}
-    });
-    shark_trails.push_back({
-        {530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}
-    });
-    shark_trails.push_back({
-        {960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}
-    });
-    shark_trails.push_back({
-        {1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}
-    });
+    auto& shark_trails = get_shark_trails();
     for (int i = 0; i < INITIAL_SHARK_COUNT; ++i) {
         int x = engine::random(200, LOGICAL_WIDTH - 200);
         int y = engine::random(200, LOGICAL_HEIGHT - 200);
@@ -117,7 +93,9 @@ void MainMenu::render() {
 void MainMenu::tick(Uint64 delta, StateStatus &res) {
     Menu::tick(delta, res);
     if (delta > 0){
-        for (auto& shark : sharks) shark.tick_physics(delta / 1000.0, shark_trails, std::vector<Fruit>(), std::vector<Ship>());
+        for (auto& shark : sharks) shark.tick_physics(
+                delta / 1000.0, get_shark_trails(),
+                std::vector<Fruit>(), std::vector<Ship>());
         for (auto& shark : sharks) shark.tick_animation(delta / 1000.0);
     }
 

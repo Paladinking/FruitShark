@@ -11,8 +11,6 @@
 #include "fruit.h"
 #include "pickup.h"
 
-constexpr double PICKUP_SPAWN_TIME = 10.0;
-
 class Restarter : public State {
     void tick(Uint64 delt , StateStatus& res) override;
 };
@@ -26,7 +24,7 @@ public:
     std::unique_ptr<HoldInput> left, right, forwards;
     std::unique_ptr<PressInput> left_cannon, right_cannon;
 private:
-    bool hold_state[3];
+    bool hold_state[4];
 };
 
 class SharkGame : public State {
@@ -51,12 +49,6 @@ private:
     std::vector<Fruit> fruits_in_air;
     std::vector<Fruit> fruits_in_water;
     std::vector<Pickup> pickups;
-
-    std::vector<std::vector<Vector2D>> shark_trails;
-
-    void create_shark_trails();
-
-    void create_pickup();
 
     SDL_Rect game_viewport = {UI_SIZE, 0, GAME_WIDTH, GAME_HEIGHT};
 

@@ -39,7 +39,7 @@ void SharkGame::init(WindowState* window_state) {
                            COLORS[i], i, PI * i);
         inputs.emplace_back(BINDINGS[i]);
     }
-    create_shark_trails();
+    const std::vector<std::vector<Vector2D>>& shark_trails = get_shark_trails();
     for (unsigned  i = 0; i < INITIAL_SHARK_COUNT; ++i) {
         int x, y;
         bool good;
@@ -97,10 +97,10 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     }
     for (int i = 0; i < ships.size(); ++i) {
         const bool* input = inputs[i].state(window_state->keyboard_state, window_state->mouse_mask);
-        ships[i].tick(dDelta, input, fruits_in_air);
+        ships[i].tick_physics(dDelta, input, fruits_in_air);
     }
     for (auto& shark : sharks) {
-        shark.tick_physics(dDelta, shark_trails, fruits_in_water, ships);
+        shark.tick_physics(dDelta, get_shark_trails(), fruits_in_water, ships);
         shark.tick_animation(dDelta);
     }
 
@@ -206,7 +206,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     pickup_delay -= dDelta;
     if(pickup_delay < 0.0) {
         pickup_delay = PICKUP_SPAWN_TIME;
-        create_pickup();
+        Pickup::create(pickups);
     }
 }
 
@@ -236,40 +236,18 @@ void SharkGame::render() {
     SDL_RenderPresent(gRenderer);
 }
 
-void SharkGame::create_pickup() {
-    int x = engine::random(UI_SIZE * 2, GAME_WIDTH - UI_SIZE * 2);
-    int y = engine::random(UI_SIZE, GAME_HEIGHT - UI_SIZE);
-    FruitType possible_fruits[] = {FruitType::BANANA, FruitType::POMEGRANATE};
-    FruitType fruit_pickup = possible_fruits[engine::random(0, 2)];
-    pickups.emplace_back(x, y, fruit_pickup);
-}
-
-void SharkGame::create_shark_trails() {
-    shark_trails.push_back({
-        {150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}
-    });
-    shark_trails.push_back({
-        {530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}
-    });
-    shark_trails.push_back({
-        {960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}
-    });
-    shark_trails.push_back({
-        {1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}
-    });
-
-    shark_trails.push_back({
-        {150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}
-    });
-    shark_trails.push_back({
-        {530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}
-    });
-    shark_trails.push_back({
-        {960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}
-    });
-    shark_trails.push_back({
-        {1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}
-    });
+const std::vector<std::vector<Vector2D>>& get_shark_trails() {
+    static std::vector<std::vector<Vector2D>> trails = {
+            {{150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}},
+            {{530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}},
+            {{960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}},
+            {{1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}},
+            {{150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}},
+            {{530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}},
+            {{960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}},
+            {{1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}}
+    };
+    return trails;
 }
 
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {

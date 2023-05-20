@@ -13,7 +13,7 @@ Ship::Ship(double x, double y, const TextureID sail_color, int id, double angle)
         right_cannon() {
 }
 
-void Ship::tick(double delta, const bool* inputs, std::vector<Fruit>& fruits) {
+void Ship::tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fruits) {
     Vector2D vel_delta = { cos(angle), sin(angle)};
     if (inputs[static_cast<Uint8>(Direction::FORWARDS)]) {
         acceleration.add_scaled(vel_delta,  ACCELERATION);

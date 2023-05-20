@@ -38,7 +38,6 @@ private:
     };
 
     std::vector<Shark> sharks;
-    std::vector<std::vector<Vector2D>> shark_trails;
 
     static const std::string BUTTON_NAMES[ButtonId::TOTAL];
 };

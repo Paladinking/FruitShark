@@ -34,7 +34,7 @@ public:
 
     void render() const;
 
-    void tick(double delta, const bool* inputs, std::vector<Fruit>& fruits);
+    void tick_physics(double delta, const bool* inputs, std::vector<Fruit>& fruits);
 
     void handle_up(bool left, bool right, std::vector<Fruit>& fruits);
 
@@ -48,7 +48,7 @@ public:
 
     void add_fruits(FruitType type, int count);
 
-    bool is_dead() const;
+    [[nodiscard]] bool is_dead() const;
 
     int id;
 

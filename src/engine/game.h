@@ -52,7 +52,7 @@ class Game {
 		void create();
 		
 		/**
-		 * Starts and runs the game loop, calling tick and render every frame and handle_keydown / handle_keyup when a keypress happens.
+		 * Starts and runs the game loop, calling tick_physics and render every frame and handle_keydown / handle_keyup when a keypress happens.
 		 * Will return after exit_game has been called, or immediately if the game has not been created or has been destroyed.
 		 * Closing the window will call exit_game and cause run to return.
 		 */
@@ -67,7 +67,7 @@ class Game {
 		WindowState window_state{};
 
 		/**
-		 * Called once per frame, after tick has been called. 
+		 * Called once per frame, after tick_physics has been called.
 		 * In the future the renderer might be given as a parameter here instead of being global.
 		 */
 		virtual void render() {};
@@ -128,7 +128,7 @@ struct StateStatus {
 
 /**
  * Class containing a state. 
- * In a state game, tick, render and events are redirected to the top state.
+ * In a state game, tick_physics, render and events are redirected to the top state.
  */
 class State {
 	public:
@@ -187,8 +187,8 @@ class State {
 
 
 /**
- * Game class containing a stack of states. Render, tick and events are passed onto the top state.
- * The state call to tick can signal adding new states or removing them.
+ * Game class containing a stack of states. Render, tick_physics and events are passed onto the top state.
+ * The state call to tick_physics can signal adding new states or removing them.
  */
 class StateGame : public Game {
 	public:
