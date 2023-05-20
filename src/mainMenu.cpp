@@ -117,7 +117,8 @@ void MainMenu::render() {
 void MainMenu::tick(Uint64 delta, StateStatus &res) {
     Menu::tick(delta, res);
     if (delta > 0){
-        for (auto& shark : sharks) shark.tick(delta / 1000.0, shark_trails, std::vector<Fruit>(), std::vector<Ship>());
+        for (auto& shark : sharks) shark.tick_physics(delta / 1000.0, shark_trails, std::vector<Fruit>(), std::vector<Ship>());
+        for (auto& shark : sharks) shark.tick_animation(delta / 1000.0);
     }
 
 }

@@ -17,11 +17,9 @@ const Texture* get_fruit_texture(FruitType type) {
 
 
 Fruit::Fruit(Vector2D position, Vector2D velocity, FruitType type = FruitType::APPLE) :
-position(position),
-velocity(velocity),
-type(type),
-texture(get_fruit_texture(type))
- {
+        Entity(position.x, position.y, 0.0), velocity(velocity),
+        type(type), texture(get_fruit_texture(type))
+    {
     if (type == FruitType::BANANA) acceleration.add_scaled(velocity, -2);
     switch (type) {
         case FruitType::APPLE:
@@ -42,7 +40,7 @@ texture(get_fruit_texture(type))
      max_velocity = velocity.length();
 }
 
-void Fruit::tick(double delta, std::vector<Fruit> &fruits) {
+void Fruit::tick_physics(double delta, std::vector<Fruit> &fruits) {
     time_in_air += delta;
     if (time_in_air > max_time_in_air) {
         land(fruits);
@@ -101,7 +99,6 @@ double Fruit::get_duration() {
             return 3.0;
         case FruitType::BANANA:
             return 6.0;
-            break;
         case FruitType::POMEGRANATE:
             return 5.0;
         case FruitType::POMEGRANATE_SEED:

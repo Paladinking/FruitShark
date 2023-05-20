@@ -6,6 +6,7 @@
 #include "engine/engine.h"
 #include "textureHandler.h"
 #include "config.h"
+#include "entity.h"
 #include <vector>
 
 enum class FruitType {
@@ -18,13 +19,13 @@ enum class FruitType {
 
 const Texture* get_fruit_texture(FruitType type);
 
-class Fruit {
+class Fruit : public Entity {
 public:
     Fruit(Vector2D position, Vector2D velocity, FruitType type);
 
     void render() const;
 
-    void tick(double delta, std::vector<Fruit> &fruits);
+    void tick_physics(double delta, std::vector<Fruit> &fruits);
 
     void land(std::vector<Fruit> &fruits);
 
@@ -42,11 +43,9 @@ private:
 
     FruitType type;
 
-    Vector2D position;
     Vector2D velocity;
     Vector2D acceleration;
 
-    double angle = 0.0;
     double time_in_air = 0.0;
     double max_time_in_air;
     double max_velocity;

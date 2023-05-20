@@ -10,7 +10,7 @@
 #include "ship.h"
 
 
-class Shark : public Entity {
+class Shark : public BoxEntity {
 public:
     enum class Type {
         GREAT_WHITE,
@@ -18,7 +18,9 @@ public:
     };
     static Shark create_shark(Type type, double x, double y);
 
-    void tick(double delta, const std::vector<std::vector<Vector2D>>& trails,
+    void tick_animation(double delta);
+
+    void tick_physics(double delta, const std::vector<std::vector<Vector2D>>& trails,
               const std::vector<Fruit>& fruitsInWater,
               const std::vector<Ship>& ships
               );

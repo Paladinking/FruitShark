@@ -1,26 +1,39 @@
 #ifndef FRUITSHARK_ENTITY_H
 #define FRUITSHARK_ENTITY_H
 #include "vector2D.h"
+#include "serialize.h"
 #include <SDL.h>
 
 constexpr double PI = 3.14159265;
 
-class Entity {
+class Entity : public Serializable {
 public:
-    Entity(double x, double y, int width, int length);
-    Entity(double x, double y, int width, int length, double angle);
+    Entity(double x, double y, double angle);
 
-    [[nodiscard]] bool intersects(const Entity& other) const;
+    [[nodiscard]] size_t size() const override;
+
+    void write(unsigned char* buf) const override;
+
+    void read(const unsigned char* buf) override;
+protected:
+    Vector2D position;
+    double angle = 0.0;
+};
+
+class BoxEntity : public Entity {
+public:
+    BoxEntity(double x, double y, int width, int length);
+    BoxEntity(double x, double y, int width, int length, double angle);
+
+    [[nodiscard]] bool intersects(const BoxEntity& other) const;
 
     [[nodiscard]] bool intersects(Vector2D pos, double radius) const;
 
-    void handle_Collision(Entity& other);
+    void handle_Collision(BoxEntity& other);
 
     [[nodiscard]] const Vector2D& get_position() const;
 protected:
-    Vector2D position, velocity {}, acceleration {};
-
-    double angle = 0.0;
+    Vector2D velocity {}, acceleration {};
 
     int width;
     int length;

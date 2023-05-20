@@ -1,15 +1,12 @@
 #include "pickup.h"
 
-Pickup::Pickup(int x, int y, FruitType type) :
-        position(x, y),
-        type(type),
+Pickup::Pickup(double x, double y, FruitType type) :
+        Entity(x,y, engine::random(0, 5) * 3.1415 / 5.0),
+        type(type), time_alive(0.0),
         box_texture(&texture_handler.get_texture(TextureID::BOX)),
-        fruit_texture(get_fruit_texture(type)) {
-    angle = engine::random(0, 5) * 3.1415 / 5.0;
-    time_alive = 0.0;
-}
+        fruit_texture(get_fruit_texture(type)) {}
 
-void Pickup::tick(double delta) {
+void Pickup::tick_physics(double delta) {
     angle += delta;
     time_alive += delta;
 }

@@ -6,11 +6,11 @@
 #include "config.h"
 #include "engine/engine.h"
 
-class Pickup {
+class Pickup : public Entity{
 public:
-    Pickup(int x, int y, FruitType type);
+    Pickup(double x, double y, FruitType type);
 
-    void tick(double delta);
+    void tick_physics(double delta);
 
     void render() const;
 
@@ -26,10 +26,6 @@ private:
     const Texture* box_texture;
     const Texture* fruit_texture;
 
-    Vector2D position;
-
-    double angle;
-    int diameter;
     FruitType type;
 };
 

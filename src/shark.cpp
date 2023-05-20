@@ -16,18 +16,21 @@ Shark Shark::create_shark(Type type, const double x, const double y) {
 }
 
 Shark::Shark(const double x, const double y, int w, int len, int dmg, double range_factor, double acc_factor, TextureID id) :
-Entity(x, y, w, len), dmg(dmg), range_factor(range_factor), acc_factor(acc_factor),
-texture(texture_handler.get_textures(id))
+        BoxEntity(x, y, w, len), dmg(dmg), range_factor(range_factor), acc_factor(acc_factor),
+        texture(texture_handler.get_textures(id))
 {
     animation_stage = (engine::random(0, 4) / 6.0);
 }
 
-void Shark::tick(const double delta,
+void Shark::tick_animation(const double delta) {
+    animation_stage += delta;
+    if (animation_stage >= 1.3) animation_stage = 0.0;
+}
+
+void Shark::tick_physics(const double delta,
                  const std::vector<std::vector<Vector2D>>& trails,
                  const std::vector<Fruit>& fruitsInWater,
                  const std::vector<Ship>& ships) {
-    animation_stage += delta;
-    if (animation_stage >= 1.3) animation_stage = 0.0;
     Vector2D target = Vector2D(position.x + FRUIT_DETECTION_RANGE * range_factor, position.y);
     bool fruit_target = false;
     double acc = SHARK_ACCELERATION;
@@ -88,7 +91,7 @@ void Shark::tick(const double delta,
     } else {
         acceleration.add_scaled(target, acc * acc_factor);
     }
-    Entity::move(delta);
+    BoxEntity::move(delta);
 }
 
 void Shark::render() const {

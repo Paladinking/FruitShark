@@ -80,7 +80,8 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
         ship.tick(dDelta, window_state->keyboard_state, window_state->mouse_mask, fruits_in_air);
     }
     for (auto& shark : sharks) {
-        shark.tick(dDelta, shark_trails, fruits_in_water, ships);
+        shark.tick_physics(dDelta, shark_trails, fruits_in_water, ships);
+        shark.tick_animation(dDelta);
     }
 
     for (int i = 0; i < bites.size(); ++i) {
@@ -132,7 +133,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     std::vector<Fruit> to_be_added;
     for (int i = 0; i < fruits_in_air.size(); ++i) {
         auto& fruit = fruits_in_air[i];
-        fruit.tick(dDelta, to_be_added);
+        fruit.tick_physics(dDelta, to_be_added);
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
@@ -164,7 +165,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
 
     for (int i = 0; i < fruits_in_water.size(); ++i) {
         auto& fruit = fruits_in_water[i];
-        fruit.tick(dDelta, to_be_added);
+        fruit.tick_physics(dDelta, to_be_added);
         for (auto& shark : sharks) {
             if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
                 fruit.eaten = true;
@@ -179,7 +180,7 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     }
 
     for (auto& pickup : pickups) {
-        pickup.tick(dDelta);
+        pickup.tick_physics(dDelta);
     }
 
     pickup_delay -= dDelta;

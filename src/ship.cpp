@@ -4,7 +4,7 @@
 
 
 Ship::Ship(double x, double y, const char *const *bindings, const TextureID sail_color, int id, double angle) :
-        Entity(x, y, 25, 50, angle),
+        BoxEntity(x, y, 25, 50, angle),
         ship_texture(&texture_handler.get_texture(TextureID::SHIP)),
         masts_texture(&texture_handler.get_texture(TextureID::MASTS)),
         sails_texture(&texture_handler.get_texture(sail_color)),
@@ -56,7 +56,7 @@ void Ship::tick(double delta, const Uint8 *keyboard, Uint32 mouse_mask, std::vec
     if (smell_duration > 0.0) {
         smell_duration -= delta;
     }
-    Entity::move(delta);
+    BoxEntity::move(delta);
 }
 
 void Ship::render() const {

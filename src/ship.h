@@ -28,7 +28,7 @@ private:
 
 
 
-class Ship : public Entity {
+class Ship : public BoxEntity {
 public:
     Ship(double x, double y, const char *const *bindings, TextureID sail_color, int id, double angle);
 

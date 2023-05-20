@@ -3,16 +3,17 @@
 
 constexpr double FRICTION = 0.02;
 
-Entity::Entity(double x, double y, int width, int length) : position(x, y), width(width), length(length) {}
-Entity::Entity(double x, double y, int width, int length, double angle)
-: position(x, y), width(width), length(length), angle(angle) {}
+BoxEntity::BoxEntity(double x, double y, int width, int length) :
+    Entity(x, y, 0.0), width(width), length(length) {}
+BoxEntity::BoxEntity(double x, double y, int width, int length, double angle) :
+    Entity(x, y, angle), width(width), length(length) {}
 
 SDL_FPoint rotated(Vector2D v, const Vector2D& center, double angle) {
     v.rotate(angle);
     return {static_cast<float>(center.x + v.x), static_cast<float>(center.y + v.y)};
 }
 
-void Entity::update_bounds() {
+void BoxEntity::update_bounds() {
     corners[0] = rotated({- length / 2.0,-width / 2.0}, position, angle);
     corners[1] = rotated({length / 2.0 - 1.0,-width / 2.0},position, angle);
     corners[2] = rotated({length / 2.0 - 1.0,width / 2.0 - 1.0},position, angle);
@@ -20,7 +21,7 @@ void Entity::update_bounds() {
     SDL_EncloseFPoints(corners, 4, nullptr, &bounds);
 }
 
-void Entity::adjust_bounds(float dx, float dy) {
+void BoxEntity::adjust_bounds(float dx, float dy) {
     corners[0].x += dx;
     corners[0].y += dx;
     corners[1].x += dx;
@@ -35,7 +36,7 @@ void Entity::adjust_bounds(float dx, float dy) {
     position.y += dy;
 }
 
-void Entity::move(const double delta) {
+void BoxEntity::move(const double delta) {
     while (angle < 0.0) angle += 2 * PI;
     while (angle > 2 * PI) angle -= 2 * PI;
     acceleration.x -= velocity.x * std::abs(velocity.x) * FRICTION;
@@ -61,7 +62,7 @@ void Entity::move(const double delta) {
     }
 }
 
-bool Entity::intersects(const Entity &other) const {
+bool BoxEntity::intersects(const BoxEntity &other) const {
     if (SDL_HasIntersectionF(&bounds, &other.bounds)) {
         SDL_FRect rect = {static_cast<float>(position.x - length / 2.0),
                           static_cast<float>(position.y - width / 2.0),
@@ -86,7 +87,7 @@ bool Entity::intersects(const Entity &other) const {
     return false;
 }
 
-bool Entity::intersects(Vector2D pos, double radius) const {
+bool BoxEntity::intersects(Vector2D pos, double radius) const {
     pos.subtract(position);
     pos.rotate(-angle);
     pos.add(position);
@@ -103,7 +104,7 @@ bool Entity::intersects(Vector2D pos, double radius) const {
     return test.distance_squared(pos) < radius * radius;
 }
 
-void Entity::handle_Collision(Entity &other) {
+void BoxEntity::handle_Collision(BoxEntity &other) {
     Vector2D vec = other.position;
     vec.subtract(position);
 
@@ -112,6 +113,26 @@ void Entity::handle_Collision(Entity &other) {
     other.acceleration.add_scaled(vec, power * 0.5);
 }
 
-const Vector2D &Entity::get_position() const {
+const Vector2D &BoxEntity::get_position() const {
     return position;
 }
+
+size_t Entity::size() const {
+    return sizeof(Uint32);
+}
+
+void Entity::read(const unsigned char* buf) {
+    Uint32 data = reinterpret_cast<const Uint32*>(buf)[0];
+    position.x = static_cast<double>(data & 0x7ff);
+    position.y = static_cast<double>((data >> 11) & 0x7ff);
+    angle = (data >> 22) * 2 * PI / 1024.0;
+}
+
+void Entity::write(unsigned char *buf) const {
+    Uint32 data = (static_cast<Uint32>(position.x) & 0x7ff) |
+            ((static_cast<Uint32>(position.y) & 0x7ff) << 11) |
+            ((static_cast<Uint32>(std::lround((1024.0 / (2 * PI)) * angle)) & 0x3ff) << 22);
+    reinterpret_cast<Uint32*>(buf)[0] = data;
+}
+
+Entity::Entity(double x, double y, double angle) : position(x, y), angle(angle) {}
