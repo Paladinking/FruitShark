@@ -53,7 +53,17 @@ add_executable(main src/main.cpp
         src/entities/bite.cpp
         src/entities/pickup.cpp
         src/gameState.cpp
+        src/net/client.cpp)
+
+add_executable(server src/net/serverMain.cpp
+        src/entities/ship.cpp src/entities/shark.cpp
+        src/entities/entity.cpp src/entities/fruit.cpp
+        src/asset_handlers/textureHandler.cpp
+        src/entities/pickup.cpp
+        src/gameState.cpp
         src/net/server.cpp)
+
+
 target_link_libraries(main Engine)
 target_link_libraries(main ${SDL2_LIBRARIES})
 target_link_libraries(main SDL2_image::SDL2_image)
@@ -61,9 +71,18 @@ target_link_libraries(main SDL2_mixer::SDL2_mixer)
 target_link_libraries(main SDL2_ttf::SDL2_ttf)
 target_link_libraries(main ZLIB::ZLIB)
 target_link_libraries(main ${Enet})
+
+target_link_libraries(server Engine)
+target_link_libraries(server ${SDL2_LIBRARIES})
+target_link_libraries(server SDL2_image::SDL2_image)
+target_link_libraries(server SDL2_ttf::SDL2_ttf)
+target_link_libraries(server ZLIB::ZLIB)
+target_link_libraries(server ${Enet})
 if (WIN32)
     target_link_libraries(main ws2_32.lib)
     target_link_libraries(main winmm.lib)
+    target_link_libraries(server ws2_32.lib)
+    target_link_libraries(server winmm.lib)
 endif()
 
 add_custom_command (TARGET main POST_BUILD

@@ -1,19 +1,28 @@
 #include "server.h"
 #include <iostream>
 
-void Server::init(WindowState *window_state) {
+Server::Server() : Game(100, 100, "For your eyes only") {}
+
+TextureHandler texture_handler = TextureHandler();
+
+bool query_quit() {
+    std::string s;
+    std::getline(std::cin, s);
+    return s == "exit";
+}
+
+void Server::init() {
     ENetAddress address = {ENET_HOST_ANY, 1234};
-    State::init(window_state);
     initialize();
-    state_size = (ships.size() + sharks.size()) * ships[0].size();
+    message_future = std::async(query_quit);
+
+    buffer.resize(1 + (ships.size() + sharks.size()) * ships[0].size(), 0);
     for (int i = 0; i < PLAYER_COUNT; ++i) {
-        inputs.push_back(new bool[6]);
+        inputs.push_back(new bool[4]);
         inputs[i][0] = false;
         inputs[i][1] = false;
         inputs[i][2] = false;
         inputs[i][3] = false;
-        inputs[i][4] = false;
-        inputs[i][5] = false;
     }
     server = std::unique_ptr<ENetHost, HostDeleter>(enet_host_create(
                 &address, PLAYER_COUNT, 2, 0, 0));
@@ -24,6 +33,13 @@ void Server::init(WindowState *window_state) {
     bool ids[PLAYER_COUNT];
     for (auto& b : ids) b = false;
     while (player_count < PLAYER_COUNT) {
+        if (message_future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+            if (message_future.get()) {
+                throw base_exception("Server closed");
+            } else {
+                message_future = std::async(query_quit );
+            }
+        }
         ENetEvent event;
         if (enet_host_service(server.get(), &event, 1000) < 0) {
             throw net_exception("Failed to service server");
@@ -56,6 +72,7 @@ void Server::init(WindowState *window_state) {
             enet_packet_destroy(event.packet);
         }
     }
+    std::cout << "All players here" << std::endl;
     size_t init_size = 1 + ships.size() * ships[0].size();
     size_t offset = 1;
     for (const auto& shark : sharks) {
@@ -68,17 +85,20 @@ void Server::init(WindowState *window_state) {
         offset += ship.size();
     }
     for (const auto& shark : sharks) {
-        shark.write(buf + offset);
-        buf[offset + shark.size()] = static_cast<Uint8>(shark.type);
+        buf[offset] = static_cast<Uint8>(shark.type);
+        shark.write(buf + offset + 1);
         offset += shark.size() + 1;
     }
     ENetPacket* packet = enet_packet_create(buf, init_size, ENET_PACKET_FLAG_RELIABLE);
     enet_host_broadcast(server.get(), 0, packet);
     enet_host_flush(server.get());
+    std::cout << "Sent initial data" << std::endl;
     delete packet;
 }
 
-void Server::tick(Uint64 delta, StateStatus &res) {
+
+
+void Server::tick(Uint64 delta) {
     double dDelta = static_cast<double>(delta) / 1000.0;
     ENetEvent event;
     while (enet_host_service(server.get(), &event, 10) > 0) {
@@ -87,11 +107,16 @@ void Server::tick(Uint64 delta, StateStatus &res) {
                 // TODO
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
+                std::cout << "Got something" << std::endl;
                 if (event.packet->dataLength != 2 || event.packet->data[0] > 5) {
                     enet_peer_reset(event.peer);
                 } else {
-                    inputs[*reinterpret_cast<Uint8*>(event.peer->data)][event.packet->data[0]]
-                        = event.packet->data[1];
+                    Uint8 id = *reinterpret_cast<Uint8*>(event.peer->data);
+                    Uint8 input = event.packet->data[0];
+                    bool press = event.packet->data[1] != 0;
+                    if (input < 4) inputs[id][input] = press;
+                    else if (press) ships[id].handle_down(input == 4, input == 5);
+                    else ships[id].handle_up(input == 4, input == 5, *this);
                 }
                 enet_packet_destroy(event.packet);
                 break;
@@ -99,33 +124,87 @@ void Server::tick(Uint64 delta, StateStatus &res) {
                 enet_peer_reset(event.peer);
         }
     }
+
     tick_physics(dDelta, inputs);
-    for (auto& input : inputs) { // Reset cannon input
-        input[4] = false;
-        input[5] = false;
+    if (message_future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+        if (message_future.get()) {
+            exit_game();
+        } else {
+            message_future = std::async(query_quit);
+        }
     }
+    size_t offset = 1;
+    buffer[0] = Event::STATE;
+    for (const auto& ship : ships) {
+        ship.write(buffer.data() + offset);
+        offset += ship.size();
+    }
+    for (const auto& shark : sharks) {
+        shark.write(buffer.data() + offset);
+        offset += shark.size();
+    }
+    ENetPacket* packet = enet_packet_create(buffer.data(), buffer.size(),
+                                           ENET_PACKET_FLAG_RELIABLE | ENET_PACKET_FLAG_NO_ALLOCATE);
+    enet_host_broadcast(server.get(), 0, packet);
 }
 
 void Server::cannon_fired(Vector2D position, Vector2D velocity, FruitType type) {
     fruits_in_air.emplace_back(position, velocity, type);
-}
-
-void Server::create_bite(Vector2D position) {
-
+    Uint8 buf[2 + 4 * sizeof(float)];
+    buf[0] = Event::CANNON_FIRED;
+    buf[1] = static_cast<Uint8>(type);
+    reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.x);
+    reinterpret_cast<float*>(buf + 2)[1] = static_cast<float>(position.y);
+    reinterpret_cast<float*>(buf + 2)[2] = static_cast<float>(velocity.x);
+    reinterpret_cast<float*>(buf + 2)[3] = static_cast<float>(velocity.y);
+    ENetPacket* packet = enet_packet_create(buf, 2 + 4 * sizeof(float), ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
 }
 
 void Server::ship_destroyed(int id) {
-
+    if (ships.size() == 1) {
+        exit_game();
+    }
 }
 
-void Server::fruit_hit_water(const Fruit &fruit) {
-
+void Server::fruit_hit_water(int fruit, Vector2D position) {
+    Uint8 buf[1 + sizeof(Uint32) + 2 * sizeof(float)];
+    buf[0] = Event::FRUIT_HIT_WATER;
+    reinterpret_cast<Uint32*>(buf + 1)[0] = static_cast<Uint32>(fruit);
+    reinterpret_cast<float*>(buf + 1 + sizeof(Uint32))[0] = static_cast<float>(position.x);
+    reinterpret_cast<float*>(buf + 1 + sizeof(Uint32))[1] = static_cast<float>(position.y);
+    ENetPacket* packet = enet_packet_create(buf, 1 + sizeof(Uint32) + 2 * sizeof(float),
+                                            ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
 }
 
-void Server::fruit_hit_player(const Fruit &fruit, int player_id) {
-
+void Server::fruit_hit_player(int fruit, int player_id) {
+    Uint8 buf[2 + sizeof(Uint32)];
+    buf[0] = Event::FRUIT_HIT_PLAYER;
+    buf[1] = static_cast<Uint8>(player_id);
+    reinterpret_cast<Uint32*>(buf + 2)[0] = static_cast<Uint32>(fruit);
+    ENetPacket* packet = enet_packet_create(buf, 2 + sizeof(Uint32), ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
 }
 
-void Server::pickup_created(const Pickup &pickup) {
+void Server::pickup_created(int x, int y, FruitType type) {
+    Uint8 buf[2 + sizeof(Uint32)];
+    buf[0] = Event::PICKUP_CREATED;
+    buf[1] = static_cast<Uint8>(type);
+    reinterpret_cast<Uint32*>(buf + 2)[0] = ((static_cast<Uint32>(x) & 0x7ff) << 11) |
+            (static_cast<Uint32>(y) & 0x7ff);
+    ENetPacket* packet = enet_packet_create(buf, 2 + sizeof(Uint32), ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
+}
 
+void Server::ship_hurt(Vector2D position, int player_id, int dmg) {
+    Uint8 buf[2 + 2 * sizeof(float) + sizeof(Uint32)];
+    buf[0] = Event::SHIP_HURT;
+    buf[1] = static_cast<Uint8>(player_id);
+    reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.x);
+    reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.y);
+    reinterpret_cast<Uint32*>(buf + 2 + 2 * sizeof(float))[0] = static_cast<Uint32>(dmg);
+    ENetPacket* packet = enet_packet_create(buf, 2 + 2 * sizeof(float) + sizeof (Uint32),
+                                            ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
 }

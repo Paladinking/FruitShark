@@ -2,8 +2,9 @@
 #include "config.h"
 #include "sharkGame.h"
 #include "asset_handlers/sound.h"
+#include "net/client.h"
 
-const std::string MainMenu::BUTTON_NAMES[] = {"Start Game", "Exit"};
+const std::string MainMenu::BUTTON_NAMES[] = {"Start Game", "Join","Exit"};
 const int MainMenu::BUTTON_WIDTH = 220;
 const int MainMenu::BUTTON_HEIGHT = 110;
 
@@ -65,6 +66,9 @@ void MainMenu::button_press(int btn) {
             break;
         case ButtonId::EXIT:
             menu_exit();
+            break;
+        case ButtonId::ONLINE:
+            next_res = {StateStatus::PUSH, new Client()};
             break;
         default:
             break;

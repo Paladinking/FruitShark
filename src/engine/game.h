@@ -50,13 +50,23 @@ class Game {
 		 * Throws a Game_exception if a game is already running.
 		 */
 		void create();
+
+        /**
+         * Creates a game without opening a window or creating a renderer.
+         */
+        void headless();
 		
 		/**
-		 * Starts and runs the game loop, calling tick_physics and render every frame and handle_keydown / handle_keyup when a keypress happens.
+		 * Starts and runs the game loop, calling tick and render every frame and handle_keydown / handle_keyup when a keypress happens.
 		 * Will return after exit_game has been called, or immediately if the game has not been created or has been destroyed.
 		 * Closing the window will call exit_game and cause run to return.
 		 */
 		void run();
+
+        /**
+         * Start and runs the game headless, calling tick every frame.
+         */
+        void run_headless();
 		
 		/**
 		 * Exits an ongoing game.
@@ -106,7 +116,6 @@ class Game {
 		 * Called every time a MOUSEWHEEL-event happens.
 		 */
 		 virtual void handle_mousewheel(SDL_MouseWheelEvent &e) {};
-
 	private:
 		bool running = false;
 		bool destroyed = true;

@@ -27,11 +27,3 @@ const Vector2D &Pickup::get_position() const {
 double Pickup::get_radius() const {
     return 15.0;
 }
-
-void Pickup::create(std::vector<Pickup>& pickups) {
-    int x = engine::random(UI_SIZE * 2, GAME_WIDTH - UI_SIZE * 2);
-    int y = engine::random(UI_SIZE, GAME_HEIGHT - UI_SIZE);
-    FruitType possible_fruits[] = {FruitType::BANANA, FruitType::POMEGRANATE};
-    FruitType fruit_pickup = possible_fruits[engine::random(0, 2)];
-    pickups.emplace_back(x, y, fruit_pickup);
-}

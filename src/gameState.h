@@ -12,15 +12,15 @@ public:
 
     virtual void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) = 0;
 
-    virtual void create_bite(Vector2D position) = 0;
+    virtual void ship_hurt(Vector2D position, int player_id, int dmg) = 0;
 
     virtual void ship_destroyed(int id) = 0;
 
-    virtual void fruit_hit_water(const Fruit &fruit) = 0;
+    virtual void fruit_hit_water(int fruit, Vector2D position) = 0;
 
-    virtual void fruit_hit_player(const Fruit &fruit, int player_id) = 0;
+    virtual void fruit_hit_player(int fruit, int player_id) = 0;
 
-    virtual void pickup_created(const Pickup& pickup) = 0;
+    virtual void pickup_created(int x, int y, FruitType type) = 0;
 protected:
     std::vector<Ship> ships;
     std::vector<Shark> sharks;

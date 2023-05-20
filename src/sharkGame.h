@@ -44,15 +44,15 @@ public:
 
     void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
 
-    void create_bite(Vector2D position) override;
+    void ship_hurt(Vector2D position, int player_id, int dmg) override;
 
     void ship_destroyed(int id) override;
 
-    void fruit_hit_water(const Fruit &fruit) override;
+    void fruit_hit_water(int fruit, Vector2D position) override;
 
-    void fruit_hit_player(const Fruit &fruit, int player_id) override;
+    void fruit_hit_player(int fruit, int player_id) override;
 
-    void pickup_created(const Pickup &pickup) override;
+    void pickup_created(int x, int y, FruitType type) override;
 
 private:
     std::unique_ptr<HoldInput> exit_input, restart_input;

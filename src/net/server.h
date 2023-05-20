@@ -2,6 +2,7 @@
 #define FRUITSHARK_SERVER_H
 #include "engine/game.h"
 #include <vector>
+#include <future>
 #include "entities/ship.h"
 #include "entities/shark.h"
 #include "entities/bite.h"
@@ -10,28 +11,31 @@
 
 
 
-class Server : public State, public GameState {
+class Server : public Game, public GameState {
 public:
-    void tick(Uint64 delta, StateStatus& res) override;
+    Server();
 
-    void init(WindowState* window_state) override;
+    void tick(Uint64 delta) override;
+
+    void init() override;
 
     void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
 
-    void create_bite(Vector2D position) override;
+    void ship_hurt(Vector2D position, int player_id, int dmg) override;
 
     void ship_destroyed(int id) override;
 
-    void fruit_hit_water(const Fruit &fruit) override;
+    void fruit_hit_water(int fruit, Vector2D position) override;
 
-    void fruit_hit_player(const Fruit &fruit, int player_id) override;
+    void fruit_hit_player(int fruit, int player_id) override;
 
-    void pickup_created(const Pickup &pickup) override;
+    void pickup_created(int x, int y, FruitType type) override;
 
 private:
     std::vector<bool*> inputs;
+    std::future<bool> message_future;
 
-    size_t state_size = 0;
+    std::vector<Uint8> buffer;
 
     std::unique_ptr<ENetHost, HostDeleter> server;
 };

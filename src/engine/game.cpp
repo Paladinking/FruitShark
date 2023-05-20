@@ -9,7 +9,7 @@ SDL_Window* gWindow;
  * Base Game class
  *
  */
-Game::Game(const int window_width, const int window_height, std::string  title)
+Game::Game(const int window_width, const int window_height, std::string title)
 	: initial_width(window_width), initial_height(window_height), initial_title(std::move(title)) {
 	if (initial_width <= 0 || initial_height <= 0) throw game_exception("Invalid window dimensions");
 }
@@ -55,6 +55,11 @@ void Game::create() {
 	init();
 }
 
+void Game::headless() {
+    destroyed = false;
+    init();
+}
+
 void Game::run() {
 	if (destroyed)
 	{
@@ -98,6 +103,21 @@ void Game::run() {
 		
 		render();
 	}
+}
+
+void Game::run_headless() {
+    if (destroyed)
+    {
+        return;
+    }
+    running = true;
+    Uint64 last_time = SDL_GetTicks64();
+
+    while (running) {
+        Uint64 cur_time = SDL_GetTicks64();
+        tick(cur_time - last_time);
+        last_time = cur_time;
+    }
 }
 
 void Game::exit_game() {

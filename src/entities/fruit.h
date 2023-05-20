@@ -9,7 +9,7 @@
 #include "entities/entity.h"
 #include <vector>
 
-enum class FruitType {
+enum class FruitType : Uint8 {
     APPLE = 1,
     BANANA = 2,
     STARFRUIT = 3,

@@ -8,8 +8,6 @@
 
 class Pickup : public Entity{
 public:
-    static void create(std::vector<Pickup>& pickups);
-
     Pickup(double x, double y, FruitType type);
 
     void tick_physics(double delta);

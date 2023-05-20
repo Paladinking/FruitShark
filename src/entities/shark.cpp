@@ -119,3 +119,7 @@ bool Shark::bite(Ship &ship) {
 Vector2D Shark::get_mouth() const {
     return {(corners[1].x + corners[2].x) / 2, (corners[1].y + corners[2].y) / 2};
 }
+
+int Shark::get_dmg() const {
+    return dmg;
+}

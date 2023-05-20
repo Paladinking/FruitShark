@@ -111,20 +111,6 @@ void SharkGame::render() {
     SDL_RenderPresent(gRenderer);
 }
 
-const std::vector<std::vector<Vector2D>>& get_shark_trails() {
-    static std::vector<std::vector<Vector2D>> trails = {
-            {{150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}},
-            {{530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}},
-            {{960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}},
-            {{1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}},
-            {{150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}},
-            {{530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}},
-            {{960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}},
-            {{1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}}
-    };
-    return trails;
-}
-
 void SharkGame::handle_up(SDL_Keycode key, Uint8 mouse) {
     if (state != PLAYING) return;
     for (int i = 0; i < ships.size(); ++i) {
@@ -151,7 +137,7 @@ void SharkGame::cannon_fired(Vector2D position, Vector2D velocity, FruitType typ
     fruits_in_air.emplace_back(position, velocity, type);
 }
 
-void SharkGame::create_bite(Vector2D position) {
+void SharkGame::ship_hurt(Vector2D position, int player_id, int dmg) {
     sound::play(sound::Id::BITE);
     bites.emplace_back(static_cast<int>(position.x), static_cast<int>(position.y));
 }
@@ -164,13 +150,14 @@ void SharkGame::ship_destroyed(int id) {
     }
 }
 
-void SharkGame::fruit_hit_water(const Fruit &fruit) {
+void SharkGame::fruit_hit_water(int fruit, Vector2D position) {
     sound::play(sound::Id::WATER);
 }
 
-void SharkGame::fruit_hit_player(const Fruit &fruit, int player_id) {}
+void SharkGame::fruit_hit_player(int fruit, int player_id) {}
 
-void SharkGame::pickup_created(const Pickup &pickup) {}
-
+void SharkGame::pickup_created(int x, int y, FruitType type) {
+    pickups.emplace_back(x, y, type);
+}
 
 

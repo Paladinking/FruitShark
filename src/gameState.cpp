@@ -35,6 +35,20 @@ void GameState::initialize() {
     pickup_delay = PICKUP_SPAWN_TIME;
 }
 
+const std::vector<std::vector<Vector2D>>& get_shark_trails() {
+    static std::vector<std::vector<Vector2D>> trails = {
+            {{150.0, 100.0}, {430.0, 100.0}, {430.0, 430.0}, {150.0, 430.0}},
+            {{530.0, 100.0}, {530.0, 430.0}, {860.0, 430.0}, {860.0, 100.0}},
+            {{960.0, 100.0}, {960.0, 430.0}, {1290.0, 430.0}, {1290.0, 100.0}},
+            {{1390.0, 100.0}, {1640.0, 100.0}, {1640.0, 430.0}, {1390.0, 430.0}},
+            {{150.0, 500.0}, {430.0, 500.0}, {430.0, 900.0}, {150.0, 900.0}},
+            {{530.0, 500.0}, {530.0, 900.0}, {860.0, 900.0}, {860.0, 500.0}},
+            {{960.0, 500.0}, {960.0, 900.0}, {1290.0, 900.0}, {1290.0, 500.0}},
+            {{1390.0, 500.0}, {1640.0, 500.0}, {1640.0, 900.0}, {1390.0, 900.0}}
+    };
+    return trails;
+}
+
 void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
     for (int i = 0; i < ships.size(); ++i) {
         const bool* input = inputs[i];
@@ -63,11 +77,13 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
         for (int i = 0; i < ships.size(); ++i) {
             if (ships[i].intersects(shark)) {
                 if (shark.bite(ships[i])) {
-                    this->create_bite(shark.get_mouth());
+                    this->ship_hurt(shark.get_mouth(), ships[i].id, shark.get_dmg());
                     if (ships[i].is_dead()) {
+                        int id = ships[i].id;
                         ships.erase(ships.begin() + i);
                         --i;
-                        this->ship_destroyed(ships[i].id);
+                        this->ship_destroyed(id);
+                        continue;
                     }
                 }
                 ships[i].handle_Collision(shark);
@@ -82,7 +98,7 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
-                this->fruit_hit_player(fruit, ship.id);
+                this->fruit_hit_player(i, ship.id);
                 ship.add_fruit_smell(fruit.get_duration());
                 fruits_in_air[i] = fruits_in_air[fruits_in_air.size() - 1];
                 fruits_in_air.pop_back();
@@ -94,7 +110,7 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
         if (collision) continue;
 
         if (fruit.in_water) {
-            this->fruit_hit_water(fruit);
+            this->fruit_hit_water(i, fruit.get_position());
             if (fruit.get_position().x >= UI_SIZE && fruit.get_position().x < LOGICAL_WIDTH - UI_SIZE
                 && fruit.get_position().y >= 0 && fruit.get_position().y < LOGICAL_HEIGHT) {
                 fruits_in_water.emplace_back(fruits_in_air[i]);
@@ -132,7 +148,10 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
     pickup_delay -= delta;
     if(pickup_delay < 0.0) {
         pickup_delay = PICKUP_SPAWN_TIME;
-        Pickup::create(pickups);
-        this->pickup_created(pickups[pickups.size() - 1]);
+        int x = engine::random(UI_SIZE * 2, GAME_WIDTH - UI_SIZE * 2);
+        int y = engine::random(UI_SIZE, GAME_HEIGHT - UI_SIZE);
+        FruitType possible_fruits[] = {FruitType::BANANA, FruitType::POMEGRANATE};
+        FruitType fruit_pickup = possible_fruits[engine::random(0, 2)];
+        this->pickup_created(x, y, fruit_pickup);
     }
 }

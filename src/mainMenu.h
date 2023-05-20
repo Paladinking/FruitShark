@@ -34,7 +34,7 @@ private:
     static const int BUTTON_WIDTH, BUTTON_HEIGHT;
 
     enum ButtonId {
-        START_GAME, EXIT, TOTAL
+        START_GAME, ONLINE, EXIT, TOTAL
     };
 
     std::vector<Shark> sharks;

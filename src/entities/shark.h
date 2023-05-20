@@ -32,6 +32,9 @@ public:
     void set_trail(const std::vector<Vector2D>* new_trail);
 
     bool bite(Ship& ship);
+
+    [[nodiscard]] int get_dmg() const;
+
 private:
     Shark(double x, double y, int w, int len, int dmg, double range_factor, double acc_factor, Type type, TextureID id);
 
