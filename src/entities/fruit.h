@@ -1,12 +1,13 @@
 #ifndef FRUITSHARK_FRUIT_H
 #define FRUITSHARK_FRUIT_H
 
+#include "config.h"
 #include "vector2D.h"
 #include "engine/texture.h"
 #include "engine/engine.h"
 #include "asset_handlers/textureHandler.h"
-#include "config.h"
 #include "entities/entity.h"
+#include "gameState.h"
 #include <vector>
 
 enum class FruitType : Uint8 {
@@ -25,11 +26,13 @@ public:
 
     void render() const;
 
-    void tick_physics(double delta, std::vector<Fruit> &fruits);
+    void tick_physics(double delta, GameState& game_state);
 
-    void land(std::vector<Fruit> &fruits);
+    void land(GameState& game_state);
 
     [[nodiscard]] const Vector2D &get_position() const;
+
+    void set_position(Vector2D pos);
 
     bool in_water = false;
     bool eaten = false;

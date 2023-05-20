@@ -1,5 +1,7 @@
 #include "gameState.h"
 #include "entities/shark.h"
+#include "entities/fruit.h"
+#include "entities/pickup.h"
 
 void GameState::initialize() {
     for (unsigned i = 0; i < PLAYER_COUNT; ++i) {
@@ -67,6 +69,7 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
         for (int j = 0; j < pickups.size(); ++j) {
             if (ships[i].intersects(pickups[j].get_position(), pickups[j].get_radius())) {
                 ships[i].add_fruits(pickups[j].get_type(), 4);
+                pickup_taken(j);
                 pickups.erase(pickups.begin() + j);
                 --j;
             }
@@ -91,10 +94,9 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
         }
     }
 
-    std::vector<Fruit> to_be_added;
     for (int i = 0; i < fruits_in_air.size(); ++i) {
         auto& fruit = fruits_in_air[i];
-        fruit.tick_physics(delta, to_be_added);
+        fruit.tick_physics(delta, *this);
         bool collision = false;
         for (auto& ship : ships) {
             if (ship.intersects(fruit.get_position(), fruit.get_radius())) {
@@ -124,10 +126,10 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
     for (auto& fruit : to_be_added) {
         fruits_in_air.push_back(fruit);
     }
-
+    to_be_added.clear();
     for (int i = 0; i < fruits_in_water.size(); ++i) {
         auto& fruit = fruits_in_water[i];
-        fruit.tick_physics(delta, to_be_added);
+        fruit.tick_physics(delta, *this);
         for (auto& shark : sharks) {
             if (shark.intersects(fruit.get_position(), fruit.get_radius())) {
                 fruit.eaten = true;
@@ -135,14 +137,11 @@ void GameState::tick_physics(double delta, const std::vector<bool*>& inputs) {
             }
         }
         if (fruit.eaten) {
+            this->fruit_eaten(i);
             fruits_in_water[i] = fruits_in_water[fruits_in_water.size() - 1];
             fruits_in_water.pop_back();
             --i;
         }
-    }
-
-    for (auto& pickup : pickups) {
-        pickup.tick_physics(delta);
     }
 
     pickup_delay -= delta;

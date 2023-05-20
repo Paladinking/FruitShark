@@ -14,8 +14,8 @@ public:
 
 namespace Event {
     constexpr Uint8 STATE = 0, SHIP_HURT = 1,
-        CANNON_FIRED = 2, PICKUP_CREATED = 3, FRUIT_HIT_WATER = 4,
-        FRUIT_HIT_PLAYER = 5, GAME_OVER = 6;
+        FRUIT_FIRED = 2, PICKUP_CREATED = 3, FRUIT_HIT_WATER = 4,
+        FRUIT_HIT_PLAYER = 5, FRUIT_EATEN = 6, PICKUP_TAKEN = 7, GAME_OVER = 8;
 
 }
 

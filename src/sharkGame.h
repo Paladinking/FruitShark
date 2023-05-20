@@ -42,7 +42,7 @@ public:
 
     void handle_down(SDL_Keycode key, Uint8 mouse) override;
 
-    void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
+    void fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) override;
 
     void ship_hurt(Vector2D position, int player_id, int dmg) override;
 
@@ -54,6 +54,9 @@ public:
 
     void pickup_created(int x, int y, FruitType type) override;
 
+    void fruit_eaten(int id) override;
+
+    void pickup_taken(int id) override;
 private:
     std::unique_ptr<HoldInput> exit_input, restart_input;
     std::vector<Input> inputs;

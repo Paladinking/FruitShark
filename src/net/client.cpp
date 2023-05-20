@@ -1,6 +1,7 @@
 #include "client.h"
 #include "entities/ship.h"
 #include "entities/shark.h"
+#include "entities/pickup.h"
 #include "asset_handlers/sound.h"
 #include <iostream>
 
@@ -75,6 +76,10 @@ void Client::load_state(const Uint8 *buffer) {
         shark.read(buffer + offset);
         offset += shark.size();
     }
+    for (auto& fruit : fruits_in_air) {
+        fruit.read(buffer + offset);
+        offset += fruit.size();
+    }
 }
 
 void Client::handle_event(Uint8 event, const Uint8* buffer) {
@@ -83,18 +88,18 @@ void Client::handle_event(Uint8 event, const Uint8* buffer) {
             load_state(buffer);
             break;
         case Event::SHIP_HURT:
-            ship_hurt({static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[0]),
-                     static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[1])},
+            ship_hurt({reinterpret_cast<const float*>(buffer + 1)[0],
+                     reinterpret_cast<const float*>(buffer + 1)[1]},
                      static_cast<int>(buffer[0]),
                      static_cast<int>(reinterpret_cast<const Uint32*>(buffer + 1 + 2 * sizeof(float))[0])
                     );
             break;
-        case Event::CANNON_FIRED:
-            cannon_fired({static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[0]),
-                     static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[1])},
-                     {static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[2]),
-                      static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[3])},
-                      static_cast<FruitType>(buffer[0]));
+        case Event::FRUIT_FIRED:
+            fruit_fired({static_cast<double>(reinterpret_cast<const float *>(buffer + 2)[0]),
+                         static_cast<double>(reinterpret_cast<const float *>(buffer + 2)[1])},
+                        {static_cast<double>(reinterpret_cast<const float *>(buffer + 2)[2]),
+                         static_cast<double>(reinterpret_cast<const float *>(buffer + 2)[3])},
+                        static_cast<FruitType>(buffer[0]), buffer[1] != 0);
             break;
         case Event::PICKUP_CREATED:
             pickup_created(
@@ -108,8 +113,14 @@ void Client::handle_event(Uint8 event, const Uint8* buffer) {
             break;
         case Event::FRUIT_HIT_WATER:
             fruit_hit_water(static_cast<int>(reinterpret_cast<const Uint32*>(buffer)[0]),
-                            {static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[0]),
-                             static_cast<double>(reinterpret_cast<const float*>(buffer + 1)[1])});
+                            {static_cast<double>(reinterpret_cast<const float*>(buffer + sizeof(Uint32))[0]),
+                             static_cast<double>(reinterpret_cast<const float*>(buffer + sizeof(Uint32))[1])});
+            break;
+        case Event::FRUIT_EATEN:
+            fruit_eaten(static_cast<int>(reinterpret_cast<const Uint32*>(buffer)[0]));
+            break;
+        case Event::PICKUP_TAKEN:
+            pickup_taken(static_cast<int>(reinterpret_cast<const Uint32*>(buffer)[0]));
             break;
         default:
             throw net_exception("Unknown event");
@@ -132,12 +143,21 @@ void Client::tick(const Uint64 delta, StateStatus &res) {
                 break;
         }
     }
-
     double dDelta = static_cast<double>(delta) / 1000.0;
-    for (auto& fruit : fruits_in_water) {
-        fruit.tick_physics(dDelta);
+    for (auto& shark : sharks) {
+        shark.tick_animation(dDelta);
     }
-    //for (const auto& bite : bites) bite.render();
+    for (auto& pickup : pickups) {
+        pickup.tick_animation(dDelta);
+    }
+    for (int i = 0; i < bites.size(); ++i) {
+        bites[i].tick(dDelta);
+        if (bites[i].is_dead()) {
+            bites[i] = bites[bites.size() - 1];
+            bites.pop_back();
+            --i;
+        }
+    }
 }
 
 void Client::render() {
@@ -151,7 +171,7 @@ void Client::render() {
     for (const auto& fruit : fruits_in_air) fruit.render();
     for (const auto& fruit : fruits_in_water) fruit.render();
     for (const auto& pickup : pickups) pickup.render();
-
+    for (const auto& bite : bites) bite.render();
     SDL_RenderPresent(gRenderer);
 }
 
@@ -195,24 +215,54 @@ void Client::handle_up(const SDL_Keycode key, const Uint8 mouse) {
     enet_peer_send(peer, 0, packet);
 }
 
-void Client::cannon_fired(Vector2D position, Vector2D velocity, FruitType type) {
-    sound::play(sound::Id::CANNON);
+void Client::fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) {
+    std::cout << "Fruit fired {" << position.x << "," << position.y << "}, {"
+              << velocity.x << "," << velocity.y << "}, " << static_cast<int>(type) << ", " << cannon << std::endl;
+    if (cannon) {
+        sound::play(sound::Id::CANNON);
+    }
     fruits_in_air.emplace_back(position, velocity, type);
 }
-void Client::ship_destroyed(int id) {}
-void Client::fruit_hit_water(int fruit, Vector2D position) {}
+void Client::ship_destroyed(int ship_id) {}
+void Client::fruit_hit_water(int fruit, Vector2D position) {
+    std::cout << "Fruit hit water " << fruit << ", {" << position.x << "," << position.y << "}" << std::endl;
+    sound::play(sound::Id::WATER);
+    if (position.x >= UI_SIZE && position.x < LOGICAL_WIDTH - UI_SIZE
+         && position.y >= 0 && position.y < LOGICAL_HEIGHT) {
+        fruits_in_water.emplace_back(fruits_in_air[fruit]);
+        fruits_in_water.back().set_position(position);
+    }
+    fruits_in_air[fruit] = fruits_in_air[fruits_in_air.size() - 1];
+    fruits_in_air.pop_back();
+
+}
 
 void Client::fruit_hit_player(int fruit, int player_id) {
+    std::cout << "Fruit hit player " << fruit << ", " << player_id << std::endl;
     fruits_in_air[fruit] = fruits_in_air[fruits_in_air.size() - 1];
     fruits_in_air.pop_back();
 }
 void Client::pickup_created(int x, int y, FruitType type) {
+    std::cout << "Pickup created " << x << ", " << y << ", " << static_cast<int>(type) << std::endl;
     pickups.emplace_back(x, y, type);
 }
 void Client::ship_hurt(Vector2D position, int player_id, int dmg) {
+    std::cout << "Ship hurt {" << position.x << "," << position.y << "}, " << player_id << ", " << dmg << std::endl;
     sound::play(sound::Id::BITE);
+    bites.emplace_back(static_cast<int>(position.x), static_cast<int>(position.y));
     ships[player_id].get_bitten(dmg);
     if (ships[player_id].is_dead()) {
         ships.erase(ships.begin() + player_id);
     }
+}
+
+void Client::fruit_eaten(int fruit_id) {
+    std::cout << "Fruit eaten " << fruit_id << std::endl;
+    fruits_in_water[fruit_id] = fruits_in_water[fruits_in_water.size() - 1];
+    fruits_in_water.pop_back();
+}
+
+void Client::pickup_taken(int pid) {
+    std::cout << "Pickup taken " << pid << std::endl;
+    pickups.erase(pickups.begin() + pid);
 }

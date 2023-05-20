@@ -19,7 +19,7 @@ public:
 
     void init() override;
 
-    void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
+    void fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) override;
 
     void ship_hurt(Vector2D position, int player_id, int dmg) override;
 
@@ -30,6 +30,10 @@ public:
     void fruit_hit_player(int fruit, int player_id) override;
 
     void pickup_created(int x, int y, FruitType type) override;
+
+    void fruit_eaten(int id) override;
+
+    void pickup_taken(int id) override;
 
 private:
     std::vector<bool*> inputs;

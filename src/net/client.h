@@ -5,6 +5,7 @@
 #include "engine/input.h"
 #include "gameState.h"
 #include "net.h"
+#include "entities/bite.h"
 
 class Client : public State, public GameState {
 public:
@@ -21,17 +22,22 @@ public:
     void handle_up(SDL_Keycode key, Uint8 mouse) override;
 
 
-    void cannon_fired(Vector2D position, Vector2D velocity, FruitType type) override;
+    void fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) override;
     void ship_destroyed(int id) override;
     void fruit_hit_water(int fruit, Vector2D position) override;
     void fruit_hit_player(int fruit, int player_id) override;
     void pickup_created(int x, int y, FruitType type) override;
     void ship_hurt(Vector2D position, int player_id, int dmg) override;
+    void fruit_eaten(int id) override;
+
+    void pickup_taken(int id) override;
 
 private:
     void handle_event(Uint8 event, const Uint8* buffer);
 
     void load_state(const Uint8* buffer);
+
+    std::vector<Bite> bites;
 
     std::unique_ptr<PressInput> forward, left, right, left_cannon, right_cannon;
 

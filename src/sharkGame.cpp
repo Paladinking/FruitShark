@@ -71,6 +71,9 @@ void SharkGame::tick(Uint64 delta, StateStatus& res) {
     for (auto& shark : sharks) {
         shark.tick_animation(dDelta);
     }
+    for (auto& pickup : pickups) {
+        pickup.tick_animation(dDelta);
+    }
     for (int i = 0; i < bites.size(); ++i) {
         bites[i].tick(dDelta);
         if (bites[i].is_dead()) {
@@ -132,9 +135,11 @@ void SharkGame::handle_down(SDL_Keycode key, Uint8 mouse) {
     }
 }
 
-void SharkGame::cannon_fired(Vector2D position, Vector2D velocity, FruitType type) {
-    sound::play(sound::Id::CANNON);
-    fruits_in_air.emplace_back(position, velocity, type);
+void SharkGame::fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) {
+    if (cannon) {
+        sound::play(sound::Id::CANNON);
+    }
+    to_be_added.emplace_back(position, velocity, type);
 }
 
 void SharkGame::ship_hurt(Vector2D position, int player_id, int dmg) {
@@ -160,4 +165,7 @@ void SharkGame::pickup_created(int x, int y, FruitType type) {
     pickups.emplace_back(x, y, type);
 }
 
+void SharkGame::fruit_eaten(int id) {}
+
+void SharkGame::pickup_taken(int id) {}
 

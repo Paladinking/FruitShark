@@ -107,7 +107,6 @@ void Server::tick(Uint64 delta) {
                 // TODO
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
-                std::cout << "Got something" << std::endl;
                 if (event.packet->dataLength != 2 || event.packet->data[0] > 5) {
                     enet_peer_reset(event.peer);
                 } else {
@@ -143,31 +142,41 @@ void Server::tick(Uint64 delta) {
         shark.write(buffer.data() + offset);
         offset += shark.size();
     }
+    for (const auto& fruit : fruits_in_air) {
+        fruit.write(buffer.data() + offset);
+        offset += fruit.size();
+    }
     ENetPacket* packet = enet_packet_create(buffer.data(), buffer.size(),
                                            ENET_PACKET_FLAG_RELIABLE | ENET_PACKET_FLAG_NO_ALLOCATE);
     enet_host_broadcast(server.get(), 0, packet);
 }
 
-void Server::cannon_fired(Vector2D position, Vector2D velocity, FruitType type) {
-    fruits_in_air.emplace_back(position, velocity, type);
-    Uint8 buf[2 + 4 * sizeof(float)];
-    buf[0] = Event::CANNON_FIRED;
+void Server::fruit_fired(Vector2D position, Vector2D velocity, FruitType type, bool cannon) {
+    std::cout << "Fruit fired {" << position.x << "," << position.y << "}, {"
+        << velocity.x << "," << velocity.y << "}, " << static_cast<int>(type) << ", " << cannon << std::endl;
+    buffer.resize(buffer.size() + sizeof(Uint32), 0);
+    to_be_added.emplace_back(position, velocity, type);
+    Uint8 buf[3 + 4 * sizeof(float)];
+    buf[0] = Event::FRUIT_FIRED;
     buf[1] = static_cast<Uint8>(type);
-    reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.x);
-    reinterpret_cast<float*>(buf + 2)[1] = static_cast<float>(position.y);
-    reinterpret_cast<float*>(buf + 2)[2] = static_cast<float>(velocity.x);
-    reinterpret_cast<float*>(buf + 2)[3] = static_cast<float>(velocity.y);
-    ENetPacket* packet = enet_packet_create(buf, 2 + 4 * sizeof(float), ENET_PACKET_FLAG_RELIABLE);
+    buf[2] = cannon ? 1 : 0;
+    reinterpret_cast<float*>(buf + 3)[0] = static_cast<float>(position.x);
+    reinterpret_cast<float*>(buf + 3)[1] = static_cast<float>(position.y);
+    reinterpret_cast<float*>(buf + 3)[2] = static_cast<float>(velocity.x);
+    reinterpret_cast<float*>(buf + 3)[3] = static_cast<float>(velocity.y);
+    ENetPacket* packet = enet_packet_create(buf, 3 + 4 * sizeof(float), ENET_PACKET_FLAG_RELIABLE);
     enet_host_broadcast(server.get(), 0, packet);
 }
 
 void Server::ship_destroyed(int id) {
+    buffer.resize(buffer.size() - sizeof(Uint32), 0);
     if (ships.size() == 1) {
         exit_game();
     }
 }
 
 void Server::fruit_hit_water(int fruit, Vector2D position) {
+    std::cout << "Fruit hit water " << fruit << ", {" << position.x << "," << position.y << "}" << std::endl;
     Uint8 buf[1 + sizeof(Uint32) + 2 * sizeof(float)];
     buf[0] = Event::FRUIT_HIT_WATER;
     reinterpret_cast<Uint32*>(buf + 1)[0] = static_cast<Uint32>(fruit);
@@ -179,6 +188,8 @@ void Server::fruit_hit_water(int fruit, Vector2D position) {
 }
 
 void Server::fruit_hit_player(int fruit, int player_id) {
+    std::cout << "Fruit hit player " << fruit << ", " << player_id << std::endl;
+    buffer.resize(buffer.size() - sizeof(Uint32), 0);
     Uint8 buf[2 + sizeof(Uint32)];
     buf[0] = Event::FRUIT_HIT_PLAYER;
     buf[1] = static_cast<Uint8>(player_id);
@@ -188,6 +199,9 @@ void Server::fruit_hit_player(int fruit, int player_id) {
 }
 
 void Server::pickup_created(int x, int y, FruitType type) {
+    std::cout << "Pickup created " << x << ", " << y << ", " << static_cast<int>(type) << std::endl;
+    pickups.emplace_back(x, y, type);
+    buffer.resize(buffer.size() + sizeof(Uint32), 0);
     Uint8 buf[2 + sizeof(Uint32)];
     buf[0] = Event::PICKUP_CREATED;
     buf[1] = static_cast<Uint8>(type);
@@ -198,13 +212,35 @@ void Server::pickup_created(int x, int y, FruitType type) {
 }
 
 void Server::ship_hurt(Vector2D position, int player_id, int dmg) {
+    std::cout << "Ship hurt {" << position.x << "," << position.y << "}, " << player_id << ", " << dmg << std::endl;
     Uint8 buf[2 + 2 * sizeof(float) + sizeof(Uint32)];
     buf[0] = Event::SHIP_HURT;
     buf[1] = static_cast<Uint8>(player_id);
     reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.x);
-    reinterpret_cast<float*>(buf + 2)[0] = static_cast<float>(position.y);
+    reinterpret_cast<float*>(buf + 2)[1] = static_cast<float>(position.y);
     reinterpret_cast<Uint32*>(buf + 2 + 2 * sizeof(float))[0] = static_cast<Uint32>(dmg);
     ENetPacket* packet = enet_packet_create(buf, 2 + 2 * sizeof(float) + sizeof (Uint32),
+                                            ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
+}
+
+void Server::fruit_eaten(int id) {
+    std::cout << "Fruit eaten " << id << std::endl;
+    buffer.resize(buffer.size() - sizeof(Uint32));
+    Uint8 buf[1 + sizeof(Uint32)];
+    buf[0] = Event::FRUIT_EATEN;
+    reinterpret_cast<Uint32*>(buf + 1)[0] = static_cast<Uint32>(id);
+    ENetPacket* packet = enet_packet_create(buf, 1 + sizeof (Uint32),
+                                            ENET_PACKET_FLAG_RELIABLE);
+    enet_host_broadcast(server.get(), 0, packet);
+}
+
+void Server::pickup_taken(int id) {
+    std::cout << "Pickup taken " << id << std::endl;
+    Uint8 buf[1 + sizeof(Uint32)];
+    buf[0] = Event::PICKUP_TAKEN;
+    reinterpret_cast<Uint32*>(buf + 1)[0] = static_cast<Uint32>(id);
+    ENetPacket* packet = enet_packet_create(buf, 1 + sizeof (Uint32),
                                             ENET_PACKET_FLAG_RELIABLE);
     enet_host_broadcast(server.get(), 0, packet);
 }

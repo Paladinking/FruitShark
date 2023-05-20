@@ -95,7 +95,7 @@ void Ship::fire_left_cannon(GameState& game_state) {
     left_cannon.power = 0.0;
     left_cannon.cooldown = COOLDOWN_TIME;
     is_charging_left = false;
-    game_state.cannon_fired(fruitPosition, fruitVelocity, fruit_type);
+    game_state.fruit_fired(fruitPosition, fruitVelocity, fruit_type, true);
 }
 
 void Ship::fire_right_cannon(GameState& game_state) {
@@ -106,7 +106,7 @@ void Ship::fire_right_cannon(GameState& game_state) {
     right_cannon.power = 0.0;
     right_cannon.cooldown = COOLDOWN_TIME;
     is_charging_right = false;
-    game_state.cannon_fired(fruitPosition, fruitVelocity, fruit_type);
+    game_state.fruit_fired(fruitPosition, fruitVelocity, fruit_type, true);
 }
 
 void Ship::handle_up(const bool left, const bool right, GameState& game_state) {

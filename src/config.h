@@ -6,6 +6,9 @@
 
 class Ship;
 class Shark;
+class Fruit;
+class Pickup;
+enum class FruitType : Uint8;
 
 constexpr int UI_SIZE = 80;
 constexpr int LOGICAL_WIDTH = 1920, LOGICAL_HEIGHT = 1080;
@@ -13,7 +16,7 @@ constexpr int GAME_WIDTH = LOGICAL_WIDTH - 2 * UI_SIZE, GAME_HEIGHT = LOGICAL_HE
 
 constexpr unsigned PLAYER_COUNT = 2;
 
-constexpr unsigned INITIAL_SHARK_COUNT = 10;
+constexpr unsigned INITIAL_SHARK_COUNT = 2;
 constexpr double PICKUP_SPAWN_TIME = 10.0;
 
 constexpr const char*  BINDINGS[2][6] = {
