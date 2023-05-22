@@ -3,8 +3,6 @@ project(FruitShark)
 
 set(CMAKE_CXX_STANDARD 17)
 
-message(STATUS ${PROJECT_SOURCE_DIR})
-
 if (LOCAL_LIBS)
     if (MSVC)
         set(CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/libs-msvc)
@@ -101,14 +99,11 @@ if (WIN32)
     cmake_path(GET ZLIB_DIR PARENT_PATH ZLIB_DIR)
     set(ZLIB_DIR ${ZLIB_DIR}/bin)
 
-    message(STATUS ${ZLIB_DIR})
     if(MSVC)
         set(ZLIB_DLL ${ZLIB_DIR}/zlib.dll)
     else()
         set(ZLIB_DLL ${ZLIB_DIR}/libzlib.dll)
     endif()
-
-message(STATUS ${CMAKE_RC_COMPILER})
 
 add_custom_command (TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -124,7 +119,34 @@ add_custom_command (TARGET main POST_BUILD
         )
 add_custom_command (TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL2_ttf::SDL2_ttf> $<TARGET_FILE_DIR:main>
+        )
+add_custom_command (TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${ZLIB_DLL} $<TARGET_FILE_DIR:main>
         )
 
 endif()
+
+install (
+	TARGETS main server
+	RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+
+if (WIN32)
+install (
+	FILES
+	$<TARGET_FILE:SDL2::SDL2>
+	$<TARGET_FILE:SDL2_ttf::SDL2_ttf>
+	$<TARGET_FILE:SDL2_image::SDL2_image>
+	$<TARGET_FILE:SDL2_mixer::SDL2_mixer>
+	${ZLIB_DLL}
+	DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+endif()
+
+install (
+	DIRECTORY
+	assets
+	DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
