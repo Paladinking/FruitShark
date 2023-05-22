@@ -1,30 +1,3 @@
--- The C compiler identification is GNU 11.2.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: C:/Program Files/JetBrains/CLion 2022.3.2/bin/mingw/bin/gcc.exe - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Looking for sys/types.h
--- Looking for sys/types.h - found
--- Looking for stdint.h
--- Looking for stdint.h - found
--- Looking for stddef.h
--- Looking for stddef.h - found
--- Check size of off64_t
--- Check size of off64_t - done
--- Looking for fseeko
--- Looking for fseeko - found
--- Looking for unistd.h
--- Looking for unistd.h - found
--- Renaming
---     C:/Users/Axel/Documents/Programering/C++/FruitShark/libs-minGW/zlib-1.2.13/zconf.h
--- to 'zconf.h.included' because this file is included with zlib
--- but CMake generates it automatically in the build directory.
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/Axel/Documents/Programering/C++/FruitShark/libs-minGW/zlib-1.2.13/build
-"C:/Program Files/JetBrains/CLion 2022.3.2/bin/mingw/bin/windres.exe"
-set(CMAKE_RC_COMPILER C:/PROGRA~1/JETBRA~1/CLION2~1.2/bin/mingw/bin/windres.exe
 cmake_minimum_required(VERSION 3.20)
 project(FruitShark)
 
